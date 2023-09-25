@@ -18,7 +18,7 @@ class JobCardScreenController extends GetxController {
   TextEditingController color = TextEditingController();
   RxString theDate = RxString('');
 
-  RxDouble discretValue = RxDouble(20);
+  RxDouble fuelAmount = RxDouble(25);
 
   void selectDate(DateTime date) {
     selectedDate.value = date;
@@ -65,7 +65,8 @@ class JobCardScreenController extends GetxController {
       "phone_number": phoneNumber.text,
       "email_address": emailAddress.text,
       "color": color.text,
-      "date": theDate.value
+      "date": theDate.value,
+      "fuel_amount":fuelAmount.value
     });
   }
 }

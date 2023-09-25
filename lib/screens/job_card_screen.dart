@@ -33,39 +33,48 @@ class JobCardScreen extends StatelessWidget {
           children: [
             myTextFormField(
               labelText: 'Customer Name:',
-              hintText: 'Enter Customer Name here', controller: jobCardScreenController.customerName,
+              hintText: 'Enter Customer Name here',
+              controller: jobCardScreenController.customerName,
             ),
             myTextFormField(
               labelText: 'Car Brand:',
-              hintText: 'Enter Car Brand here', controller: jobCardScreenController.carBrand,
+              hintText: 'Enter Car Brand here',
+              controller: jobCardScreenController.carBrand,
             ),
             myTextFormField(
               labelText: 'Car Model:',
-              hintText: 'Enter Car Model here', controller: jobCardScreenController.carModel,
+              hintText: 'Enter Car Model here',
+              controller: jobCardScreenController.carModel,
             ),
             myTextFormField(
               labelText: 'Plate Number:',
-              hintText: 'Enter Plate Number here', controller: jobCardScreenController.plateNumber,
+              hintText: 'Enter Plate Number here',
+              controller: jobCardScreenController.plateNumber,
             ),
             myTextFormField(
               labelText: 'Car Mileage:',
-              hintText: 'Enter Car Mileage here', controller: jobCardScreenController.carMileage,
+              hintText: 'Enter Car Mileage here',
+              controller: jobCardScreenController.carMileage,
             ),
             myTextFormField(
               labelText: 'Chassis Number:',
-              hintText: 'Enter Chassis Number here', controller: jobCardScreenController.chassisNumber,
+              hintText: 'Enter Chassis Number here',
+              controller: jobCardScreenController.chassisNumber,
             ),
             myTextFormField(
               labelText: 'Phone Number:',
-              hintText: 'Enter Phone Number here', controller: jobCardScreenController.phoneNumber,
+              hintText: 'Enter Phone Number here',
+              controller: jobCardScreenController.phoneNumber,
             ),
             myTextFormField(
               labelText: 'Email Address:',
-              hintText: 'Enter Email Address here', controller: jobCardScreenController.emailAddress,
+              hintText: 'Enter Email Address here',
+              controller: jobCardScreenController.emailAddress,
             ),
             myTextFormField(
               labelText: 'Color:',
-              hintText: 'Enter Color here', controller: jobCardScreenController.color,
+              hintText: 'Enter Color here',
+              controller: jobCardScreenController.color,
             ),
             Obx(
               () => Padding(
@@ -111,19 +120,20 @@ class JobCardScreen extends StatelessWidget {
                       ),
                     ),
                     Slider(
-                      value: jobCardScreenController.discretValue.value,
+                      value: jobCardScreenController.fuelAmount.value,
                       onChanged: (newValue) {
-                        jobCardScreenController.discretValue.value = newValue;
+                        jobCardScreenController.fuelAmount.value = newValue;
                       },
                       min: 0,
                       max: 100,
-                      divisions: 10,
-                      label: jobCardScreenController.discretValue.value
+                      divisions: 4,
+                      label: jobCardScreenController.fuelAmount.value
                           .round()
                           .toString(),
                     ),
                   ],
-                ))
+                )),
+                
           ],
         ),
       ),
@@ -131,7 +141,8 @@ class JobCardScreen extends StatelessWidget {
   }
 }
 
-Padding myTextFormField({required labelText, required hintText ,required controller}) {
+Padding myTextFormField(
+    {required labelText, required hintText, required controller}) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(20, 5, 30, 5), // Adjust padding
     child: TextFormField(
