@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,7 @@ class JobCardScreenController extends GetxController {
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController emailAddress = TextEditingController();
   TextEditingController color = TextEditingController();
+  RxString theDate = RxString('');
 
   RxDouble discretValue = RxDouble(20);
 
@@ -37,8 +39,8 @@ class JobCardScreenController extends GetxController {
 
   // Function to format the date
   String formatDate(DateTime date) {
-    final formatter =
-        DateFormat('yyyy-MM-dd'); // Customize the format as needed
+    final formatter = DateFormat('yyyy-MM-dd');
+    theDate.value = formatter.format(date);
     return formatter.format(date);
   }
 
@@ -52,8 +54,18 @@ class JobCardScreenController extends GetxController {
   }
 
 // this function is to add the car card when all informations addedd
-  void addCard(){
-    
+  void addCard() {
+    FirebaseFirestore.instance.collection('car_card').add({
+      "customer_name": customerName.text,
+      "car_brand": carBrand.text,
+      "car_model": carModel.text,
+      "plate_number": plateNumber.text,
+      "car_mileage": carMileage.text,
+      "chassis_number": chassisNumber.text,
+      "phone_number": phoneNumber.text,
+      "email_address": emailAddress.text,
+      "color": color.text,
+      "date": theDate.value
+    });
   }
-
 }

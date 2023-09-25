@@ -20,7 +20,9 @@ class JobCardScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.done),
-            onPressed: () {},
+            onPressed: () {
+              jobCardScreenController.addCard();
+            },
           )
         ],
       ),
@@ -31,39 +33,39 @@ class JobCardScreen extends StatelessWidget {
           children: [
             myTextFormField(
               labelText: 'Customer Name:',
-              hintText: 'Enter Customer Name here',
+              hintText: 'Enter Customer Name here', controller: jobCardScreenController.customerName,
             ),
             myTextFormField(
               labelText: 'Car Brand:',
-              hintText: 'Enter Car Brand here',
+              hintText: 'Enter Car Brand here', controller: jobCardScreenController.carBrand,
             ),
             myTextFormField(
               labelText: 'Car Model:',
-              hintText: 'Enter Car Model here',
+              hintText: 'Enter Car Model here', controller: jobCardScreenController.carModel,
             ),
             myTextFormField(
               labelText: 'Plate Number:',
-              hintText: 'Enter Plate Number here',
+              hintText: 'Enter Plate Number here', controller: jobCardScreenController.plateNumber,
             ),
             myTextFormField(
               labelText: 'Car Mileage:',
-              hintText: 'Enter Car Mileage here',
+              hintText: 'Enter Car Mileage here', controller: jobCardScreenController.carMileage,
             ),
             myTextFormField(
               labelText: 'Chassis Number:',
-              hintText: 'Enter Chassis Number here',
+              hintText: 'Enter Chassis Number here', controller: jobCardScreenController.chassisNumber,
             ),
             myTextFormField(
               labelText: 'Phone Number:',
-              hintText: 'Enter Phone Number here',
+              hintText: 'Enter Phone Number here', controller: jobCardScreenController.phoneNumber,
             ),
             myTextFormField(
               labelText: 'Email Address:',
-              hintText: 'Enter Email Address here',
+              hintText: 'Enter Email Address here', controller: jobCardScreenController.emailAddress,
             ),
             myTextFormField(
               labelText: 'Color:',
-              hintText: 'Enter Color here',
+              hintText: 'Enter Color here', controller: jobCardScreenController.color,
             ),
             Obx(
               () => Padding(
@@ -129,11 +131,12 @@ class JobCardScreen extends StatelessWidget {
   }
 }
 
-Padding myTextFormField({required labelText, required hintText}) {
+Padding myTextFormField({required labelText, required hintText ,required controller}) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(20, 5, 30, 5), // Adjust padding
     child: TextFormField(
-      // controller: ,
+      // initialValue: '',
+      controller: controller,
       decoration: InputDecoration(
         hintStyle: const TextStyle(color: Colors.grey),
         labelText: labelText,
