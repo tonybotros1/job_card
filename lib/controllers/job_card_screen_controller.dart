@@ -2,10 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class MainScreenController extends GetxController {
+class JobCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
   RxList carState = RxList(['New', 'Returned']);
   RxList<bool> isChecked = RxList([]);
+  TextEditingController customerName = TextEditingController();
+  TextEditingController carBrand = TextEditingController();
+  TextEditingController carModel = TextEditingController();
+  TextEditingController plateNumber = TextEditingController();
+  TextEditingController carMileage = TextEditingController();
+  TextEditingController chassisNumber = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
+  TextEditingController emailAddress = TextEditingController();
+  TextEditingController color = TextEditingController();
 
   RxDouble discretValue = RxDouble(20);
 
@@ -41,4 +50,10 @@ class MainScreenController extends GetxController {
       isChecked[i] = true;
     }
   }
+
+// this function is to add the car card when all informations addedd
+  void addCard(){
+    
+  }
+
 }

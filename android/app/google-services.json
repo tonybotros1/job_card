@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "9681419746",
+    "project_id": "job-card-62478",
+    "storage_bucket": "job-card-62478.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9681419746:android:278788a51a443d7647cdbb",
+        "android_client_info": {
+          "package_name": "com.example.job_card"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2ql5CI0sSUQ0igdwh0G1Bmsu6TUtBpIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
