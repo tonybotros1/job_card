@@ -29,7 +29,7 @@ class AllWorksScreen extends StatelessWidget {
           child: IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              Get.to(() => JobCardScreen());
+              Get.to(() => JobCardScreen(), transition: Transition.leftToRight);
             },
           ),
         ),
@@ -59,19 +59,20 @@ class AllWorksScreen extends StatelessWidget {
                               onTap: () {
                                 Get.to(() => EditCardScreen(),
                                     arguments: JobCardModel(
-                                      carBrand: carCard['car_brand'],
-                                      carMileage: carCard['car_mileage'],
-                                      carModel: carCard['car_model'],
-                                      chassisNumber: carCard['chassis_number'],
-                                      color: carCard['color'],
-                                      customerName: carCard['customer_name'],
-                                      date: carCard['date'],
-                                      emailAddress: carCard['email_address'],
-                                      fuelAmount: carCard['fuel_amount'],
-                                      phoneNumber: carCard['phone_number'],
-                                      plateNumber: carCard['phone_number'],
-                                      docID: carCard.id
-                                    ));
+                                        carBrand: carCard['car_brand'],
+                                        carMileage: carCard['car_mileage'],
+                                        carModel: carCard['car_model'],
+                                        chassisNumber:
+                                            carCard['chassis_number'],
+                                        color: carCard['color'],
+                                        customerName: carCard['customer_name'],
+                                        date: carCard['date'],
+                                        emailAddress: carCard['email_address'],
+                                        fuelAmount: carCard['fuel_amount'],
+                                        phoneNumber: carCard['phone_number'],
+                                        plateNumber: carCard['phone_number'],
+                                        docID: carCard.id),
+                                    transition: Transition.leftToRight);
                               },
                               child: ListTile(
                                 contentPadding: const EdgeInsets.all(5),

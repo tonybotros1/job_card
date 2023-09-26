@@ -22,7 +22,8 @@ class EditCardScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.done),
             onPressed: () {
-              Get.off(() => AllWorksScreen());
+              Get.off(() => AllWorksScreen(),
+                  transition: Transition.leftToRight);
               editCardScreenController.editValues();
             },
           )

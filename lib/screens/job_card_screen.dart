@@ -24,7 +24,7 @@ class JobCardScreen extends StatelessWidget {
             icon: const Icon(Icons.done),
             onPressed: () {
               if (jobCardScreenController.formKey.currentState!.validate()) {
-                Get.off(() => AllWorksScreen());
+                Get.off(() => AllWorksScreen(), transition: Transition.leftToRight);
                 jobCardScreenController.addCard();
               }
             },
