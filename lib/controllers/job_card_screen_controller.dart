@@ -64,7 +64,8 @@ class JobCardScreenController extends GetxController {
       "color": color.text,
       "date": theDate.value,
       "fuel_amount": fuelAmount.value,
-      "customer_signature": downloadUrl.value
+      "customer_signature": downloadUrl.value,
+      'timestamp': FieldValue.serverTimestamp(),
     });
   }
 

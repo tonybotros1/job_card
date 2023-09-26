@@ -38,10 +38,13 @@ class AllWorksScreen extends StatelessWidget {
             builder: (controller) {
               if (controller.carCards.isEmpty) {
                 return Center(
-                  child: CircularProgressIndicator(
-                    color: mainColor,
-                  ),
-                );
+                    child: Text(
+                  'No Cards Yet',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: mainColor,
+                      fontSize: 25),
+                ));
               } else {
                 return ListView.builder(
                     itemCount: controller.carCards.length,

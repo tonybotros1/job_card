@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:job_card/controllers/job_card_screen_controller.dart';
 import 'package:signature/signature.dart';
 import '../const.dart';
+import 'all_works_screen.dart';
 
 class JobCardScreen extends StatelessWidget {
   JobCardScreen({super.key});
@@ -23,6 +24,7 @@ class JobCardScreen extends StatelessWidget {
             icon: const Icon(Icons.done),
             onPressed: () {
               if (jobCardScreenController.formKey.currentState!.validate()) {
+                Get.off(() => AllWorksScreen());
                 jobCardScreenController.addCard();
               }
             },
@@ -165,7 +167,7 @@ class JobCardScreen extends StatelessWidget {
                         },
                         child: const Text('Clear'),
                       ),
-                     const SizedBox(
+                      const SizedBox(
                         height: 50,
                       ),
                     ],

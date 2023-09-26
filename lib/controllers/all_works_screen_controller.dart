@@ -13,7 +13,7 @@ class AllWorksController extends GetxController {
 // this function is to get the works from firebase
   void getAllWorks() {
     FirebaseFirestore.instance
-        .collection('car_card')
+        .collection('car_card').orderBy('timestamp', descending: true)
         .snapshots()
         .listen((event) {
       carCards.assignAll(event.docs);
