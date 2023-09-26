@@ -70,6 +70,7 @@ class AllWorksScreen extends StatelessWidget {
                                       fuelAmount: carCard['fuel_amount'],
                                       phoneNumber: carCard['phone_number'],
                                       plateNumber: carCard['phone_number'],
+                                      docID: carCard.id
                                     ));
                               },
                               child: ListTile(

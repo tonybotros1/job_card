@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:job_card/screens/all_works_screen.dart';
 import '../const.dart';
 import '../controllers/edit_card_screen_controller.dart';
 
@@ -21,6 +22,8 @@ class EditCardScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.done),
             onPressed: () {
+              Get.off(() => AllWorksScreen());
+              editCardScreenController.editValues();
             },
           )
         ],
@@ -91,7 +94,7 @@ class EditCardScreen extends StatelessWidget {
                     ),
                     onPressed: () =>
                         editCardScreenController.selectDateContext(context),
-                    child:const FittedBox(child: Text('Select Date')),
+                    child: const FittedBox(child: Text('Select Date')),
                   ),
                 ),
               ),
@@ -119,7 +122,7 @@ class EditCardScreen extends StatelessWidget {
                       ),
                     ),
                     Slider(
-                      value:editCardScreenController.fuelAmount.value,
+                      value: editCardScreenController.fuelAmount.value,
                       onChanged: (newValue) {
                         editCardScreenController.fuelAmount.value = newValue;
                       },
@@ -132,7 +135,6 @@ class EditCardScreen extends StatelessWidget {
                     ),
                   ],
                 )),
-
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ class EditCardScreenController extends GetxController {
   TextEditingController color = TextEditingController();
   RxString theDate = RxString('');
   RxDouble fuelAmount = RxDouble(25);
+  var arguments = Get.arguments;
 
   @override
   void onInit() {
@@ -51,7 +53,6 @@ class EditCardScreenController extends GetxController {
   void setValuesToFields() {
     if (Get.arguments == null) {
     } else {
-      var arguments = Get.arguments;
       customerName.text = arguments.customerName;
       carBrand.text = arguments.carBrand;
       carModel.text = arguments.carModel;
@@ -65,7 +66,23 @@ class EditCardScreenController extends GetxController {
     }
   }
 
-  void editValues(){
-    // FirebaseFirestore.instance.collection('car_card').doc()
+  void editValues() {
+    FirebaseFirestore.instance
+        .collection('car_card')
+        .doc(arguments.docID)
+        .update({
+      "customer_name": customerName.text,
+      "car_brand": carBrand.text,
+      "car_model": carModel.text,
+      "plate_number": plateNumber.text,
+      "car_mileage": carMileage.text,
+      "chassis_number": chassisNumber.text,
+      "phone_number": phoneNumber.text,
+      "email_address": emailAddress.text,
+      "color": color.text,
+      "date": theDate.value,
+      "fuel_amount": fuelAmount.value,
+      "editing_time": FieldValue.serverTimestamp(),
+    });
   }
 }
