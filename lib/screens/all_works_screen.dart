@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/all_works_screen_controller.dart';
 
+import '../models/job_card_model.dart';
+import 'edit_card_screen.dart';
 import 'job_card_screen.dart';
 
 class AllWorksScreen extends StatelessWidget {
@@ -50,30 +52,52 @@ class AllWorksScreen extends StatelessWidget {
                         elevation: 20,
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(5),
-                              title: Text(
-                                '${carCard['customer_name']}',
-                                style: fontStyle,
-                              ),
-                              subtitle: Text('${carCard['date']}'),
-                              trailing: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  FittedBox(
-                                    child: Text(
-                                      '${carCard['car_brand']}  ${carCard['car_model']}',
-                                      style: fontStyle,
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => EditCardScreen(),
+                                    arguments: JobCardModel(
+                                      carBrand: carCard['car_brand'],
+                                      carMileage: carCard['car_mileage'],
+                                      carModel: carCard['car_model'],
+                                      chassisNumber: carCard['chassis_number'],
+                                      color: carCard['color'],
+                                      customerName: carCard['customer_name'],
+                                      date: carCard['date'],
+                                      emailAddress: carCard['email_address'],
+                                      fuelAmount: carCard['fuel_amount'],
+                                      phoneNumber: carCard['phone_number'],
+                                      plateNumber: carCard['phone_number'],
+                                    ));
+                              },
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(5),
+                                title: Text(
+                                  '${carCard['customer_name']}',
+                                  style: fontStyle,
+                                ),
+                                subtitle: Text('${carCard['date']}'),
+                                trailing: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    FittedBox(
+                                      child: SizedBox(
+                                        child: Text(
+                                          '${carCard['car_brand']}  ${carCard['car_model']}',
+                                          style: fontStyle,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  FittedBox(
-                                    child: Text(
-                                      '${carCard['plate_number']}',
-                                      style: fontStyle,
+                                    FittedBox(
+                                      child: SizedBox(
+                                        child: Text(
+                                          '${carCard['plate_number']}',
+                                          style: fontStyle,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             )),
                       );

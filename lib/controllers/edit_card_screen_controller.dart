@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class JobCardScreenController extends GetxController {
+class EditCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
+
   TextEditingController customerName = TextEditingController();
   TextEditingController carBrand = TextEditingController();
   TextEditingController carModel = TextEditingController();
@@ -17,10 +17,10 @@ class JobCardScreenController extends GetxController {
   RxString theDate = RxString('');
   RxDouble fuelAmount = RxDouble(25);
 
-  final formKey = GlobalKey<FormState>();
-
-  void selectDate(DateTime date) {
-    selectedDate.value = date;
+  @override
+  void onInit() {
+    setValuesToFields();
+    super.onInit();
   }
 
   Future<void> selectDateContext(BuildContext context) async {
@@ -36,6 +36,10 @@ class JobCardScreenController extends GetxController {
     }
   }
 
+  void selectDate(DateTime date) {
+    selectedDate.value = date;
+  }
+
   // Function to format the date
   String formatDate(DateTime date) {
     final formatter = DateFormat('yyyy-MM-dd');
@@ -43,20 +47,25 @@ class JobCardScreenController extends GetxController {
     return formatter.format(date);
   }
 
-// this function is to add the car card when all informations addedd
-  void addCard() {
-    FirebaseFirestore.instance.collection('car_card').add({
-      "customer_name": customerName.text,
-      "car_brand": carBrand.text,
-      "car_model": carModel.text,
-      "plate_number": plateNumber.text,
-      "car_mileage": carMileage.text,
-      "chassis_number": chassisNumber.text,
-      "phone_number": phoneNumber.text,
-      "email_address": emailAddress.text,
-      "color": color.text,
-      "date": theDate.value,
-      "fuel_amount": fuelAmount.value
-    });
+  // this function is to give the fields the values when i want to edit the selected car card
+  void setValuesToFields() {
+    if (Get.arguments == null) {
+    } else {
+      var arguments = Get.arguments;
+      customerName.text = arguments.customerName;
+      carBrand.text = arguments.carBrand;
+      carModel.text = arguments.carModel;
+      plateNumber.text = arguments.plateNumber;
+      carMileage.text = arguments.carMileage;
+      chassisNumber.text = arguments.chassisNumber;
+      phoneNumber.text = arguments.phoneNumber;
+      emailAddress.text = arguments.emailAddress;
+      color.text = arguments.color;
+      fuelAmount.value = arguments.fuelAmount;
+    }
+  }
+
+  void editValues(){
+    // FirebaseFirestore.instance.collection('car_card').doc()
   }
 }
