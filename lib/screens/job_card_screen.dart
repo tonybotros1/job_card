@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/controllers/job_card_screen_controller.dart';
+import 'package:signature/signature.dart';
 import '../const.dart';
 
 class JobCardScreen extends StatelessWidget {
@@ -23,7 +24,6 @@ class JobCardScreen extends StatelessWidget {
             onPressed: () {
               if (jobCardScreenController.formKey.currentState!.validate()) {
                 jobCardScreenController.addCard();
-                
               }
             },
           )
@@ -136,6 +136,37 @@ class JobCardScreen extends StatelessWidget {
                         label: jobCardScreenController.fuelAmount.value
                             .round()
                             .toString(),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        width: Get.width / 1.5,
+                        color: mainColor,
+                        height: 50,
+                        child: const Center(child: Text('Customer Signature')),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      SizedBox(
+                        width: Get.width * 0.8,
+                        height: Get.height * 0.4,
+                        child: Signature(
+                          controller: jobCardScreenController.controller,
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: mainColor,
+                        ),
+                        onPressed: () {
+                          jobCardScreenController.controller.clear();
+                        },
+                        child: const Text('Clear'),
+                      ),
+                     const SizedBox(
+                        height: 50,
                       ),
                     ],
                   )),

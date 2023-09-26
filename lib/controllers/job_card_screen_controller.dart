@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:signature/signature.dart';
 
 class JobCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
@@ -18,6 +22,7 @@ class JobCardScreenController extends GetxController {
   RxDouble fuelAmount = RxDouble(25);
 
   final formKey = GlobalKey<FormState>();
+  RxString downloadUrl = RxString('');
 
   void selectDate(DateTime date) {
     selectedDate.value = date;
@@ -44,7 +49,9 @@ class JobCardScreenController extends GetxController {
   }
 
 // this function is to add the car card when all informations addedd
-  void addCard() {
+  void addCard() async {
+    signatureAsImage = await controller.toPngBytes();
+    await saveImage(signatureAsImage);
     FirebaseFirestore.instance.collection('car_card').add({
       "customer_name": customerName.text,
       "car_brand": carBrand.text,
@@ -56,7 +63,29 @@ class JobCardScreenController extends GetxController {
       "email_address": emailAddress.text,
       "color": color.text,
       "date": theDate.value,
-      "fuel_amount": fuelAmount.value
+      "fuel_amount": fuelAmount.value,
+      "customer_signature": downloadUrl.value
+    });
+  }
+
+// for signature:
+  Uint8List? signatureAsImage;
+
+  SignatureController controller = SignatureController(
+    penStrokeWidth: 3,
+    penColor: Colors.black,
+    exportBackgroundColor: Colors.white,
+  );
+
+// for saving images in firebase
+  saveImage(file) async {
+    final Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('order_images')
+        .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+    final UploadTask uploadTask = ref.putData(file);
+    await uploadTask.whenComplete(() async {
+      downloadUrl.value = await ref.getDownloadURL();
     });
   }
 }
