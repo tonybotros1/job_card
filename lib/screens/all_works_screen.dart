@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
@@ -87,48 +86,57 @@ class AllWorksScreen extends StatelessWidget {
                                 child: SizedBox(
                                   height: 100,
                                   child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
-                                          child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          FittedBox(
-                                              child: Text(
-                                            '${carCard['customer_name']}',
-                                            style: fontStyle,
-                                          )),
-                                          FittedBox(
-                                              child: Text(
-                                            '${carCard['date']}',
-                                            style: fontStyle2,
-                                          ))
-                                        ],
-                                      )),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            FittedBox(
+                                                child: Text(
+                                              '${carCard['customer_name']}',
+                                              style: fontStyle,
+                                            )),
+                                            FittedBox(
+                                                child: Text(
+                                              '${carCard['date']}',
+                                              style: fontStyle2,
+                                            ))
+                                          ],
+                                        ),
+                                      ),
                                       Expanded(
-                                          // flex: 3,
-                                          child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            '${carCard['car_brand']}',
-                                            style: fontStyle2,
-                                          ),
-                                          Text(
-                                            '${carCard['car_model']}',
-                                            style: fontStyle2,
-                                          ),
-                                          Text(
-                                            '${carCard['plate_number']}',
-                                            style: fontStyle2,
-                                          ),
-                                        ],
-                                      )),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            FittedBox(
+                                              child: Text(
+                                                '${carCard['car_brand']}',
+                                                style: fontStyle2,
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                '${carCard['car_model']}',
+                                                style: fontStyle2,
+                                              ),
+                                            ),
+                                            FittedBox(
+                                              child: Text(
+                                                '${carCard['plate_number']}',
+                                                style: fontStyle2,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ))),
@@ -208,48 +216,58 @@ class DataSearch extends SearchDelegate {
                                   docID: carCard.id),
                               transition: Transition.leftToRight);
                         },
-                        child: SizedBox(
-                          height: 100,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  FittedBox(
-                                      child: Text(
-                                    '${carCard['customer_name']}',
-                                    style: fontStyle,
-                                  )),
-                                  FittedBox(
-                                      child: Text(
-                                    '${carCard['date']}',
-                                    style: fontStyle2,
-                                  ))
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '${carCard['car_brand']}',
-                                    style: fontStyle2,
+                        child: Expanded(
+                          child: SizedBox(
+                            height: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    FittedBox(
+                                        child: Text(
+                                      '${carCard['customer_name']}',
+                                      style: fontStyle,
+                                    )),
+                                    FittedBox(
+                                        child: Text(
+                                      '${carCard['date']}',
+                                      style: fontStyle2,
+                                    ))
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      FittedBox(
+                                        child: Text(
+                                          '${carCard['car_brand']}',
+                                          style: fontStyle2,
+                                        ),
+                                      ),
+                                      FittedBox(
+                                        child: Text(
+                                          '${carCard['car_model']}',
+                                          style: fontStyle2,
+                                        ),
+                                      ),
+                                      FittedBox(
+                                        child: Text(
+                                          '${carCard['plate_number']}',
+                                          style: fontStyle2,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    '${carCard['car_model']}',
-                                    style: fontStyle2,
-                                  ),
-                                  Text(
-                                    '${carCard['plate_number']}',
-                                    style: fontStyle2,
-                                  ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
                         ))),
               );

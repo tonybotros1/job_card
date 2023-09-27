@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:job_card/models/job_card_model.dart';
 
 class AllWorksController extends GetxController {
   final RxList<DocumentSnapshot> carCards = RxList<DocumentSnapshot>([]);
