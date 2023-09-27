@@ -24,7 +24,8 @@ class JobCardScreen extends StatelessWidget {
             icon: const Icon(Icons.done),
             onPressed: () {
               if (jobCardScreenController.formKey.currentState!.validate()) {
-                Get.off(() => AllWorksScreen(), transition: Transition.leftToRight);
+                Get.off(() => AllWorksScreen(),
+                    transition: Transition.leftToRight);
                 jobCardScreenController.addCard();
               }
             },
@@ -111,7 +112,12 @@ class JobCardScreen extends StatelessWidget {
                         width: Get.width / 1.5,
                         color: mainColor,
                         height: 50,
-                        child: const Center(child: Text('Fuel')),
+                        child: const Center(
+                            child: Text(
+                          'Fuel',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        )),
                       ),
                       const SizedBox(
                         height: 20,
@@ -146,7 +152,12 @@ class JobCardScreen extends StatelessWidget {
                         width: Get.width / 1.5,
                         color: mainColor,
                         height: 50,
-                        child: const Center(child: Text('Customer Signature')),
+                        child: const Center(
+                            child: Text(
+                          'Customer Signature',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        )),
                       ),
                       const SizedBox(
                         height: 40,
