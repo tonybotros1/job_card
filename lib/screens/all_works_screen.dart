@@ -56,58 +56,106 @@ class AllWorksScreen extends StatelessWidget {
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
-                              onTap: () {
-                                Get.to(() => EditCardScreen(),
-                                    arguments: JobCardModel(
-                                        carBrand: carCard['car_brand'],
-                                        carMileage: carCard['car_mileage'],
-                                        carModel: carCard['car_model'],
-                                        chassisNumber:
-                                            carCard['chassis_number'],
-                                        color: carCard['color'],
-                                        customerName: carCard['customer_name'],
-                                        date: carCard['date'],
-                                        emailAddress: carCard['email_address'],
-                                        fuelAmount: carCard['fuel_amount'],
-                                        phoneNumber: carCard['phone_number'],
-                                        plateNumber: carCard['phone_number'],
-                                        docID: carCard.id),
-                                    transition: Transition.leftToRight);
-                              },
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(5),
-                                title: Text(
-                                  '${carCard['customer_name']}',
-                                  style: fontStyle,
-                                ),
-                                subtitle: Text('${carCard['date']}'),
-                                trailing: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    FittedBox(
-                                      child: SizedBox(
-                                        child: Text(
-                                          '${carCard['car_brand']}  ${carCard['car_model']}',
-                                          style: fontStyle,
-                                        ),
-                                      ),
-                                    ),
-                                    FittedBox(
-                                      child: SizedBox(
-                                        child: Text(
-                                          '${carCard['plate_number']}',
-                                          style: fontStyle,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )),
+                                onTap: () {
+                                  Get.to(() => EditCardScreen(),
+                                      arguments: JobCardModel(
+                                          carBrand: carCard['car_brand'],
+                                          carMileage: carCard['car_mileage'],
+                                          carModel: carCard['car_model'],
+                                          chassisNumber:
+                                              carCard['chassis_number'],
+                                          color: carCard['color'],
+                                          customerName:
+                                              carCard['customer_name'],
+                                          date: carCard['date'],
+                                          emailAddress:
+                                              carCard['email_address'],
+                                          fuelAmount: carCard['fuel_amount'],
+                                          phoneNumber: carCard['phone_number'],
+                                          plateNumber: carCard['phone_number'],
+                                          docID: carCard.id),
+                                      transition: Transition.leftToRight);
+                                },
+                                child: SizedBox(
+                                  height: 100,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          FittedBox(
+                                              child: Text(
+                                            '${carCard['customer_name']}',
+                                            style: fontStyle,
+                                          )),
+                                          FittedBox(
+                                              child: Text(
+                                            '${carCard['date']}',
+                                            style: fontStyle2,
+                                          ))
+                                        ],
+                                      )),
+                                      Expanded(
+                                          // flex: 3,
+                                          child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            '${carCard['car_brand']}',
+                                            style: fontStyle2,
+                                          ),
+                                          Text(
+                                            '${carCard['car_model']}',
+                                            style: fontStyle2,
+                                          ),
+                                          Text(
+                                            '${carCard['plate_number']}',
+                                            style: fontStyle2,
+                                          ),
+                                        ],
+                                      )),
+                                    ],
+                                  ),
+                                ))),
                       );
                     });
               }
             }));
   }
 }
+
+
+
+// ListTile(
+//                                 contentPadding: const EdgeInsets.all(16),
+//                                 title: Text(
+//                                   '${carCard['customer_name']}',
+//                                   style: fontStyle,
+//                                 ),
+//                                 subtitle: Text('${carCard['date']}'),
+//                                 trailing: Column(
+//                                   mainAxisAlignment:
+//                                       MainAxisAlignment.spaceAround,
+//                                   children: [
+//                                     SizedBox(
+//                                       child: Text(
+//                                         '${carCard['car_brand']}  ${carCard['car_model']}',
+//                                         style: fontStyle,
+//                                       ),
+//                                     ),
+//                                     SizedBox(
+//                                       child: Text(
+//                                         '${carCard['plate_number']}',
+//                                         style: fontStyle,
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
