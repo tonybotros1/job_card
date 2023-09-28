@@ -79,12 +79,12 @@ class AllWorksScreen extends StatelessWidget {
                                               carCard['email_address'],
                                           fuelAmount: carCard['fuel_amount'],
                                           phoneNumber: carCard['phone_number'],
-                                          plateNumber: carCard['phone_number'],
+                                          plateNumber: carCard['plate_number'],
                                           docID: carCard.id),
                                       transition: Transition.leftToRight);
                                 },
                                 child: SizedBox(
-                                  height: 100,
+                                  height: 120,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -105,7 +105,18 @@ class AllWorksScreen extends StatelessWidget {
                                                 child: Text(
                                               '${carCard['date']}',
                                               style: fontStyle2,
-                                            ))
+                                            )),
+                                            FittedBox(
+                                              child: IconButton(
+                                                  onPressed: () {
+                                                    controller.shareToSocialMedia(
+                                                        'Hello this is Compass Automatic Gear! \nThis is a copy of details of your car \nCustomer Name: ${carCard['customer_name']} \nCar Brand: ${carCard['car_brand']} \nCar Model: ${carCard['car_model']} \nPlate Number: ${carCard['plate_number']} \nCar Mileage: ${carCard['car_mileage']} \nChassis Number: ${carCard['chassis_number']} \nDate: ${carCard['date']} \nCar Color: ${carCard['color']}');
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.share,
+                                                    color: mainColor,
+                                                  )),
+                                            )
                                           ],
                                         ),
                                       ),
@@ -199,6 +210,10 @@ class DataSearch extends SearchDelegate {
                 child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
+                        onLongPress: () {
+                          // controller.shareToWhatsApp(carCard['phone_number'],
+                          //     'Hello this is Compass Automatic Gear! \n This is a copy of details of your car \n Customer Name: ${carCard['customer_name']} \n Car Brand: ${carCard['car_brand']} \n Car Model: ${carCard['car_model']} \n Plate Number: ${carCard['plate_number']} \n Car Mileage: ${carCard['car_mileage']} \n Chassis Number: ${carCard['chassis_number']} \n Date: ${carCard['date']} \n Car Color: ${carCard['color']}');
+                        },
                         onTap: () {
                           Get.to(() => EditCardScreen(),
                               arguments: JobCardModel(
@@ -212,17 +227,17 @@ class DataSearch extends SearchDelegate {
                                   emailAddress: carCard['email_address'],
                                   fuelAmount: carCard['fuel_amount'],
                                   phoneNumber: carCard['phone_number'],
-                                  plateNumber: carCard['phone_number'],
+                                  plateNumber: carCard['plate_number'],
                                   docID: carCard.id),
                               transition: Transition.leftToRight);
                         },
-                        child: Expanded(
-                          child: SizedBox(
-                            height: 100,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
+                        child: SizedBox(
+                          height: 120,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,38 +251,49 @@ class DataSearch extends SearchDelegate {
                                         child: Text(
                                       '${carCard['date']}',
                                       style: fontStyle2,
-                                    ))
+                                    )),
+                                    FittedBox(
+                                      child: IconButton(
+                                          onPressed: () {
+                                            controller.shareToSocialMedia(
+                                                'Hello this is Compass Automatic Gear! \nThis is a copy of details of your car \nCustomer Name: ${carCard['customer_name']} \nCar Brand: ${carCard['car_brand']} \nCar Model: ${carCard['car_model']} \nPlate Number: ${carCard['plate_number']} \nCar Mileage: ${carCard['car_mileage']} \nChassis Number: ${carCard['chassis_number']} \nDate: ${carCard['date']} \nCar Color: ${carCard['color']}');
+                                          },
+                                          icon: Icon(
+                                            Icons.share,
+                                            color: mainColor,
+                                          )),
+                                    )
                                   ],
                                 ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      FittedBox(
-                                        child: Text(
-                                          '${carCard['car_brand']}',
-                                          style: fontStyle2,
-                                        ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    FittedBox(
+                                      child: Text(
+                                        '${carCard['car_brand']}',
+                                        style: fontStyle2,
                                       ),
-                                      FittedBox(
-                                        child: Text(
-                                          '${carCard['car_model']}',
-                                          style: fontStyle2,
-                                        ),
+                                    ),
+                                    FittedBox(
+                                      child: Text(
+                                        '${carCard['car_model']}',
+                                        style: fontStyle2,
                                       ),
-                                      FittedBox(
-                                        child: Text(
-                                          '${carCard['plate_number']}',
-                                          style: fontStyle2,
-                                        ),
+                                    ),
+                                    FittedBox(
+                                      child: Text(
+                                        '${carCard['plate_number']}',
+                                        style: fontStyle2,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ))),
               );

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+// import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AllWorksController extends GetxController {
   final RxList<DocumentSnapshot> carCards = RxList<DocumentSnapshot>([]);
@@ -47,5 +49,20 @@ class AllWorksController extends GetxController {
 
     // Update the list with the filtered results
     filteredCarCards.assignAll(filteredResults);
+  }
+
+// to share the informations via whatsapp
+
+// Future<void> shareToWhatsApp(String recipient,String message) async {
+//   final Uri launchUri = Uri(
+//     scheme: 'whatsapp',
+//     path: 'send',
+//     query: 'phone=${Uri.encodeComponent(recipient)}&text=${Uri.encodeComponent(message)}',
+//   );
+//   await launchUrl(launchUri);
+// }
+
+  void shareToSocialMedia(content) {
+    Share.share(content);
   }
 }
