@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:video_player/video_player.dart';
 
 class EditCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
@@ -18,11 +19,18 @@ class EditCardScreenController extends GetxController {
   RxString theDate = RxString('');
   RxDouble fuelAmount = RxDouble(25);
   var arguments = Get.arguments;
+  late VideoPlayerController controller;
 
   @override
   void onInit() {
     setValuesToFields();
     super.onInit();
+  }
+
+   @override
+  void onClose() {
+    controller.dispose();
+    super.onClose();
   }
 
   Future<void> selectDateContext(BuildContext context) async {
@@ -63,6 +71,17 @@ class EditCardScreenController extends GetxController {
       emailAddress.text = arguments.emailAddress;
       color.text = arguments.color;
       fuelAmount.value = arguments.fuelAmount;
+      controller =
+          VideoPlayerController.networkUrl(Uri.parse('${arguments.carVideo}'));
+          print('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr ${arguments.carVideo}}');
+      controller.addListener(() {
+        update();
+      });
+      // controller.setLooping(true);
+      controller.initialize().then((_) {
+        controller.play();
+        update();
+      });
     }
   }
 

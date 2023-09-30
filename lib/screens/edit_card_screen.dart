@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/screens/all_works_screen.dart';
+import 'package:video_player/video_player.dart';
 import '../const.dart';
 import '../controllers/edit_card_screen_controller.dart';
 
@@ -139,11 +140,84 @@ class EditCardScreen extends StatelessWidget {
                           .round()
                           .toString(),
                     ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Container(
+                      width: Get.width / 1.5,
+                      color: mainColor,
+                      height: 50,
+                      child: const Center(
+                          child: Text(
+                        'Promo Video for the car',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      )),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    if (editCardScreenController.controller.value.isInitialized) AspectRatio(
+                            aspectRatio: editCardScreenController
+                                .controller.value.aspectRatio,
+                            child: Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: <Widget>[
+                                VideoPlayer(
+                                    editCardScreenController.controller),
+                                _ControlsOverlay(
+                                    controller:
+                                        editCardScreenController.controller),
+                                VideoProgressIndicator(
+                                    editCardScreenController.controller,
+                                    allowScrubbing: true),
+                              ],
+                            ),
+                          ) else const CircularProgressIndicator(),
+                    const SizedBox(
+                      height: 50,
+                    ),
                   ],
                 )),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ControlsOverlay extends StatelessWidget {
+  final VideoPlayerController controller;
+
+  const _ControlsOverlay({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 50),
+          reverseDuration: const Duration(milliseconds: 200),
+          child: controller.value.isPlaying
+              ? const SizedBox.shrink()
+              : Container(
+                  color: Colors.black26,
+                  child: const Center(
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 100.0,
+                      semanticLabel: 'Play',
+                    ),
+                  ),
+                ),
+        ),
+        GestureDetector(
+          onTap: () {
+            controller.value.isPlaying ? controller.pause() : controller.play();
+          },
+        ),
+      ],
     );
   }
 }
@@ -171,4 +245,22 @@ Padding myTextFormField(
       },
     ),
   );
+
+
+  
 }
+
+
+
+
+  // AspectRatio(
+  //               aspectRatio: editCardScreenController.controller.value.aspectRatio,
+  //               child: Stack(
+  //                 alignment: Alignment.bottomCenter,
+  //                 children: <Widget>[
+  //                   VideoPlayer(editCardScreenController.controller),
+  //                   _ControlsOverlay(controller: editCardScreenController.controller),
+  //                   VideoProgressIndicator(editCardScreenController.controller, allowScrubbing: true),
+  //                 ],
+  //               ),
+  //             )

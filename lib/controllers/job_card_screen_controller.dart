@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 class JobCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
@@ -20,9 +23,15 @@ class JobCardScreenController extends GetxController {
   TextEditingController color = TextEditingController();
   RxString theDate = RxString('');
   RxDouble fuelAmount = RxDouble(25);
+  RxString videoDownloadUrl = RxString('');
+
+  final picker = ImagePicker();
+  File? file;
+
+  late VideoPlayerController player;
 
   final formKey = GlobalKey<FormState>();
-  RxString downloadUrl = RxString('');
+  RxString imageDownloadUrl = RxString('');
 
   void selectDate(DateTime date) {
     selectedDate.value = date;
@@ -52,6 +61,7 @@ class JobCardScreenController extends GetxController {
   void addCard() async {
     signatureAsImage = await controller.toPngBytes();
     await saveImage(signatureAsImage);
+    await uploadVideo(file);
     FirebaseFirestore.instance.collection('car_card').add({
       "customer_name": customerName.text,
       "car_brand": carBrand.text,
@@ -64,9 +74,10 @@ class JobCardScreenController extends GetxController {
       "color": color.text,
       "date": theDate.value,
       "fuel_amount": fuelAmount.value,
-      "customer_signature": downloadUrl.value,
+      "customer_signature": imageDownloadUrl.value,
+      "car_video": videoDownloadUrl.value,
       "timestamp": FieldValue.serverTimestamp(),
-      "editing_time":''
+      "editing_time": ''
     });
   }
 
@@ -87,7 +98,29 @@ class JobCardScreenController extends GetxController {
         .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
     final UploadTask uploadTask = ref.putData(file);
     await uploadTask.whenComplete(() async {
-      downloadUrl.value = await ref.getDownloadURL();
+      imageDownloadUrl.value = await ref.getDownloadURL();
+    });
+  }
+
+  // function to record video
+  recordVideo() async {
+    final XFile? cameraVideo =
+        await picker.pickVideo(source: ImageSource.camera);
+    if (cameraVideo != null) {
+      file = File(cameraVideo.path);
+    }
+    return file;
+  }
+
+  // function to save the video in firebase
+  uploadVideo(video) async {
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('order_videos')
+        .child('${DateTime.now().millisecondsSinceEpoch}.mp4');
+    final UploadTask uploadTask = ref.putFile(video);
+    await uploadTask.whenComplete(() async {
+      videoDownloadUrl.value = await ref.getDownloadURL();
     });
   }
 }

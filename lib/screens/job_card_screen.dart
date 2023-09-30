@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:job_card/controllers/job_card_screen_controller.dart';
 import 'package:signature/signature.dart';
 import '../const.dart';
-import 'all_works_screen.dart';
 
 class JobCardScreen extends StatelessWidget {
   JobCardScreen({super.key});
@@ -24,8 +23,9 @@ class JobCardScreen extends StatelessWidget {
             icon: const Icon(Icons.done),
             onPressed: () {
               if (jobCardScreenController.formKey.currentState!.validate()) {
-                Get.off(() => AllWorksScreen(),
-                    transition: Transition.leftToRight);
+                // Get.off(() => AllWorksScreen(),
+                //     transition: Transition.leftToRight);
+                Get.back();
                 jobCardScreenController.addCard();
               }
             },
@@ -97,7 +97,7 @@ class JobCardScreen extends StatelessWidget {
                         jobCardScreenController.selectedDate.value)),
                     trailing: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: mainColor,
+                        backgroundColor: secColor,
                       ),
                       onPressed: () =>
                           jobCardScreenController.selectDateContext(context),
@@ -171,12 +171,58 @@ class JobCardScreen extends StatelessWidget {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: mainColor,
+                          backgroundColor: secColor,
                         ),
                         onPressed: () {
                           jobCardScreenController.controller.clear();
                         },
                         child: const Text('Clear'),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Container(
+                        width: Get.width / 1.5,
+                        color: mainColor,
+                        height: 50,
+                        child: const Center(
+                            child: Text(
+                          'Promo Video for the car',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        )),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: secColor,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: jobCardScreenController.file == null
+                                ? const Center(
+                                    child: Icon(
+                                    Icons.play_arrow,
+                                    color: Colors.white,
+                                  ))
+                                : const Center(child: Text('Recorded')),
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: secColor,
+                              ),
+                              onPressed: () {
+                                jobCardScreenController.recordVideo();
+                              },
+                              child: const Text(
+                                'Record Video',
+                              ))
+                        ],
                       ),
                       const SizedBox(
                         height: 50,

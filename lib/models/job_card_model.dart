@@ -11,6 +11,7 @@ class JobCardModel {
   String? date;
   double? fuelAmount;
   String? docID;
+  String? carVideo;
 
   JobCardModel(
       {this.customerName,
@@ -24,7 +25,8 @@ class JobCardModel {
       this.color,
       this.date,
       this.fuelAmount,
-      this.docID});
+      this.docID,
+      this.carVideo});
 
   JobCardModel.fromJson(Map<String, dynamic> json) {
     customerName = json['customer_name'];

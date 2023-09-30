@@ -80,7 +80,9 @@ class AllWorksScreen extends StatelessWidget {
                                           fuelAmount: carCard['fuel_amount'],
                                           phoneNumber: carCard['phone_number'],
                                           plateNumber: carCard['plate_number'],
-                                          docID: carCard.id),
+                                          docID: carCard.id,
+                                          carVideo: carCard['car_video']
+                                          ),
                                       transition: Transition.leftToRight);
                                 },
                                 child: SizedBox(
@@ -110,7 +112,7 @@ class AllWorksScreen extends StatelessWidget {
                                               child: IconButton(
                                                   onPressed: () {
                                                     controller.shareToSocialMedia(
-                                                        'Hello this is Compass Automatic Gear! \nThis is a copy of details of your car \nCustomer Name: ${carCard['customer_name']} \nCar Brand: ${carCard['car_brand']} \nCar Model: ${carCard['car_model']} \nPlate Number: ${carCard['plate_number']} \nCar Mileage: ${carCard['car_mileage']} \nChassis Number: ${carCard['chassis_number']} \nDate: ${carCard['date']} \nCar Color: ${carCard['color']}');
+                                                        'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
                                                   },
                                                   icon: Icon(
                                                     Icons.share,
@@ -256,7 +258,7 @@ class DataSearch extends SearchDelegate {
                                       child: IconButton(
                                           onPressed: () {
                                             controller.shareToSocialMedia(
-                                                'Hello this is Compass Automatic Gear! \nThis is a copy of details of your car \nCustomer Name: ${carCard['customer_name']} \nCar Brand: ${carCard['car_brand']} \nCar Model: ${carCard['car_model']} \nPlate Number: ${carCard['plate_number']} \nCar Mileage: ${carCard['car_mileage']} \nChassis Number: ${carCard['chassis_number']} \nDate: ${carCard['date']} \nCar Color: ${carCard['color']}');
+                                                'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
                                           },
                                           icon: Icon(
                                             Icons.share,
