@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/all_works_screen_controller.dart';
+import 'package:job_card/screens/car_details_screen.dart';
 
 import '../models/job_card_model.dart';
 import 'edit_card_screen.dart';
@@ -75,7 +76,7 @@ class AllWorksScreen extends StatelessWidget {
                         ),
                         child: InkWell(
                           onTap: () {
-                            Get.to(() => EditCardScreen(),
+                            Get.to(() => CarDetailsScreen(),
                                 arguments: JobCardModel(
                                     carImages: carImages,
                                     customerSignature:

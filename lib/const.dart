@@ -9,6 +9,7 @@ var mainColor = const Color(0xffEA2027);
 // var mainColor = const Color(0xff27374D);
 var secColor = const Color(0xffeb4d4b);
 // var secColor = const Color(0xff526D82);
+var containerColor = const Color(0xffF5F5F5);
 
 
 

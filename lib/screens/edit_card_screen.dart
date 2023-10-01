@@ -145,27 +145,27 @@ class EditCardScreen extends StatelessWidget {
                           .round()
                           .toString(),
                     ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Container(
-                      width: Get.width / 1.5,
-                      color: mainColor,
-                      height: 50,
-                      child: const Center(
-                          child: Text(
-                        'Customer Signature',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      )),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Image.network(
-                      editCardScreenController.customerSignature.value,
-                      width: 100,
-                    ),
+                    // const SizedBox(
+                    //   height: 50,
+                    // ),
+                    // Container(
+                    //   width: Get.width / 1.5,
+                    //   color: mainColor,
+                    //   height: 50,
+                    //   child: const Center(
+                    //       child: Text(
+                    //     'Customer Signature',
+                    //     style: TextStyle(
+                    //         color: Colors.white, fontWeight: FontWeight.bold),
+                    //   )),
+                    // ),
+                    // const SizedBox(
+                    //   height: 50,
+                    // ),
+                    // Image.network(
+                    //   editCardScreenController.customerSignature.value,
+                    //   width: 100,
+                    // ),
                     const SizedBox(
                       height: 50,
                     ),
