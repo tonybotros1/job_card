@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/screens/all_works_screen.dart';
+import 'package:job_card/screens/images_screen.dart';
 import 'package:video_player/video_player.dart';
 import '../const.dart';
 import '../controllers/edit_card_screen_controller.dart';
@@ -21,6 +22,28 @@ class EditCardScreen extends StatelessWidget {
         backgroundColor: mainColor,
         actions: [
           IconButton(
+              onPressed: () {
+                Get.dialog(AlertDialog(
+                  title: const Text(
+                      'Are you sure do you want to delete this card?'),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text('Cancel')),
+                    ElevatedButton(
+                        onPressed: () {
+                          editCardScreenController.deleteCard();
+                          Get.back();
+                          Get.back();
+                        },
+                        child: const Text('Delete')),
+                  ],
+                ));
+              },
+              icon: const Icon(Icons.delete)),
+          IconButton(
             icon: const Icon(Icons.done),
             onPressed: () {
               Get.off(() => AllWorksScreen(),
@@ -33,7 +56,7 @@ class EditCardScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             myTextFormField(
               labelText: 'Customer Name:',
@@ -80,26 +103,8 @@ class EditCardScreen extends StatelessWidget {
               hintText: 'Enter Color here',
               controller: editCardScreenController.color,
             ),
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
-                child: ListTile(
-                  title: Text(
-                    "Date: ",
-                    style: fontStyle,
-                  ),
-                  subtitle: Text(editCardScreenController
-                      .formatDate(editCardScreenController.selectedDate.value)),
-                  trailing: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: mainColor,
-                    ),
-                    onPressed: () =>
-                        editCardScreenController.selectDateContext(context),
-                    child: const FittedBox(child: Text('Select Date')),
-                  ),
-                ),
-              ),
+            const SizedBox(
+              height: 20,
             ),
             Obx(() => Column(
                   children: [
@@ -149,7 +154,7 @@ class EditCardScreen extends StatelessWidget {
                       height: 50,
                       child: const Center(
                           child: Text(
-                        'Promo Video for the car',
+                        'Customer Signature',
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold),
                       )),
@@ -157,28 +162,121 @@ class EditCardScreen extends StatelessWidget {
                     const SizedBox(
                       height: 50,
                     ),
-                    if (editCardScreenController.controller.value.isInitialized) AspectRatio(
-                            aspectRatio: editCardScreenController
-                                .controller.value.aspectRatio,
-                            child: Stack(
-                              alignment: Alignment.bottomCenter,
-                              children: <Widget>[
-                                VideoPlayer(
-                                    editCardScreenController.controller),
-                                _ControlsOverlay(
-                                    controller:
-                                        editCardScreenController.controller),
-                                VideoProgressIndicator(
-                                    editCardScreenController.controller,
-                                    allowScrubbing: true),
-                              ],
-                            ),
-                          ) else const CircularProgressIndicator(),
+                    Image.network(
+                      editCardScreenController.customerSignature.value,
+                      width: 100,
+                    ),
                     const SizedBox(
                       height: 50,
                     ),
+                    Container(
+                      width: Get.width / 1.5,
+                      color: mainColor,
+                      height: 50,
+                      child: const Center(
+                          child: Text(
+                        'Images/Video for the car',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      )),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+
+                    // if (editCardScreenController.controller.value.isInitialized)
+                    //   AspectRatio(
+                    //     aspectRatio: editCardScreenController
+                    //         .controller.value.aspectRatio,
+                    //     child: Stack(
+                    //       alignment: Alignment.bottomCenter,
+                    //       children: <Widget>[
+                    //         VideoPlayer(editCardScreenController.controller),
+                    //         _ControlsOverlay(
+                    //             controller:
+                    //                 editCardScreenController.controller),
+                    //         VideoProgressIndicator(
+                    //             editCardScreenController.controller,
+                    //             allowScrubbing: true),
+                    //       ],
+                    //     ),
+                    //   )
+                    // else
+                    //   const CircularProgressIndicator(),
+                    // const SizedBox(
+                    //   height: 50,
+                    // ),
                   ],
                 )),
+            GetBuilder<EditCardScreenController>(
+                init: EditCardScreenController(),
+                builder: (controller) {
+                  return SizedBox(
+                    width: Get.width / 1.3,
+                    height: 200,
+                    child: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: controller.carImages.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3),
+                        itemBuilder: (context, i) {
+                          return Container(
+                            margin: const EdgeInsets.all(3),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: FittedBox(
+                                      fit: BoxFit.cover,
+                                      clipBehavior: Clip.hardEdge,
+                                      child: InkWell(
+                                        onTap: () =>
+                                            Get.to(() => ImagesScreen()),
+                                        child: Image.network(
+                                            controller.carImages[i]),
+                                      )),
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        Get.dialog(AlertDialog(
+                                          title: const Text(
+                                              'Are you sure you want to delete this picture?'),
+                                          actions: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                                child: const Text('Cancel')),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  // editCardScreenController
+                                                  //     .deleteImage(
+                                                  //         editCardScreenController
+                                                  //             .carImages[i]);
+                                                  controller.removeImage(
+                                                      controller.carImages[i]);
+                                                  Get.back();
+                                                },
+                                                child: const Text('Delete'))
+                                          ],
+                                        ));
+                                      },
+                                      icon: const Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
+                  );
+                })
           ],
         ),
       ),
@@ -245,22 +343,4 @@ Padding myTextFormField(
       },
     ),
   );
-
-
-  
 }
-
-
-
-
-  // AspectRatio(
-  //               aspectRatio: editCardScreenController.controller.value.aspectRatio,
-  //               child: Stack(
-  //                 alignment: Alignment.bottomCenter,
-  //                 children: <Widget>[
-  //                   VideoPlayer(editCardScreenController.controller),
-  //                   _ControlsOverlay(controller: editCardScreenController.controller),
-  //                   VideoProgressIndicator(editCardScreenController.controller, allowScrubbing: true),
-  //                 ],
-  //               ),
-  //             )

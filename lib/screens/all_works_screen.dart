@@ -58,6 +58,16 @@ class AllWorksScreen extends StatelessWidget {
                     shrinkWrap: true,
                     itemBuilder: (context, i) {
                       var carCard = controller.carCards[i];
+                      List<String> carImages = [];
+
+                      for (var item in carCard['car_images']) {
+                        try {
+                          carImages.add(item.toString());
+                        } catch (e) {
+                          // Handle the exception, or skip the item if necessary
+                        }
+                      }
+
                       return Card(
                         elevation: 20,
                         child: Padding(
@@ -66,6 +76,9 @@ class AllWorksScreen extends StatelessWidget {
                                 onTap: () {
                                   Get.to(() => EditCardScreen(),
                                       arguments: JobCardModel(
+                                          carImages: carImages,
+                                          customerSignature:
+                                              carCard['customer_signature'],
                                           carBrand: carCard['car_brand'],
                                           carMileage: carCard['car_mileage'],
                                           carModel: carCard['car_model'],
@@ -81,8 +94,7 @@ class AllWorksScreen extends StatelessWidget {
                                           phoneNumber: carCard['phone_number'],
                                           plateNumber: carCard['plate_number'],
                                           docID: carCard.id,
-                                          carVideo: carCard['car_video']
-                                          ),
+                                          carVideo: carCard['car_video']),
                                       transition: Transition.leftToRight);
                                 },
                                 child: SizedBox(
@@ -207,18 +219,26 @@ class DataSearch extends SearchDelegate {
             shrinkWrap: true,
             itemBuilder: (context, i) {
               var carCard = controller.filteredCarCards[i];
+              List<String> carImages = [];
+
+              for (var item in carCard['car_images']) {
+                try {
+                  carImages.add(item.toString());
+                } catch (e) {
+                  // Handle the exception, or skip the item if necessary
+                }
+              }
               return Card(
                 elevation: 20,
                 child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
-                        onLongPress: () {
-                          // controller.shareToWhatsApp(carCard['phone_number'],
-                          //     'Hello this is Compass Automatic Gear! \n This is a copy of details of your car \n Customer Name: ${carCard['customer_name']} \n Car Brand: ${carCard['car_brand']} \n Car Model: ${carCard['car_model']} \n Plate Number: ${carCard['plate_number']} \n Car Mileage: ${carCard['car_mileage']} \n Chassis Number: ${carCard['chassis_number']} \n Date: ${carCard['date']} \n Car Color: ${carCard['color']}');
-                        },
                         onTap: () {
                           Get.to(() => EditCardScreen(),
                               arguments: JobCardModel(
+                                  carImages: carImages,
+                                  customerSignature:
+                                      carCard['customer_signature'],
                                   carBrand: carCard['car_brand'],
                                   carMileage: carCard['car_mileage'],
                                   carModel: carCard['car_model'],
@@ -230,7 +250,8 @@ class DataSearch extends SearchDelegate {
                                   fuelAmount: carCard['fuel_amount'],
                                   phoneNumber: carCard['phone_number'],
                                   plateNumber: carCard['plate_number'],
-                                  docID: carCard.id),
+                                  docID: carCard.id,
+                                  carVideo: carCard['car_video']),
                               transition: Transition.leftToRight);
                         },
                         child: SizedBox(

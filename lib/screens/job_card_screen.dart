@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/controllers/job_card_screen_controller.dart';
@@ -38,7 +40,7 @@ class JobCardScreen extends StatelessWidget {
           key: jobCardScreenController.formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               myTextFormField(
                 labelText: 'Customer Name:',
@@ -187,7 +189,7 @@ class JobCardScreen extends StatelessWidget {
                         height: 50,
                         child: const Center(
                             child: Text(
-                          'Promo Video for the car',
+                          'Images/Video of the car',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         )),
@@ -196,39 +198,130 @@ class JobCardScreen extends StatelessWidget {
                         height: 50,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: secColor,
-                                borderRadius: BorderRadius.circular(15)),
-                            child: jobCardScreenController.file == null
-                                ? const Center(
-                                    child: Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.white,
-                                  ))
-                                : const Center(child: Text('Recorded')),
-                          ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: secColor,
-                              ),
+                                  backgroundColor: secColor),
+                              onPressed: () {
+                                jobCardScreenController.takePhoto();
+                              },
+                              child: const Icon(Icons.camera_alt_outlined)),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: secColor),
                               onPressed: () {
                                 jobCardScreenController.recordVideo();
                               },
-                              child: const Text(
-                                'Record Video',
-                              ))
+                              child: jobCardScreenController.recorded.isFalse
+                                  ? const Icon(Icons.video_camera_back)
+                                  : const Icon(Icons.done))
                         ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        width: Get.width / 1.2,
+                        decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GridView.builder(
+                                itemCount:
+                                    jobCardScreenController.imagesList.length,
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3),
+                                itemBuilder: (context, i) {
+                                  if (jobCardScreenController
+                                      .imagesList.isEmpty) {
+                                    return const Center(
+                                      child: Text('Add Photo'),
+                                    );
+                                  } else {
+                                    return Container(
+                                      margin: const EdgeInsets.all(3),
+                                      child: Stack(
+                                        fit: StackFit.expand,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: FittedBox(
+                                              fit: BoxFit.cover,
+                                              clipBehavior: Clip.hardEdge,
+                                              child: Image.file(
+                                                File(jobCardScreenController
+                                                    .imagesList[i].path),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  jobCardScreenController
+                                                      .imagesList
+                                                      .removeAt(i);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.remove_circle,
+                                                  color: Colors.red,
+                                                )),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                })),
                       ),
                       const SizedBox(
                         height: 50,
                       ),
                     ],
                   )),
+              // GetBuilder<JobCardScreenController>(
+              //     init: JobCardScreenController(),
+              //     builder: (controller) {
+              //       return jobCardScreenController.file != null
+              //           ? Column(
+              //               children: [
+              //                 InkWell(
+              //                   onTap: jobCardScreenController.togglePlay,
+              //                   child: SizedBox(
+              //                     width: 200, // Adjust the size as needed
+              //                     height: 150, // Adjust the size as needed
+              //                     child: jobCardScreenController
+              //                             .player.value.isInitialized
+              //                         ? AspectRatio(
+              //                             aspectRatio: jobCardScreenController
+              //                                 .player.value.aspectRatio,
+              //                             child: VideoPlayer(
+              //                                 jobCardScreenController.player),
+              //                           )
+              //                         : const Center(
+              //                             child:
+              //                                 CircularProgressIndicator()), // You can show a loading indicator while the video is initializing.
+              //                   ),
+              //                 ),
+              //                 ElevatedButton(
+              //                     style: ElevatedButton.styleFrom(
+              //                         backgroundColor: secColor),
+              //                     onPressed: () {
+              //                       jobCardScreenController.removeVideo();
+              //                     },
+              //                     child: const Text('Clear'))
+              //               ],
+              //             )
+              //           : const SizedBox();
+              //     }),
+              const SizedBox(
+                height: 50,
+              )
             ],
           ),
         ),

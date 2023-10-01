@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:video_player/video_player.dart';
 
 class JobCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
@@ -28,10 +27,16 @@ class JobCardScreenController extends GetxController {
   final picker = ImagePicker();
   File? file;
 
-  late VideoPlayerController player;
+  RxList<File> imagesList =
+      RxList([]); // to add each image in so i can show it on screen
 
-  final formKey = GlobalKey<FormState>();
-  RxString imageDownloadUrl = RxString('');
+  final formKey = GlobalKey<FormState>(); // for the fields validation
+  RxString signatureImageDownloadUrl =
+      RxString(''); // to get the signature image URL after save it in firebase
+  RxList<String> carImagesDownloadURL =
+      RxList<String>([]); // to get the Images URLs after save it in firebase
+
+  RxBool recorded = RxBool(false);
 
   void selectDate(DateTime date) {
     selectedDate.value = date;
@@ -60,8 +65,11 @@ class JobCardScreenController extends GetxController {
 // this function is to add the car card when all informations addedd
   void addCard() async {
     signatureAsImage = await controller.toPngBytes();
-    await saveImage(signatureAsImage);
-    await uploadVideo(file);
+    await saveSignatureImage(signatureAsImage);
+    await saveCarImages();
+    if (file != null) {
+      await uploadVideo(file);
+    }
     FirebaseFirestore.instance.collection('car_card').add({
       "customer_name": customerName.text,
       "car_brand": carBrand.text,
@@ -74,8 +82,9 @@ class JobCardScreenController extends GetxController {
       "color": color.text,
       "date": theDate.value,
       "fuel_amount": fuelAmount.value,
-      "customer_signature": imageDownloadUrl.value,
+      "customer_signature": signatureImageDownloadUrl.value,
       "car_video": videoDownloadUrl.value,
+      "car_images": carImagesDownloadURL,
       "timestamp": FieldValue.serverTimestamp(),
       "editing_time": ''
     });
@@ -90,26 +99,45 @@ class JobCardScreenController extends GetxController {
     exportBackgroundColor: Colors.white,
   );
 
-// for saving images in firebase
-  saveImage(file) async {
+// for saving signature image in firebase
+  saveSignatureImage(file) async {
     final Reference ref = FirebaseStorage.instance
         .ref()
-        .child('order_images')
-        .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+        .child('customers_signatures')
+        .child(
+            '${customerName.value}_${DateTime.now().millisecondsSinceEpoch}.jpg');
     final UploadTask uploadTask = ref.putData(file);
     await uploadTask.whenComplete(() async {
-      imageDownloadUrl.value = await ref.getDownloadURL();
+      signatureImageDownloadUrl.value = await ref.getDownloadURL();
     });
   }
 
+  // this function is to save car images in firebase
+
+  saveCarImages() async {
+    for (var element in imagesList) {
+      final Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('car_pictures')
+          .child(
+              '${customerName.value}_${carBrand.value}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final UploadTask uploadTask = ref.putFile(element);
+      await uploadTask.whenComplete(() async {
+        final url = await ref.getDownloadURL();
+        carImagesDownloadURL.add(url);
+      });
+    }
+  }
+
   // function to record video
-  recordVideo() async {
-    final XFile? cameraVideo =
-        await picker.pickVideo(source: ImageSource.camera);
+  void recordVideo() async {
+    final XFile? cameraVideo = await picker.pickVideo(
+      source: ImageSource.camera,
+    );
     if (cameraVideo != null) {
       file = File(cameraVideo.path);
+      recorded.value = true;
     }
-    return file;
   }
 
   // function to save the video in firebase
@@ -122,5 +150,21 @@ class JobCardScreenController extends GetxController {
     await uploadTask.whenComplete(() async {
       videoDownloadUrl.value = await ref.getDownloadURL();
     });
+  }
+
+  // this functions is to take photos
+  void takePhoto() async {
+    final XFile? cameraImage =
+        await picker.pickImage(source: ImageSource.camera);
+    if (cameraImage != null) {
+      File image = File(cameraImage.path);
+      imagesList.add(image);
+    }
+  }
+
+  // this function to remove recorded video
+  void removeVideo() {
+    file = null;
+    update();
   }
 }
