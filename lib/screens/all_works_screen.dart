@@ -69,102 +69,144 @@ class AllWorksScreen extends StatelessWidget {
                       }
 
                       return Card(
-                        elevation: 20,
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: InkWell(
-                                onTap: () {
-                                  Get.to(() => EditCardScreen(),
-                                      arguments: JobCardModel(
-                                          carImages: carImages,
-                                          customerSignature:
-                                              carCard['customer_signature'],
-                                          carBrand: carCard['car_brand'],
-                                          carMileage: carCard['car_mileage'],
-                                          carModel: carCard['car_model'],
-                                          chassisNumber:
-                                              carCard['chassis_number'],
-                                          color: carCard['color'],
-                                          customerName:
-                                              carCard['customer_name'],
-                                          date: carCard['date'],
-                                          emailAddress:
-                                              carCard['email_address'],
-                                          fuelAmount: carCard['fuel_amount'],
-                                          phoneNumber: carCard['phone_number'],
-                                          plateNumber: carCard['plate_number'],
-                                          docID: carCard.id,
-                                          carVideo: carCard['car_video']),
-                                      transition: Transition.leftToRight);
-                                },
-                                child: SizedBox(
-                                  height: 120,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(() => EditCardScreen(),
+                                arguments: JobCardModel(
+                                    carImages: carImages,
+                                    customerSignature:
+                                        carCard['customer_signature'],
+                                    carBrand: carCard['car_brand'],
+                                    carMileage: carCard['car_mileage'],
+                                    carModel: carCard['car_model'],
+                                    chassisNumber: carCard['chassis_number'],
+                                    color: carCard['color'],
+                                    customerName: carCard['customer_name'],
+                                    date: carCard['date'],
+                                    emailAddress: carCard['email_address'],
+                                    fuelAmount: carCard['fuel_amount'],
+                                    phoneNumber: carCard['phone_number'],
+                                    plateNumber: carCard['plate_number'],
+                                    docID: carCard.id,
+                                    carVideo: carCard['car_video']),
+                                transition: Transition.leftToRight);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            FittedBox(
-                                                child: Text(
-                                              '${carCard['customer_name']}',
-                                              style: fontStyle,
-                                            )),
-                                            FittedBox(
-                                                child: Text(
-                                              '${carCard['date']}',
-                                              style: fontStyle2,
-                                            )),
-                                            FittedBox(
-                                              child: IconButton(
-                                                  onPressed: () {
-                                                    controller.shareToSocialMedia(
-                                                        'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.share,
-                                                    color: mainColor,
-                                                  )),
-                                            )
-                                          ],
+                                      const Text(
+                                        'Customer:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            FittedBox(
-                                              child: Text(
-                                                '${carCard['car_brand']}',
-                                                style: fontStyle2,
-                                              ),
-                                            ),
-                                            FittedBox(
-                                              child: Text(
-                                                '${carCard['car_model']}',
-                                                style: fontStyle2,
-                                              ),
-                                            ),
-                                            FittedBox(
-                                              child: Text(
-                                                '${carCard['plate_number']}',
-                                                style: fontStyle2,
-                                              ),
-                                            ),
-                                          ],
+                                      Text(
+                                        '${carCard['customer_name']}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Car:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${carCard['car_brand']} | ${carCard['car_model']}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Plate Number:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${carCard['plate_number']}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Mileage:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${carCard['car_mileage']} km',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ))),
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Received On:',
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                        color: mainColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${carCard['date']}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15),
+                                    IconButton(
+                                      onPressed: () {
+                                        controller.shareToSocialMedia(
+                                            'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
+                                      },
+                                      icon: Icon(
+                                        Icons.share,
+                                        color: mainColor,
+                                        size: 32,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       );
                     });
               }
@@ -229,97 +271,145 @@ class DataSearch extends SearchDelegate {
                 }
               }
               return Card(
-                elevation: 20,
-                child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                        onTap: () {
-                          Get.to(() => EditCardScreen(),
-                              arguments: JobCardModel(
-                                  carImages: carImages,
-                                  customerSignature:
-                                      carCard['customer_signature'],
-                                  carBrand: carCard['car_brand'],
-                                  carMileage: carCard['car_mileage'],
-                                  carModel: carCard['car_model'],
-                                  chassisNumber: carCard['chassis_number'],
-                                  color: carCard['color'],
-                                  customerName: carCard['customer_name'],
-                                  date: carCard['date'],
-                                  emailAddress: carCard['email_address'],
-                                  fuelAmount: carCard['fuel_amount'],
-                                  phoneNumber: carCard['phone_number'],
-                                  plateNumber: carCard['plate_number'],
-                                  docID: carCard.id,
-                                  carVideo: carCard['car_video']),
-                              transition: Transition.leftToRight);
-                        },
-                        child: SizedBox(
-                          height: 120,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    FittedBox(
-                                        child: Text(
-                                      '${carCard['customer_name']}',
-                                      style: fontStyle,
-                                    )),
-                                    FittedBox(
-                                        child: Text(
-                                      '${carCard['date']}',
-                                      style: fontStyle2,
-                                    )),
-                                    FittedBox(
-                                      child: IconButton(
-                                          onPressed: () {
-                                            controller.shareToSocialMedia(
-                                                'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
-                                          },
-                                          icon: Icon(
-                                            Icons.share,
-                                            color: mainColor,
-                                          )),
-                                    )
-                                  ],
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(() => EditCardScreen(),
+                                arguments: JobCardModel(
+                                    carImages: carImages,
+                                    customerSignature:
+                                        carCard['customer_signature'],
+                                    carBrand: carCard['car_brand'],
+                                    carMileage: carCard['car_mileage'],
+                                    carModel: carCard['car_model'],
+                                    chassisNumber: carCard['chassis_number'],
+                                    color: carCard['color'],
+                                    customerName: carCard['customer_name'],
+                                    date: carCard['date'],
+                                    emailAddress: carCard['email_address'],
+                                    fuelAmount: carCard['fuel_amount'],
+                                    phoneNumber: carCard['phone_number'],
+                                    plateNumber: carCard['plate_number'],
+                                    docID: carCard.id,
+                                    carVideo: carCard['car_video']),
+                                transition: Transition.leftToRight);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Customer:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${carCard['customer_name']}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Car:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${carCard['car_brand']} | ${carCard['car_model']}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Plate Number:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${carCard['plate_number']}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Mileage:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${carCard['car_mileage']} km',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                const SizedBox(width: 16),
+                                Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    FittedBox(
-                                      child: Text(
-                                        '${carCard['car_brand']}',
-                                        style: fontStyle2,
+                                    Text(
+                                      'Received On:',
+                                      style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                        color: mainColor,
                                       ),
                                     ),
-                                    FittedBox(
-                                      child: Text(
-                                        '${carCard['car_model']}',
-                                        style: fontStyle2,
+                                    Text(
+                                      '${carCard['date']}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black54,
                                       ),
                                     ),
-                                    FittedBox(
-                                      child: Text(
-                                        '${carCard['plate_number']}',
-                                        style: fontStyle2,
+                                    const SizedBox(height: 15),
+                                    IconButton(
+                                      onPressed: () {
+                                        controller.shareToSocialMedia(
+                                            'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
+                                      },
+                                      icon: Icon(
+                                        Icons.share,
+                                        color: mainColor,
+                                        size: 32,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ))),
-              );
+                        ),
+                      );
             });
       }
     });
