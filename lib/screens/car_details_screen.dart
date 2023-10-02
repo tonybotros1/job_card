@@ -213,7 +213,7 @@ class CarDetailsScreen extends StatelessWidget {
                                 height: 35,
                               ),
                               cardDetails(
-                                  title: 'Fuel Amount',
+                                  title: 'Fuel Amount:',
                                   icon: Icons.local_gas_station_outlined,
                                   controller: '${controller.fuelAmount} %'),
                               const SizedBox(

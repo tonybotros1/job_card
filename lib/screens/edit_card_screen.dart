@@ -35,8 +35,7 @@ class EditCardScreen extends StatelessWidget {
                     ElevatedButton(
                         onPressed: () {
                           editCardScreenController.deleteCard();
-                          Get.back();
-                          Get.back();
+                          Get.offAll(() => AllWorksScreen(), transition: Transition.leftToRight);
                         },
                         child: const Text('Delete')),
                   ],
@@ -46,7 +45,7 @@ class EditCardScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.done),
             onPressed: () {
-              Get.off(() => AllWorksScreen(),
+              Get.offAll(() => AllWorksScreen(),
                   transition: Transition.leftToRight);
               editCardScreenController.editValues();
             },
