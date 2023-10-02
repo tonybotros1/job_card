@@ -11,20 +11,3 @@ var secColor = const Color(0xffeb4d4b);
 // var secColor = const Color(0xff526D82);
 var containerColor = const Color(0xffF5F5F5);
 
-
-
-
-// Dear ${carCard['customer_name']},
-
-// We are pleased to inform you that we have received your car. Here are its details:
-
-// Brand & Model: ${carCard['car_brand']}, ${carCard['car_model']}
-// Plate:  ${carCard['plate_number']}
-// Mileage: ${carCard['car_mileage']} km
-// Chassis No.: ${carCard['chassis_number']}
-// Color:  ${carCard['color']}
-// Received on: ${carCard['date']}
-// Should you have any queries, please don't hesitate to reach out. Thank you for trusting us with your vehicle.
-
-// Warm regards,
-// Compass Automatic Gear

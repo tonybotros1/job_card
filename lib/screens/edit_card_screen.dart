@@ -35,7 +35,8 @@ class EditCardScreen extends StatelessWidget {
                     ElevatedButton(
                         onPressed: () {
                           editCardScreenController.deleteCard();
-                          Get.offAll(() => AllWorksScreen(), transition: Transition.leftToRight);
+                          Get.offAll(() => AllWorksScreen(),
+                              transition: Transition.leftToRight);
                         },
                         child: const Text('Delete')),
                   ],
@@ -139,7 +140,7 @@ class EditCardScreen extends StatelessWidget {
                       },
                       min: 0,
                       max: 100,
-                      divisions: 4,
+                      divisions: 100,
                       label: editCardScreenController.fuelAmount.value
                           .round()
                           .toString(),

@@ -70,18 +70,23 @@ class CarDetailsScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
                             children: [
-                              Text(
-                                controller.customerName,
-                                style: GoogleFonts.mooli(fontSize: 30),
+                              FittedBox(
+                                child: Text(
+                                  controller.customerName,
+                                  style: GoogleFonts.mooli(fontSize: 30),
+                                ),
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
-                              Text(
-                                controller.phoneNumber,
-                                style: GoogleFonts.mooli(
-                                    fontSize: 20, color: Colors.grey[600]),
-                              ),
+                              controller.phoneNumber.isNotEmpty
+                                  ? Text(
+                                      controller.phoneNumber,
+                                      style: GoogleFonts.mooli(
+                                          fontSize: 20,
+                                          color: Colors.grey[600]),
+                                    )
+                                  : const SizedBox(),
                             ],
                           ),
                         ),
@@ -187,28 +192,37 @@ class CarDetailsScreen extends StatelessWidget {
                               cardDetails(
                                   title: 'Car Color:',
                                   icon: Icons.color_lens,
-                                  controller: controller.color),
+                                  controller: controller.color.isNotEmpty
+                                      ? controller.color
+                                      : ''),
                               const SizedBox(
                                 height: 35,
                               ),
                               cardDetails(
                                   title: 'Chassis Number:',
                                   icon: Icons.tag,
-                                  controller: controller.chassisNumber),
+                                  controller:
+                                      controller.chassisNumber.isNotEmpty
+                                          ? controller.chassisNumber
+                                          : ''),
                               const SizedBox(
                                 height: 35,
                               ),
                               cardDetails(
                                   title: 'Plate Number:',
                                   icon: Icons.pin,
-                                  controller: controller.plateNumber),
+                                  controller: controller.plateNumber.isNotEmpty
+                                      ? controller.plateNumber
+                                      : ''),
                               const SizedBox(
                                 height: 35,
                               ),
                               cardDetails(
                                   title: 'Car Mileage:',
                                   icon: Icons.add_road,
-                                  controller: '${controller.carMileage} KM'),
+                                  controller: controller.carMileage.isNotEmpty
+                                      ? '${controller.carMileage} KM'
+                                      : ''),
                               const SizedBox(
                                 height: 35,
                               ),
@@ -222,7 +236,9 @@ class CarDetailsScreen extends StatelessWidget {
                               cardDetails(
                                   title: 'Email:',
                                   icon: Icons.email,
-                                  controller: controller.emailAddress),
+                                  controller: controller.emailAddress.isNotEmpty
+                                      ? controller.emailAddress
+                                      : ''),
                               const SizedBox(
                                 height: 35,
                               ),

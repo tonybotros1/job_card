@@ -8,11 +8,13 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class JobCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
   TextEditingController customerName = TextEditingController();
   TextEditingController carBrand = TextEditingController();
+  RxString selectedBrandValue = RxString('');
   TextEditingController carModel = TextEditingController();
   TextEditingController plateNumber = TextEditingController();
   TextEditingController carMileage = TextEditingController();
@@ -20,9 +22,12 @@ class JobCardScreenController extends GetxController {
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController emailAddress = TextEditingController();
   TextEditingController color = TextEditingController();
+  RxString selectedColorValue = RxString('');
   RxString theDate = RxString('');
   RxDouble fuelAmount = RxDouble(25);
   RxString videoDownloadUrl = RxString('');
+  RxList<String> carBrandList = RxList<String>([]);
+  RxList<String> carColorsList = RxList<String>([]);
 
   final picker = ImagePicker();
   File? file;
@@ -37,6 +42,16 @@ class JobCardScreenController extends GetxController {
       RxList<String>([]); // to get the Images URLs after save it in firebase
 
   RxBool recorded = RxBool(false);
+
+  @override
+  void onInit() {
+    customerName.text = 'Customer';
+    chassisNumber.text = '';
+    emailAddress.text = '';
+    phoneNumber.text = '';
+    readCarBrandsColors();
+    super.onInit();
+  }
 
   void selectDate(DateTime date) {
     selectedDate.value = date;
@@ -166,5 +181,16 @@ class JobCardScreenController extends GetxController {
   void removeVideo() {
     file = null;
     update();
+  }
+// this function is to takr the values from the txt files and set them to lists with sorting them
+  Future<void> readCarBrandsColors() async {
+    final String carBrands =
+        await rootBundle.loadString('assets/carBrands.txt');
+
+    final String carColors =
+        await rootBundle.loadString('assets/carColors.txt');
+
+    carBrandList.value = carBrands.split('\n')..sort();
+    carColorsList.value = carColors.split('\n')..sort();
   }
 }

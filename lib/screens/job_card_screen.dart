@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:job_card/controllers/job_card_screen_controller.dart';
 import 'package:signature/signature.dart';
 import '../const.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class JobCardScreen extends StatelessWidget {
   JobCardScreen({super.key});
@@ -25,10 +26,10 @@ class JobCardScreen extends StatelessWidget {
             icon: const Icon(Icons.done),
             onPressed: () {
               if (jobCardScreenController.formKey.currentState!.validate()) {
-                // Get.off(() => AllWorksScreen(),
-                //     transition: Transition.leftToRight);
                 Get.back();
                 jobCardScreenController.addCard();
+                Get.snackbar('Adding Card', 'Please wait',
+                    snackPosition: SnackPosition.BOTTOM);
               }
             },
           )
@@ -43,50 +44,70 @@ class JobCardScreen extends StatelessWidget {
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               myTextFormField(
-                labelText: 'Customer Name:',
-                hintText: 'Enter Customer Name here',
-                controller: jobCardScreenController.customerName,
-              ),
+                  labelText: 'Customer Name:',
+                  hintText: 'Enter Customer Name here',
+                  controller: jobCardScreenController.customerName,
+                  validate: false),
+              // myTextFormField(
+              //     labelText: 'Car Brand:',
+              //     hintText: 'Enter Car Brand here',
+              //     controller: jobCardScreenController.carBrand,
+              //     validate: true),
+              dropDownValues(
+                  labelText: 'Car Brand',
+                  hintText: 'Enter or Search for Car Brand here',
+                  list: jobCardScreenController.carBrandList,
+                  selectedValue:
+                      jobCardScreenController.selectedBrandValue.value,
+                  controller: jobCardScreenController.carBrand,
+                  validate: true),
+              dropDownValues(
+                  labelText: 'Color',
+                  hintText: 'Enter or Search for Car Color here',
+                  list: jobCardScreenController.carColorsList,
+                  selectedValue:
+                      jobCardScreenController.selectedColorValue.value,
+                  controller: jobCardScreenController.color,
+                  validate: true),
+
               myTextFormField(
-                labelText: 'Car Brand:',
-                hintText: 'Enter Car Brand here',
-                controller: jobCardScreenController.carBrand,
-              ),
+                  labelText: 'Car Model:',
+                  hintText: 'Enter Car Model here',
+                  controller: jobCardScreenController.carModel,
+                  validate: true),
               myTextFormField(
-                labelText: 'Car Model:',
-                hintText: 'Enter Car Model here',
-                controller: jobCardScreenController.carModel,
-              ),
+                  labelText: 'Plate Number:',
+                  hintText: 'Enter Plate Number here',
+                  controller: jobCardScreenController.plateNumber,
+                  validate: true),
+              // myTextFormField(
+              //     labelText: 'Color:',
+              //     hintText: 'Enter Color here',
+              //     controller: jobCardScreenController.color,
+              //     validate: true),
               myTextFormField(
-                labelText: 'Plate Number:',
-                hintText: 'Enter Plate Number here',
-                controller: jobCardScreenController.plateNumber,
-              ),
+                  labelText: 'Car Mileage:',
+                  hintText: 'Enter Car Mileage here',
+                  controller: jobCardScreenController.carMileage,
+                  validate: true),
               myTextFormField(
-                labelText: 'Car Mileage:',
-                hintText: 'Enter Car Mileage here',
-                controller: jobCardScreenController.carMileage,
-              ),
+                  labelText: 'Chassis Number:',
+                  hintText: 'Enter Chassis Number here',
+                  controller: jobCardScreenController.chassisNumber,
+                  validate: false),
               myTextFormField(
-                labelText: 'Chassis Number:',
-                hintText: 'Enter Chassis Number here',
-                controller: jobCardScreenController.chassisNumber,
-              ),
+                  labelText: 'Phone Number:',
+                  hintText: 'Enter Phone Number here',
+                  controller: jobCardScreenController.phoneNumber,
+                  validate: false,
+                  keyboardType: TextInputType.number),
               myTextFormField(
-                labelText: 'Phone Number:',
-                hintText: 'Enter Phone Number here',
-                controller: jobCardScreenController.phoneNumber,
-              ),
-              myTextFormField(
-                labelText: 'Email Address:',
-                hintText: 'Enter Email Address here',
-                controller: jobCardScreenController.emailAddress,
-              ),
-              myTextFormField(
-                labelText: 'Color:',
-                hintText: 'Enter Color here',
-                controller: jobCardScreenController.color,
-              ),
+                  labelText: 'Email Address:',
+                  hintText: 'Enter Email Address here',
+                  controller: jobCardScreenController.emailAddress,
+                  validate: false,
+                  keyboardType: TextInputType.emailAddress),
+
               Obx(
                 () => Padding(
                   padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
@@ -142,7 +163,7 @@ class JobCardScreen extends StatelessWidget {
                         },
                         min: 0,
                         max: 100,
-                        divisions: 4,
+                        divisions: 100,
                         label: jobCardScreenController.fuelAmount.value
                             .round()
                             .toString(),
@@ -284,41 +305,7 @@ class JobCardScreen extends StatelessWidget {
                       ),
                     ],
                   )),
-              // GetBuilder<JobCardScreenController>(
-              //     init: JobCardScreenController(),
-              //     builder: (controller) {
-              //       return jobCardScreenController.file != null
-              //           ? Column(
-              //               children: [
-              //                 InkWell(
-              //                   onTap: jobCardScreenController.togglePlay,
-              //                   child: SizedBox(
-              //                     width: 200, // Adjust the size as needed
-              //                     height: 150, // Adjust the size as needed
-              //                     child: jobCardScreenController
-              //                             .player.value.isInitialized
-              //                         ? AspectRatio(
-              //                             aspectRatio: jobCardScreenController
-              //                                 .player.value.aspectRatio,
-              //                             child: VideoPlayer(
-              //                                 jobCardScreenController.player),
-              //                           )
-              //                         : const Center(
-              //                             child:
-              //                                 CircularProgressIndicator()), // You can show a loading indicator while the video is initializing.
-              //                   ),
-              //                 ),
-              //                 ElevatedButton(
-              //                     style: ElevatedButton.styleFrom(
-              //                         backgroundColor: secColor),
-              //                     onPressed: () {
-              //                       jobCardScreenController.removeVideo();
-              //                     },
-              //                     child: const Text('Clear'))
-              //               ],
-              //             )
-              //           : const SizedBox();
-              //     }),
+
               const SizedBox(
                 height: 50,
               )
@@ -333,11 +320,19 @@ class JobCardScreen extends StatelessWidget {
 Padding myTextFormField(
     {required String labelText,
     required String hintText,
-    required TextEditingController controller}) {
+    required TextEditingController controller,
+    required validate,
+    keyboardType}) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
     child: TextFormField(
-      // initialValue: '',
+      onTap: () {
+        controller.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: controller.text.length,
+        );
+      },
+      keyboardType: keyboardType,
       controller: controller,
       decoration: InputDecoration(
         hintStyle: const TextStyle(color: Colors.grey),
@@ -347,12 +342,81 @@ Padding myTextFormField(
         focusedBorder: const UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey, width: 2.0)),
       ),
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Please enter $labelText';
-        }
-        return null;
-      },
+      validator: validate != false
+          ? (value) {
+              if (value!.isEmpty) {
+                return 'Please Enter $labelText';
+              }
+              return null;
+            }
+          : null,
+    ),
+  );
+}
+
+Padding dropDownValues({
+  required String labelText,
+  required String hintText,
+  required TextEditingController controller,
+  required List<String> list,
+  required String selectedValue,
+  required bool validate,
+}) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
+    child: Column(
+      children: [
+        TypeAheadFormField(
+          textFieldConfiguration: TextFieldConfiguration(
+            controller: controller,
+            decoration: InputDecoration(
+              iconColor: Colors.grey.shade700,
+              suffixIcon: Icon(
+                Icons.arrow_downward_rounded,
+                color: Colors.grey.shade700,
+              ),
+              hintText: hintText,
+              labelText: labelText,
+              hintStyle: const TextStyle(color: Colors.grey),
+              labelStyle: TextStyle(color: Colors.grey.shade700),
+            ),
+          ),
+          suggestionsCallback: (pattern) {
+            return list.where(
+                (item) => item.toLowerCase().contains(pattern.toLowerCase()));
+          },
+          itemBuilder: (context, suggestion) {
+            return ListTile(
+              title: Text(suggestion),
+            );
+          },
+          onSuggestionSelected: (suggestion) {
+            controller.text = suggestion;
+          },
+          validator: validate != false
+              ? (value) {
+                  if (value!.isEmpty) {
+                    return 'Please Enter $labelText';
+                  }
+                  return null;
+                }
+              : null,
+        ),
+        // DropdownButton<String>(
+        //   value: selectedValue,
+        //   onChanged: (newValue) {
+        //     // setState(() {
+        //     selectedValue = newValue;
+        //     // });
+        //   },
+        //   items: jobCardScreenController.carBrandList.map((item) {
+        //     return DropdownMenuItem<String>(
+        //       value: item,
+        //       child: Text(item),
+        //     );
+        //   }).toList(),
+        // ),
+      ],
     ),
   );
 }
