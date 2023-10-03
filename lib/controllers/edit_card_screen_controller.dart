@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class EditCardScreenController extends GetxController {
@@ -18,8 +19,15 @@ class EditCardScreenController extends GetxController {
   // late VideoPlayerController controller;
   RxList<String> carImages = RxList<String>([]);
 
+  RxString selectedBrandValue = RxString('');
+  RxString selectedColorValue = RxString('');
+
+  RxList<String> carBrandList = RxList<String>([]);
+  RxList<String> carColorsList = RxList<String>([]);
+
   @override
   void onInit() async {
+    readCarBrandsColors();
     await setValuesToFields();
     super.onInit();
   }
@@ -93,22 +101,15 @@ class EditCardScreenController extends GetxController {
     update();
   }
 
-  // // this function is to delete image from firebase
-  // void deleteImage(image) async {
-  //   final DocumentSnapshot documentSnapshot =
-  //       await FirebaseFirestore.instance.collection('car_card').doc(arguments.docID).get();
-  //   if (documentSnapshot.exists) {
-  //     final Map<String, dynamic>? data =
-  //         documentSnapshot.data() as Map<String, dynamic>?;
-  //     if (data != null) {
-  //       final List<dynamic> imagesList = data['car_images'];
-  //       imagesList.remove(image);
+  // this function is to takr the values from the txt files and set them to lists with sorting them
+  Future<void> readCarBrandsColors() async {
+    final String carBrands =
+        await rootBundle.loadString('assets/carBrands.txt');
 
-  //       // Now, update the document with the modified list
-  //       await FirebaseFirestore.instance.collection('car_card').doc(arguments.docID).update({
-  //         'car_images': imagesList,
-  //       });
-  //     }
-  //   }
-  // }
+    final String carColors =
+        await rootBundle.loadString('assets/carColors.txt');
+
+    carBrandList.value = carBrands.split('\n')..sort();
+    carColorsList.value = carColors.split('\n')..sort();
+  }
 }

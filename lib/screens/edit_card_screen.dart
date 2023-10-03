@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:job_card/screens/all_works_screen.dart';
 import 'package:job_card/screens/images_screen.dart';
@@ -63,11 +64,20 @@ class EditCardScreen extends StatelessWidget {
               hintText: 'Enter Customer Name here',
               controller: editCardScreenController.customerName,
             ),
-            myTextFormField(
-              labelText: 'Car Brand:',
-              hintText: 'Enter Car Brand here',
-              controller: editCardScreenController.carBrand,
-            ),
+            dropDownValues(
+                labelText: 'Car Brand',
+                hintText: 'Enter Car Brand here',
+                controller: editCardScreenController.carBrand,
+                list: editCardScreenController.carBrandList,
+                selectedValue:
+                    editCardScreenController.selectedBrandValue.value),
+            dropDownValues(
+                labelText: 'Color',
+                hintText: 'Enter Color here',
+                controller: editCardScreenController.color,
+                list: editCardScreenController.carColorsList,
+                selectedValue:
+                    editCardScreenController.selectedColorValue.value),
             myTextFormField(
               labelText: 'Car Model:',
               hintText: 'Enter Car Model here',
@@ -98,11 +108,6 @@ class EditCardScreen extends StatelessWidget {
               hintText: 'Enter Email Address here',
               controller: editCardScreenController.emailAddress,
             ),
-            myTextFormField(
-              labelText: 'Color:',
-              hintText: 'Enter Color here',
-              controller: editCardScreenController.color,
-            ),
             const SizedBox(
               height: 20,
             ),
@@ -111,17 +116,6 @@ class EditCardScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Container(
-                      //   width: Get.width / 1.5,
-                      //   color: mainColor,
-                      //   height: 50,
-                      //   child: const Center(
-                      //       child: Text(
-                      //     'Fuel',
-                      //     style: TextStyle(
-                      //         color: Colors.white, fontWeight: FontWeight.bold),
-                      //   )),
-                      // ),
                       Text(
                         'Fuel:',
                         style: TextStyle(
@@ -155,21 +149,9 @@ class EditCardScreen extends StatelessWidget {
                             .round()
                             .toString(),
                       ),
-
                       const SizedBox(
                         height: 50,
                       ),
-                      // Container(
-                      //   width: Get.width / 1.5,
-                      //   color: mainColor,
-                      //   height: 50,
-                      //   child: const Center(
-                      //       child: Text(
-                      //     'Images/Video for the car',
-                      //     style: TextStyle(
-                      //         color: Colors.white, fontWeight: FontWeight.bold),
-                      //   )),
-                      // ),
                       editCardScreenController.carImages.isNotEmpty
                           ? Text(
                               'Images of the car',
@@ -179,33 +161,6 @@ class EditCardScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             )
                           : const SizedBox(),
-
-                      // const SizedBox(
-                      //   height: 50,
-                      // ),
-
-                      // if (editCardScreenController.controller.value.isInitialized)
-                      //   AspectRatio(
-                      //     aspectRatio: editCardScreenController
-                      //         .controller.value.aspectRatio,
-                      //     child: Stack(
-                      //       alignment: Alignment.bottomCenter,
-                      //       children: <Widget>[
-                      //         VideoPlayer(editCardScreenController.controller),
-                      //         _ControlsOverlay(
-                      //             controller:
-                      //                 editCardScreenController.controller),
-                      //         VideoProgressIndicator(
-                      //             editCardScreenController.controller,
-                      //             allowScrubbing: true),
-                      //       ],
-                      //     ),
-                      //   )
-                      // else
-                      //   const CircularProgressIndicator(),
-                      // const SizedBox(
-                      //   height: 50,
-                      // ),
                     ],
                   ),
                 )),
@@ -348,6 +303,46 @@ Padding myTextFormField(
           return 'Please enter $labelText';
         }
         return null;
+      },
+    ),
+  );
+}
+
+Padding dropDownValues({
+  required String labelText,
+  required String hintText,
+  required TextEditingController controller,
+  required List<String> list,
+  required String selectedValue,
+}) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
+    child: TypeAheadFormField(
+      textFieldConfiguration: TextFieldConfiguration(
+        controller: controller,
+        decoration: InputDecoration(
+          iconColor: Colors.grey.shade700,
+          suffixIcon: Icon(
+            Icons.arrow_downward_rounded,
+            color: Colors.grey.shade700,
+          ),
+          hintText: hintText,
+          labelText: labelText,
+          hintStyle: const TextStyle(color: Colors.grey),
+          labelStyle: TextStyle(color: Colors.grey.shade700),
+        ),
+      ),
+      suggestionsCallback: (pattern) {
+        return list.where(
+            (item) => item.toLowerCase().contains(pattern.toLowerCase()));
+      },
+      itemBuilder: (context, suggestion) {
+        return ListTile(
+          title: Text(suggestion),
+        );
+      },
+      onSuggestionSelected: (suggestion) {
+        controller.text = suggestion;
       },
     ),
   );

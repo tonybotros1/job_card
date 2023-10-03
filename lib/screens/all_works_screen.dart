@@ -167,19 +167,6 @@ class AllWorksScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      // carCard['status'] == true
-                                      //     ? const Icon(
-                                      //         Icons.radio_button_checked,
-                                      //         color: Colors.green,
-                                      //         size: 40,
-                                      //         shadows: [
-                                      //           Shadow(
-                                      //             blurRadius:
-                                      //                 3.0, // Spread radius
-                                      //           ),
-                                      //         ],
-                                      //       )
-                                      //     : const SizedBox(),
                                       Text(
                                         'Received On:',
                                         style: TextStyle(
@@ -196,16 +183,36 @@ class AllWorksScreen extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(height: 15),
-                                      IconButton(
-                                        onPressed: () {
-                                          controller.shareToSocialMedia(
-                                              'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
-                                        },
-                                        icon: Icon(
-                                          Icons.share,
-                                          color: mainColor,
-                                          size: 32,
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          // Display a green checkmark if status is true, otherwise display a red "X"
+                                          Icon(
+                                            carCard['status'] == true
+                                                ? Icons.check_circle
+                                                : Icons.cancel,
+                                            color: carCard['status'] == true
+                                                ? Colors.green
+                                                : Colors.grey,
+                                            size: 35,
+                                          ),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              controller.shareToSocialMedia(
+                                                'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear',
+                                              );
+                                            },
+                                            icon: Icon(
+                                              Icons.share,
+                                              color: mainColor,
+                                              size: 35,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
