@@ -14,6 +14,7 @@ class JobCardModel {
   String? carVideo;
   String? customerSignature;
   List<String>? carImages;
+  bool? status;
 
   JobCardModel(
       {this.customerName,
@@ -30,7 +31,7 @@ class JobCardModel {
       this.docID,
       this.carVideo,
       this.customerSignature,
-      this.carImages});
+      this.carImages,this.status});
 
   JobCardModel.fromJson(Map<String, dynamic> json) {
     customerName = json['customer_name'];

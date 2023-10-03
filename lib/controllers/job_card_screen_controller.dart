@@ -101,7 +101,8 @@ class JobCardScreenController extends GetxController {
       "car_video": videoDownloadUrl.value,
       "car_images": carImagesDownloadURL,
       "timestamp": FieldValue.serverTimestamp(),
-      "editing_time": ''
+      "editing_time": '',
+      "status":true
     });
   }
 
@@ -120,7 +121,7 @@ class JobCardScreenController extends GetxController {
         .ref()
         .child('customers_signatures')
         .child(
-            '${customerName.value}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+            '${DateTime.now().millisecondsSinceEpoch}.jpg');
     final UploadTask uploadTask = ref.putData(file);
     await uploadTask.whenComplete(() async {
       signatureImageDownloadUrl.value = await ref.getDownloadURL();
@@ -135,7 +136,7 @@ class JobCardScreenController extends GetxController {
           .ref()
           .child('car_pictures')
           .child(
-              '${customerName.value}_${carBrand.value}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+              '${DateTime.now().millisecondsSinceEpoch}.jpg');
       final UploadTask uploadTask = ref.putFile(element);
       await uploadTask.whenComplete(() async {
         final url = await ref.getDownloadURL();
@@ -159,7 +160,7 @@ class JobCardScreenController extends GetxController {
   uploadVideo(video) async {
     Reference ref = FirebaseStorage.instance
         .ref()
-        .child('order_videos')
+        .child('car_videos')
         .child('${DateTime.now().millisecondsSinceEpoch}.mp4');
     final UploadTask uploadTask = ref.putFile(video);
     await uploadTask.whenComplete(() async {
@@ -182,6 +183,7 @@ class JobCardScreenController extends GetxController {
     file = null;
     update();
   }
+
 // this function is to takr the values from the txt files and set them to lists with sorting them
   Future<void> readCarBrandsColors() async {
     final String carBrands =

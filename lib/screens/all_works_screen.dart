@@ -93,7 +93,8 @@ class AllWorksScreen extends StatelessWidget {
                                     phoneNumber: carCard['phone_number'],
                                     plateNumber: carCard['plate_number'],
                                     docID: carCard.id,
-                                    carVideo: carCard['car_video']),
+                                    carVideo: carCard['car_video'],
+                                    status: carCard['status']),
                                 transition: Transition.leftToRight);
                           },
                           child: Padding(
@@ -157,56 +158,57 @@ class AllWorksScreen extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(height: 8),
-                                      // const Text(
-                                      //   'Mileage:',
-                                      //   style: TextStyle(
-                                      //     fontSize: 19,
-                                      //     fontWeight: FontWeight.bold,
-                                      //     color: Colors.black54,
-                                      //   ),
-                                      // ),
-                                      // Text(
-                                      //   '${carCard['car_mileage']} km',
-                                      //   style: const TextStyle(
-                                      //     fontSize: 16,
-                                      //     color: Colors.black54,
-                                      //   ),
-                                      // ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'Received On:',
-                                      style: TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
-                                        color: mainColor,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      // carCard['status'] == true
+                                      //     ? const Icon(
+                                      //         Icons.radio_button_checked,
+                                      //         color: Colors.green,
+                                      //         size: 40,
+                                      //         shadows: [
+                                      //           Shadow(
+                                      //             blurRadius:
+                                      //                 3.0, // Spread radius
+                                      //           ),
+                                      //         ],
+                                      //       )
+                                      //     : const SizedBox(),
+                                      Text(
+                                        'Received On:',
+                                        style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: mainColor,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${carCard['date']}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black54,
+                                      Text(
+                                        '${carCard['date']}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black54,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 15),
-                                    IconButton(
-                                      onPressed: () {
-                                        controller.shareToSocialMedia(
-                                            'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
-                                      },
-                                      icon: Icon(
-                                        Icons.share,
-                                        color: mainColor,
-                                        size: 32,
+                                      const SizedBox(height: 15),
+                                      IconButton(
+                                        onPressed: () {
+                                          controller.shareToSocialMedia(
+                                              'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear');
+                                        },
+                                        icon: Icon(
+                                          Icons.share,
+                                          color: mainColor,
+                                          size: 32,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

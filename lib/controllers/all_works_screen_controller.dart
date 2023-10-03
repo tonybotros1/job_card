@@ -18,10 +18,13 @@ class AllWorksController extends GetxController {
   void getAllWorks() {
     FirebaseFirestore.instance
         .collection('car_card')
-        .orderBy('timestamp', descending: true)
+        // .where('status', isEqualTo: true)
+        .orderBy('status', descending: true)
+        // .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((event) {
       carCards.assignAll(event.docs);
+      print(carCards);
     });
   }
 
@@ -51,17 +54,7 @@ class AllWorksController extends GetxController {
     filteredCarCards.assignAll(filteredResults);
   }
 
-// to share the informations via whatsapp
-
-// Future<void> shareToWhatsApp(String recipient,String message) async {
-//   final Uri launchUri = Uri(
-//     scheme: 'whatsapp',
-//     path: 'send',
-//     query: 'phone=${Uri.encodeComponent(recipient)}&text=${Uri.encodeComponent(message)}',
-//   );
-//   await launchUrl(launchUri);
-// }
-
+// this function is to share the details via social media
   void shareToSocialMedia(content) {
     Share.share(content);
   }

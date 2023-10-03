@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class CardDetailsController extends GetxController {
@@ -14,6 +15,7 @@ class CardDetailsController extends GetxController {
   late String date;
   late String id;
   late String video;
+  late bool status;
   double fuelAmount = 25;
   late String customerSignature;
   List<String> carImages = [];
@@ -23,6 +25,8 @@ class CardDetailsController extends GetxController {
     getDetails();
     super.onInit();
   }
+
+ 
 
   void getDetails() {
     if (Get.arguments != null) {
@@ -43,6 +47,16 @@ class CardDetailsController extends GetxController {
       date = arguments.date;
       id = arguments.docID;
       video = arguments.carVideo;
+      status = arguments.status;
     }
+  }
+
+  void changeStatus(stat) {
+    status = stat;
+    FirebaseFirestore.instance
+        .collection('car_card')
+        .doc(id)
+        .update({"status": stat});
+    update();
   }
 }
