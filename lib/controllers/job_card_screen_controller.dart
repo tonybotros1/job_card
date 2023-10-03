@@ -145,6 +145,7 @@ class JobCardScreenController extends GetxController {
 // for saving signature image in firebase
   saveSignatureImage() async {
     try {
+      uploading.value = true;
       final Reference ref = FirebaseStorage.instance
           .ref()
           .child('customers_signatures')
@@ -161,6 +162,7 @@ class JobCardScreenController extends GetxController {
   // this function is to save car images in firebase
   saveCarImages() async {
     try {
+      uploading.value = true;
       for (var element in imagesList) {
         final Reference ref = FirebaseStorage.instance
             .ref()
@@ -213,16 +215,15 @@ class JobCardScreenController extends GetxController {
   // this functions is to take photos
   void takePhoto() async {
     try {
-       final XFile? cameraImage =
-        await picker.pickImage(source: ImageSource.camera);
-    if (cameraImage != null) {
-      File image = File(cameraImage.path);
-      imagesList.add(image);
-    }
+      final XFile? cameraImage =
+          await picker.pickImage(source: ImageSource.camera);
+      if (cameraImage != null) {
+        File image = File(cameraImage.path);
+        imagesList.add(image);
+      }
     } catch (e) {
-     // 
+      //
     }
-   
   }
 
   // this function to remove recorded video
@@ -242,5 +243,4 @@ class JobCardScreenController extends GetxController {
     carBrandList.value = carBrands.split('\n')..sort();
     carColorsList.value = carColors.split('\n')..sort();
   }
-
 }
