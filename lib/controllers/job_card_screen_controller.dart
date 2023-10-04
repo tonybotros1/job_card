@@ -96,41 +96,43 @@ class JobCardScreenController extends GetxController {
 
 // this function is to add the car card when all informations addedd
   addCard() async {
-    try {
-      signatureAsImage = await controller.toPngBytes();
-      if (file != null) {
-        await uploadVideo();
-      }
-      await saveSignatureImage();
+    signatureAsImage = await controller.toPngBytes();
+    if (file != null) {
+      await uploadVideo();
+    }
+    await saveSignatureImage();
 
-      if (imagesList.isNotEmpty) {
-        await saveCarImages();
-      }
-      FirebaseFirestore.instance.collection('car_card').add({
-        "customer_name": customerName.text,
-        "car_brand": carBrand.text,
-        "car_model": carModel.text,
-        "plate_number": plateNumber.text,
-        "car_mileage": carMileage.text,
-        "chassis_number": chassisNumber.text,
-        "phone_number": phoneNumber.text,
-        "email_address": emailAddress.text,
-        "color": color.text,
-        "date": theDate.value,
-        "fuel_amount": fuelAmount.value,
-        "customer_signature": signatureImageDownloadUrl.value,
-        "car_video": videoDownloadUrl.value,
-        "car_images": carImagesDownloadURL,
-        "timestamp": FieldValue.serverTimestamp(),
-        "editing_time": '',
-        "status": true
-      }).then((value) {
-        uploading.value = false;
+    if (imagesList.isNotEmpty) {
+      await saveCarImages();
+    }
+    if (errorWhileUploading.value != true) {
+      try {
+        FirebaseFirestore.instance.collection('car_card').add({
+          "customer_name": customerName.text,
+          "car_brand": carBrand.text,
+          "car_model": carModel.text,
+          "plate_number": plateNumber.text,
+          "car_mileage": carMileage.text,
+          "chassis_number": chassisNumber.text,
+          "phone_number": phoneNumber.text,
+          "email_address": emailAddress.text,
+          "color": color.text,
+          "date": theDate.value,
+          "fuel_amount": fuelAmount.value,
+          "customer_signature": signatureImageDownloadUrl.value,
+          "car_video": videoDownloadUrl.value,
+          "car_images": carImagesDownloadURL,
+          "timestamp": FieldValue.serverTimestamp(),
+          "editing_time": '',
+          "status": true
+        }).then((value) {
+          uploading.value = false;
 
-        Get.offAll(() => AllWorksScreen());
-      });
-    } catch (e) {
-      errorWhileUploading.value = true;
+          Get.offAll(() => AllWorksScreen());
+        });
+      } catch (e) {
+        errorWhileUploading.value = true;
+      }
     }
   }
 
@@ -144,38 +146,42 @@ class JobCardScreenController extends GetxController {
 
 // for saving signature image in firebase
   saveSignatureImage() async {
-    try {
-      uploading.value = true;
-      final Reference ref = FirebaseStorage.instance
-          .ref()
-          .child('customers_signatures')
-          .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-      final UploadTask uploadTask = ref.putData(signatureAsImage!);
-      await uploadTask.then((p0) async {
-        signatureImageDownloadUrl.value = await ref.getDownloadURL();
-      });
-    } catch (e) {
-      errorWhileUploading.value = true;
+    if (errorWhileUploading.value != true) {
+      try {
+        uploading.value = true;
+        final Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('customers_signatures')
+            .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+        final UploadTask uploadTask = ref.putData(signatureAsImage!);
+        await uploadTask.then((p0) async {
+          signatureImageDownloadUrl.value = await ref.getDownloadURL();
+        });
+      } catch (e) {
+        errorWhileUploading.value = true;
+      }
     }
   }
 
   // this function is to save car images in firebase
   saveCarImages() async {
-    try {
-      uploading.value = true;
-      for (var element in imagesList) {
-        final Reference ref = FirebaseStorage.instance
-            .ref()
-            .child('car_pictures')
-            .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-        final UploadTask uploadTask = ref.putFile(element);
-        await uploadTask.then((p0) async {
-          final url = await ref.getDownloadURL();
-          carImagesDownloadURL.add(url);
-        });
+    if (errorWhileUploading.value != true) {
+      try {
+        uploading.value = true;
+        for (var element in imagesList) {
+          final Reference ref = FirebaseStorage.instance
+              .ref()
+              .child('car_pictures')
+              .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+          final UploadTask uploadTask = ref.putFile(element);
+          await uploadTask.then((p0) async {
+            final url = await ref.getDownloadURL();
+            carImagesDownloadURL.add(url);
+          });
+        }
+      } catch (e) {
+        errorWhileUploading.value = true;
       }
-    } catch (e) {
-      errorWhileUploading.value = true;
     }
   }
 
@@ -196,19 +202,21 @@ class JobCardScreenController extends GetxController {
 
   // function to save the video in firebase
   uploadVideo() async {
-    try {
-      Reference ref = FirebaseStorage.instance
-          .ref()
-          .child('car_videos')
-          .child('${DateTime.now().millisecondsSinceEpoch}.mp4');
-      videoUploadTask = ref.putFile(file!);
-      uploading.value = true;
+    if (errorWhileUploading.value != true) {
+      try {
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('car_videos')
+            .child('${DateTime.now().millisecondsSinceEpoch}.mp4');
+        videoUploadTask = ref.putFile(file!);
+        uploading.value = true;
 
-      await videoUploadTask!.then((p0) async {
-        videoDownloadUrl.value = await ref.getDownloadURL();
-      });
-    } catch (e) {
-      errorWhileUploading.value = true;
+        await videoUploadTask!.then((p0) async {
+          videoDownloadUrl.value = await ref.getDownloadURL();
+        });
+      } catch (e) {
+        errorWhileUploading.value = true;
+      }
     }
   }
 
