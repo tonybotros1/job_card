@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:signature/signature.dart';
 
 class EditCardScreenController extends GetxController {
   TextEditingController customerName = TextEditingController();
@@ -24,6 +26,9 @@ class EditCardScreenController extends GetxController {
 
   RxList<String> carBrandList = RxList<String>([]);
   RxList<String> carColorsList = RxList<String>([]);
+  Uint8List? signatureAsImage;
+  RxString signatureImageDownloadUrl = RxString('');
+  RxBool errorWhileUploading = RxBool(false);
 
   @override
   void onInit() async {
@@ -67,7 +72,24 @@ class EditCardScreenController extends GetxController {
     }
   }
 
-  void editValues() {
+  SignatureController controller = SignatureController(
+    penStrokeWidth: 3,
+    penColor: Colors.black,
+    exportBackgroundColor: Colors.white,
+  );
+
+  void editValues() async {
+    signatureAsImage = await controller.toPngBytes();
+
+    if (signatureAsImage != null) {
+      await editSignature();
+      FirebaseFirestore.instance
+          .collection('car_card')
+          .doc(arguments.docID)
+          .update({
+        "customer_signature": signatureImageDownloadUrl.value,
+      });
+    }
     FirebaseFirestore.instance
         .collection('car_card')
         .doc(arguments.docID)
@@ -87,6 +109,24 @@ class EditCardScreenController extends GetxController {
     });
   }
 
+
+// this function is to edit the signature
+
+  Future<void> editSignature() async {
+    try {
+      final Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('customers_signatures')
+          .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final UploadTask uploadTask = ref.putData(signatureAsImage!);
+      await uploadTask.then((p0) async {
+        signatureImageDownloadUrl.value = await ref.getDownloadURL();
+      });
+    } catch (e) {
+      errorWhileUploading.value = true;
+    }
+  }
+
 // this function is to delete cards
   void deleteCard() {
     FirebaseFirestore.instance
@@ -101,7 +141,7 @@ class EditCardScreenController extends GetxController {
     update();
   }
 
-  // this function is to takr the values from the txt files and set them to lists with sorting them
+  // this function is to take the values from the txt files and set them to lists with sorting them
   Future<void> readCarBrandsColors() async {
     final String carBrands =
         await rootBundle.loadString('assets/carBrands.txt');

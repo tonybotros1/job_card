@@ -3,6 +3,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:job_card/screens/all_works_screen.dart';
 import 'package:job_card/screens/images_screen.dart';
+import 'package:signature/signature.dart';
 import 'package:video_player/video_player.dart';
 import '../const.dart';
 import '../controllers/edit_card_screen_controller.dart';
@@ -152,6 +153,42 @@ class EditCardScreen extends StatelessWidget {
                       const SizedBox(
                         height: 50,
                       ),
+                      Text(
+                        'Customer Signature:',
+                        style: TextStyle(
+                            color: secColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey)),
+                          width: Get.width * 0.8,
+                          height: Get.height * 0.4,
+                          child: Signature(
+                            controller: editCardScreenController.controller,
+                            backgroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: secColor,
+                          ),
+                          onPressed: () {
+                            editCardScreenController.controller.clear();
+                          },
+                          child: const Text('Clear'),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
                       editCardScreenController.carImages.isNotEmpty
                           ? Text(
                               'Images of the car',
@@ -160,7 +197,12 @@ class EditCardScreen extends StatelessWidget {
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),
                             )
-                          : const SizedBox(),
+                          : const SizedBox(
+                              height: 30,
+                            ),
+                      const SizedBox(
+                        height: 30,
+                      ),
                     ],
                   ),
                 )),

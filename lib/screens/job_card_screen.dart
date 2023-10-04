@@ -228,12 +228,15 @@ class JobCardScreen extends StatelessWidget {
                               height: 30,
                             ),
                             Center(
-                              child: SizedBox(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey)),
                                 width: Get.width * 0.8,
                                 height: Get.height * 0.4,
                                 child: Signature(
                                   controller:
                                       jobCardScreenController.controller,
+                                  backgroundColor: Colors.white,
                                 ),
                               ),
                             ),

@@ -291,7 +291,7 @@ class DataSearch extends SearchDelegate {
                 ),
                 child: InkWell(
                   onTap: () {
-                    Get.to(() => EditCardScreen(),
+                    Get.to(() => CarDetailsScreen(),
                         arguments: JobCardModel(
                             carImages: carImages,
                             customerSignature: carCard['customer_signature'],
@@ -307,7 +307,8 @@ class DataSearch extends SearchDelegate {
                             phoneNumber: carCard['phone_number'],
                             plateNumber: carCard['plate_number'],
                             docID: carCard.id,
-                            carVideo: carCard['car_video']),
+                            carVideo: carCard['car_video'],
+                            status: carCard['status']),
                         transition: Transition.leftToRight);
                   },
                   child: Padding(

@@ -142,6 +142,7 @@ class JobCardScreenController extends GetxController {
     penStrokeWidth: 3,
     penColor: Colors.black,
     exportBackgroundColor: Colors.white,
+    
   );
 
 // for saving signature image in firebase
