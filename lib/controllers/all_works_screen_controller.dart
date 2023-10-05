@@ -15,7 +15,7 @@ class AllWorksController extends GetxController {
   }
 
 // this function is to get the works from firebase
-  void getAllWorks() {
+  getAllWorks() async {
     FirebaseFirestore.instance
         .collection('car_card')
         // .where('status', isEqualTo: true)
@@ -26,6 +26,8 @@ class AllWorksController extends GetxController {
       carCards.assignAll(event.docs);
       print(carCards);
     });
+
+    return await Future.delayed(Duration(seconds: 2));
   }
 
   // Function to filter the list based on search criteria
@@ -58,4 +60,6 @@ class AllWorksController extends GetxController {
   void shareToSocialMedia(content) {
     Share.share(content);
   }
+
+  String shortenedUrl = '';
 }

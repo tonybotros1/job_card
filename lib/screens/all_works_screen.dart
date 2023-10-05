@@ -3,10 +3,9 @@ import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/all_works_screen_controller.dart';
 import 'package:job_card/screens/car_details_screen.dart';
-
 import '../models/job_card_model.dart';
-import 'edit_card_screen.dart';
 import 'job_card_screen.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class AllWorksScreen extends StatelessWidget {
   AllWorksScreen({super.key});
@@ -54,175 +53,185 @@ class AllWorksScreen extends StatelessWidget {
                       fontSize: 25),
                 ));
               } else {
-                return ListView.builder(
-                    itemCount: controller.carCards.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, i) {
-                      var carCard = controller.carCards[i];
-                      List<String> carImages = [];
+                return LiquidPullToRefresh(
+                  onRefresh: () => controller.getAllWorks(),
+                  color: mainColor,
+                  // backgroundColor: secColor,
+                  animSpeedFactor: 2,
+                  height: 300,
+                  showChildOpacityTransition: false,
+                  child: ListView.builder(
+                      itemCount: controller.carCards.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, i) {
+                        var carCard = controller.carCards[i];
+                        List<String> carImages = [];
 
-                      for (var item in carCard['car_images']) {
-                        try {
-                          carImages.add(item.toString());
-                        } catch (e) {
-                          // Handle the exception, or skip the item if necessary
+                        for (var item in carCard['car_images']) {
+                          try {
+                            carImages.add(item.toString());
+                          } catch (e) {
+                            // Handle the exception, or skip the item if necessary
+                          }
                         }
-                      }
 
-                      return Card(
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            Get.to(() => CarDetailsScreen(),
-                                arguments: JobCardModel(
-                                    carImages: carImages,
-                                    customerSignature:
-                                        carCard['customer_signature'],
-                                    carBrand: carCard['car_brand'],
-                                    carMileage: carCard['car_mileage'],
-                                    carModel: carCard['car_model'],
-                                    chassisNumber: carCard['chassis_number'],
-                                    color: carCard['color'],
-                                    customerName: carCard['customer_name'],
-                                    date: carCard['date'],
-                                    emailAddress: carCard['email_address'],
-                                    fuelAmount: carCard['fuel_amount'],
-                                    phoneNumber: carCard['phone_number'],
-                                    plateNumber: carCard['plate_number'],
-                                    docID: carCard.id,
-                                    carVideo: carCard['car_video'],
-                                    status: carCard['status']),
-                                transition: Transition.leftToRight);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Customer:',
-                                        style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                      FittedBox(
-                                        child: Text(
-                                          '${carCard['customer_name']}',
-                                          style: const TextStyle(
-                                            fontSize: 16,
+                        return Card(
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              Get.to(() => CarDetailsScreen(),
+                                  arguments: JobCardModel(
+                                      carImages: carImages,
+                                      customerSignature:
+                                          carCard['customer_signature'],
+                                      carBrand: carCard['car_brand'],
+                                      carMileage: carCard['car_mileage'],
+                                      carModel: carCard['car_model'],
+                                      chassisNumber: carCard['chassis_number'],
+                                      color: carCard['color'],
+                                      customerName: carCard['customer_name'],
+                                      date: carCard['date'],
+                                      emailAddress: carCard['email_address'],
+                                      fuelAmount: carCard['fuel_amount'],
+                                      phoneNumber: carCard['phone_number'],
+                                      plateNumber: carCard['plate_number'],
+                                      docID: carCard.id,
+                                      carVideo: carCard['car_video'],
+                                      status: carCard['status']),
+                                  transition: Transition.leftToRight);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Customer:',
+                                          style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
                                             color: Colors.black54,
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        'Car:',
-                                        style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${carCard['car_brand']} | ${carCard['car_model']}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        'Plate Number:',
-                                        style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                      FittedBox(
-                                        child: Text(
-                                          '${carCard['plate_number']}',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Received On:',
-                                        style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: mainColor,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${carCard['date']}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 15),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          // Display a green checkmark if status is true, otherwise display a red "X"
-                                          Icon(
-                                            carCard['status'] == true
-                                                ? Icons.check_circle
-                                                : Icons.cancel,
-                                            color: carCard['status'] == true
-                                                ? Colors.green
-                                                : Colors.grey,
-                                            size: 35,
-                                          ),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              controller.shareToSocialMedia(
-                                                'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear',
-                                              );
-                                            },
-                                            icon: Icon(
-                                              Icons.share,
-                                              color: mainColor,
-                                              size: 35,
+                                        FittedBox(
+                                          child: Text(
+                                            '${carCard['customer_name']}',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black54,
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        const Text(
+                                          'Car:',
+                                          style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${carCard['car_brand']} | ${carCard['car_model']}',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        const Text(
+                                          'Plate Number:',
+                                          style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        FittedBox(
+                                          child: Text(
+                                            '${carCard['plate_number']}',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Received On:',
+                                          style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: mainColor,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${carCard['date']}',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            // Display a green checkmark if status is true, otherwise display a red "X"
+                                            Icon(
+                                              carCard['status'] == true
+                                                  ? Icons.check_circle
+                                                  : Icons.cancel,
+                                              color: carCard['status'] == true
+                                                  ? Colors.green
+                                                  : Colors.grey,
+                                              size: 35,
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                controller.shareToSocialMedia(
+                                                  'Dear ${carCard['customer_name']},\n\nWe are pleased to inform you that we have received your car. Here are its details:\n\nBrand & Model: ${carCard['car_brand']}, ${carCard['car_model']}\nPlate:  ${carCard['plate_number']}\nMileage: ${carCard['car_mileage']} km\nChassis No.: ${carCard['chassis_number']}\nColor:  ${carCard['color']}\nReceived on: ${carCard['date']}\nShould you have any queries, please do not hesitate to reach out. Thank you for trusting us with your vehicle.\n\nWarm regards,\nCompass Automatic Gear',
+                                                );
+                                              },
+                                              icon: Icon(
+                                                Icons.share,
+                                                color: mainColor,
+                                                size: 35,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    });
+                        );
+                      }),
+                );
               }
             }));
   }
