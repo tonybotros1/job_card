@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/screens/all_works_screen.dart';
 import 'package:job_card/screens/finished_works_screen.dart';

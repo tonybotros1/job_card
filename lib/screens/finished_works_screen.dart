@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
-import 'package:job_card/controllers/all_works_screen_controller.dart';
 import 'package:job_card/controllers/finished_works_screen_controller.dart';
 import 'package:job_card/screens/car_details_screen.dart';
 import '../models/job_card_model.dart';
@@ -198,14 +197,41 @@ class FinishedWorksScreen extends StatelessWidget {
                                               MainAxisAlignment.end,
                                           children: [
                                             // Display a green checkmark if status is true, otherwise display a red "X"
-                                            Icon(
-                                              carCard['status'] == true
-                                                  ? Icons.check_circle
-                                                  : Icons.cancel,
-                                              color: carCard['status'] == true
-                                                  ? Colors.green
-                                                  : Colors.grey,
-                                              size: 35,
+                                            // Icon(
+                                            //   carCard['status'] == true
+                                            //       ? Icons.check_circle
+                                            //       : Icons.cancel,
+                                            //   color: carCard['status'] == true
+                                            //       ? Colors.green
+                                            //       : Colors.grey,
+                                            //   size: 35,
+                                            // ),
+                                            Container(
+                                              width: 70,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                  color:
+                                                      carCard['status'] == true
+                                                          ? Color.fromARGB(
+                                                              255, 50, 212, 56)
+                                                          : Colors.grey),
+                                              child: Center(
+                                                  child: carCard['status'] ==
+                                                          true
+                                                      ? Text(
+                                                          'New',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        )
+                                                      : Text(
+                                                          'Added',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        )),
                                             ),
                                             const SizedBox(
                                               width: 20,
