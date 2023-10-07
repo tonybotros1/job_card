@@ -61,6 +61,7 @@ dependencies:
   flutter_native_splash: ^2.2.19 
   liquid_pull_to_refresh: ^3.0.1
   percent_indicator: ^4.2.3
+  persistent_bottom_nav_bar: ^5.0.2
   # flutter_local_notifications: ^15.1.1
 
 dev_dependencies:

@@ -4,6 +4,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:job_card/screens/all_works_screen.dart';
 import 'package:job_card/screens/images_screen.dart';
+import 'package:job_card/screens/main_cards_screen.dart';
 import 'package:signature/signature.dart';
 import 'package:video_player/video_player.dart';
 import '../const.dart';
@@ -47,7 +48,7 @@ class EditCardScreen extends StatelessWidget {
                               child: Text('Yes'),
                               onPressed: () {
                                 editCardScreenController.deleteCard();
-                                Get.offAll(() => AllWorksScreen(),
+                                Get.offAll(() => MainCardsScreen(),
                                     transition: Transition.leftToRight);
                               },
                             )

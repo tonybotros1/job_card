@@ -3,22 +3,22 @@ import 'package:get/get.dart';
 // import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 
-class AllWorksController extends GetxController {
+class FinishedWorksController extends GetxController {
   final RxList<DocumentSnapshot> carCards = RxList<DocumentSnapshot>([]);
   final RxList<DocumentSnapshot> filteredCarCards =
       RxList<DocumentSnapshot>([]);
 
   @override
   void onInit() {
-    getAllWorks();
+    getFinishedWorks();
     super.onInit();
   }
 
 // this function is to get the works from firebase
-  getAllWorks() async {
+  getFinishedWorks() async {
     FirebaseFirestore.instance
         .collection('car_card')
-        .where('status', isEqualTo: true)
+        .where('status', isEqualTo: false)
         // .orderBy('status', descending: true)
         .orderBy('timestamp', descending: true)
         .snapshots()

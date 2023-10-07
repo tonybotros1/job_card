@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/all_works_screen_controller.dart';
+import 'package:job_card/controllers/finished_works_screen_controller.dart';
 import 'package:job_card/screens/car_details_screen.dart';
 import '../models/job_card_model.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
-class AllWorksScreen extends StatelessWidget {
-  AllWorksScreen({super.key});
-  final AllWorksController allWorksController = Get.put(AllWorksController());
+class FinishedWorksScreen extends StatelessWidget {
+  FinishedWorksScreen({super.key});
+  final FinishedWorksController finishedWorksController =
+      Get.put(FinishedWorksController());
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class AllWorksScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('New Cards'),
+          title: const Text('Finished Cards'),
           centerTitle: true,
           backgroundColor: mainColor,
           actions: [
@@ -40,8 +42,8 @@ class AllWorksScreen extends StatelessWidget {
         //     },
         //   ),
         // ),
-        body: GetX<AllWorksController>(
-            init: AllWorksController(),
+        body: GetX<FinishedWorksController>(
+            init: FinishedWorksController(),
             builder: (controller) {
               if (controller.carCards.isEmpty) {
                 return Center(
@@ -54,7 +56,7 @@ class AllWorksScreen extends StatelessWidget {
                 ));
               } else {
                 return LiquidPullToRefresh(
-                  onRefresh: () => controller.getAllWorks(),
+                  onRefresh: () => controller.getFinishedWorks(),
                   color: mainColor,
                   // backgroundColor: secColor,
                   animSpeedFactor: 2,
@@ -265,11 +267,11 @@ class DataSearch extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return GetX<AllWorksController>(builder: (controller) {
-      final AllWorksController allWorksController =
-          Get.put(AllWorksController());
+    return GetX<FinishedWorksController>(builder: (controller) {
+      final FinishedWorksController finishedWorksController =
+          Get.put(FinishedWorksController());
 
-      allWorksController.filterResults(query);
+      finishedWorksController.filterResults(query);
 
       if (controller.filteredCarCards.isEmpty) {
         return Center(

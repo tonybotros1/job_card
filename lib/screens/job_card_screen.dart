@@ -46,52 +46,25 @@ class JobCardScreen extends StatelessWidget {
                   return SizedBox(
                     width: Get.width,
                     height: Get.height,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // CircularProgressIndicator(
-                        //   value: progress,
-                        //   color: mainColor,
-                        // ),
-                        CircularPercentIndicator(
-                          animation: true,
-                          animationDuration: 1000,
-                          radius: 180,
-                          lineWidth: 30,
-                          percent: progress,
-                          progressColor: mainColor,
-                          backgroundColor: Colors.red.shade100,
-                          circularStrokeCap: CircularStrokeCap.round,
-                          center: Text(
-                            '${(100 * progress).roundToDouble()} %',
-                            style: TextStyle(color: mainColor, fontSize: 30),
-                          ),
-                        ),
-                        // LinearPercentIndicator(
-                        //   animation: true,
-                        //   animationDuration: 1000,
-                        //   lineHeight: 40,
-                        //   percent: progress,
-                        //   progressColor: mainColor,
-                        //   backgroundColor: Colors.red.shade100,
-                        // ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        // Text(
-                        //   'Uploading... ${(100 * progress).roundToDouble()}',
-                        //   style: TextStyle(color: mainColor),
-                        // )
-                      ],
+                    child: CircularPercentIndicator(
+                      animation: true,
+                      animationDuration: 1000,
+                      radius: 180,
+                      lineWidth: 30,
+                      percent: progress,
+                      progressColor: mainColor,
+                      backgroundColor: Colors.red.shade100,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      center: Text(
+                        '${(100 * progress).roundToDouble()} %',
+                        style: TextStyle(color: mainColor, fontSize: 30),
+                      ),
                     ),
                   );
                 } else {
                   return SizedBox(
                     child: Center(
-                      child: CircularProgressIndicator(
-                        color: mainColor,
-                      ),
+                      child: CircularProgressIndicator(color: mainColor,)
                     ),
                   );
                 }

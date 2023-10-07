@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:job_card/screens/all_works_screen.dart';
+import 'package:job_card/screens/main_cards_screen.dart';
 import 'package:signature/signature.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -128,7 +128,7 @@ class JobCardScreenController extends GetxController {
         }).then((value) {
           uploading.value = false;
 
-          Get.offAll(() => AllWorksScreen());
+          Get.offAll(() => MainCardsScreen());
         });
       } catch (e) {
         errorWhileUploading.value = true;
@@ -142,7 +142,6 @@ class JobCardScreenController extends GetxController {
     penStrokeWidth: 3,
     penColor: Colors.black,
     exportBackgroundColor: Colors.white,
-    
   );
 
 // for saving signature image in firebase
