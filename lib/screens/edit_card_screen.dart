@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
@@ -25,24 +26,33 @@ class EditCardScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Get.dialog(AlertDialog(
-                  title: const Text(
-                      'Are you sure do you want to delete this card?'),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        child: const Text('Cancel')),
-                    ElevatedButton(
-                        onPressed: () {
-                          editCardScreenController.deleteCard();
-                          Get.offAll(() => AllWorksScreen(),
-                              transition: Transition.leftToRight);
-                        },
-                        child: const Text('Delete')),
-                  ],
-                ));
+                showCupertinoDialog(
+                    context: context,
+                    builder: (context) => CupertinoAlertDialog(
+                          title: Text('Alert'),
+                          content: Text(
+                              'Are you sure you want to delete this card?'),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: mainColor),
+                              ),
+                              isDefaultAction: true,
+                              onPressed: () {
+                                Get.back();
+                              },
+                            ),
+                            CupertinoDialogAction(
+                              child: Text('Yes'),
+                              onPressed: () {
+                                editCardScreenController.deleteCard();
+                                Get.offAll(() => AllWorksScreen(),
+                                    transition: Transition.leftToRight);
+                              },
+                            )
+                          ],
+                        ));
               },
               icon: const Icon(Icons.delete)),
           IconButton(
@@ -246,29 +256,36 @@ class EditCardScreen extends StatelessWidget {
                                     right: 0,
                                     child: IconButton(
                                         onPressed: () {
-                                          Get.dialog(AlertDialog(
-                                            title: const Text(
-                                                'Are you sure you want to delete this picture?'),
-                                            actions: [
-                                              ElevatedButton(
-                                                  onPressed: () {
-                                                    Get.back();
-                                                  },
-                                                  child: const Text('Cancel')),
-                                              ElevatedButton(
-                                                  onPressed: () {
-                                                    // editCardScreenController
-                                                    //     .deleteImage(
-                                                    //         editCardScreenController
-                                                    //             .carImages[i]);
-                                                    controller.removeImage(
-                                                        controller
-                                                            .carImages[i]);
-                                                    Get.back();
-                                                  },
-                                                  child: const Text('Delete'))
-                                            ],
-                                          ));
+                                          showCupertinoDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  CupertinoAlertDialog(
+                                                    title: Text('Alert'),
+                                                    content: Text(
+                                                        'Are you sure you want to delete this picture?'),
+                                                    actions: [
+                                                      CupertinoDialogAction(
+                                                        child: Text(
+                                                          'No',
+                                                          style: TextStyle(
+                                                              color: mainColor),
+                                                        ),
+                                                        isDefaultAction: true,
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                      ),
+                                                      CupertinoDialogAction(
+                                                        child: Text('Yes'),
+                                                        onPressed: () {
+                                                          controller.removeImage(
+                                                              controller
+                                                                  .carImages[i]);
+                                                          Get.back();
+                                                        },
+                                                      )
+                                                    ],
+                                                  ));
                                         },
                                         icon: const Icon(
                                           Icons.remove_circle,

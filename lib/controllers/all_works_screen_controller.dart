@@ -24,7 +24,6 @@ class AllWorksController extends GetxController {
         .snapshots()
         .listen((event) {
       carCards.assignAll(event.docs);
-      print(carCards);
     });
 
     return await Future.delayed(Duration(seconds: 2));
