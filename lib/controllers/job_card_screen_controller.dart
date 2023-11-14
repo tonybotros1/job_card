@@ -70,6 +70,21 @@ class JobCardScreenController extends GetxController {
     super.onInit();
   }
 
+  // this function is to clear the fields
+  void clearFields() {
+    customerName.text = 'Customer';
+    carBrand.text = '';
+    carModel.text = '';
+    plateNumber.text = '';
+    carMileage.text = '';
+    chassisNumber.text = '';
+    phoneNumber.text = '';
+    emailAddress.text = '';
+    color.text = '';
+    signatureAsImage = null;
+    imagesList.clear();
+  }
+
   void selectDate(DateTime date) {
     selectedDate.value = date;
   }
@@ -100,7 +115,10 @@ class JobCardScreenController extends GetxController {
     if (file != null) {
       await uploadVideo();
     }
-    await saveSignatureImage();
+
+    if (signatureAsImage != null) {
+      await saveSignatureImage();
+    }
 
     if (imagesList.isNotEmpty) {
       await saveCarImages();

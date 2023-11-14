@@ -20,6 +20,16 @@ class JobCardScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: FittedBox(
+          child: TextButton(
+              onPressed: () {
+                jobCardScreenController.clearFields();
+              },
+              child: Text(
+                'Clear',
+                style: TextStyle(color: Colors.white),
+              )),
+        ),
         centerTitle: true,
         title: const Text('Work Order'),
         backgroundColor: mainColor,
@@ -64,8 +74,9 @@ class JobCardScreen extends StatelessWidget {
                 } else {
                   return SizedBox(
                     child: Center(
-                      child: CircularProgressIndicator(color: mainColor,)
-                    ),
+                        child: CircularProgressIndicator(
+                      color: mainColor,
+                    )),
                   );
                 }
               });
