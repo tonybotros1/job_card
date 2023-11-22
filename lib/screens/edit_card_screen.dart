@@ -21,8 +21,19 @@ class EditCardScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         centerTitle: true,
-        title: const Text('Work Order'),
+        title: const Text(
+          'Work Order',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: mainColor,
         actions: [
           IconButton(
@@ -55,9 +66,15 @@ class EditCardScreen extends StatelessWidget {
                           ],
                         ));
               },
-              icon: const Icon(Icons.delete)),
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.white,
+              )),
           IconButton(
-            icon: const Icon(Icons.done),
+            icon: const Icon(
+              Icons.done,
+              color: Colors.white,
+            ),
             onPressed: () {
               Get.offAll(() => AllWorksScreen(),
                   transition: Transition.leftToRight);
@@ -150,6 +167,7 @@ class EditCardScreen extends StatelessWidget {
                         ),
                       ),
                       Slider(
+                        activeColor: Colors.blue,
                         value: editCardScreenController.fuelAmount.value,
                         onChanged: (newValue) {
                           editCardScreenController.fuelAmount.value = newValue;
@@ -194,7 +212,10 @@ class EditCardScreen extends StatelessWidget {
                           onPressed: () {
                             editCardScreenController.controller.clear();
                           },
-                          child: const Text('Clear'),
+                          child: const Text(
+                            'Clear',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                       const SizedBox(

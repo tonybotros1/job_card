@@ -17,7 +17,10 @@ class FinishedWorksScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('Finished Cards'),
+          title: const Text(
+            'Finished Cards',
+            style: TextStyle(color: Colors.white),
+          ),
           centerTitle: true,
           backgroundColor: mainColor,
           actions: [
@@ -25,7 +28,10 @@ class FinishedWorksScreen extends StatelessWidget {
                 onPressed: () {
                   showSearch(context: context, delegate: DataSearch());
                 },
-                icon: const Icon(Icons.search))
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ))
           ],
         ),
         // floatingActionButton: FloatingActionButton(
@@ -77,6 +83,9 @@ class FinishedWorksScreen extends StatelessWidget {
                         }
 
                         return Card(
+                          surfaceTintColor: Colors.white,
+                          // shadowColor: Colors.red,
+                          // color: Colors.white,
                           elevation: 10,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -322,6 +331,7 @@ class DataSearch extends SearchDelegate {
                 }
               }
               return Card(
+                surfaceTintColor: Colors.white,
                 elevation: 10,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

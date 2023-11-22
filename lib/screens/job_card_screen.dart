@@ -31,11 +31,17 @@ class JobCardScreen extends StatelessWidget {
               )),
         ),
         centerTitle: true,
-        title: const Text('Work Order'),
+        title: const Text(
+          'Work Order',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: mainColor,
         actions: [
           IconButton(
-            icon: const Icon(Icons.done),
+            icon: const Icon(
+              Icons.done,
+              color: Colors.white,
+            ),
             onPressed: () async {
               if (jobCardScreenController.formKey.currentState!.validate()) {
                 // jobCardScreenController.uploading.value = true;
@@ -176,7 +182,11 @@ class JobCardScreen extends StatelessWidget {
                           ),
                           onPressed: () => jobCardScreenController
                               .selectDateContext(context),
-                          child: const FittedBox(child: Text('Select Date')),
+                          child: const FittedBox(
+                              child: Text(
+                            'Select Date',
+                            style: TextStyle(color: Colors.white),
+                          )),
                         ),
                       ),
                     ),
@@ -209,6 +219,7 @@ class JobCardScreen extends StatelessWidget {
                               ),
                             ),
                             Slider(
+                              activeColor: Colors.blue,
                               value: jobCardScreenController.fuelAmount.value,
                               onChanged: (newValue) {
                                 jobCardScreenController.fuelAmount.value =
@@ -255,7 +266,10 @@ class JobCardScreen extends StatelessWidget {
                                 onPressed: () {
                                   jobCardScreenController.controller.clear();
                                 },
-                                child: const Text('Clear'),
+                                child: const Text(
+                                  'Clear',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
                             const SizedBox(
@@ -280,18 +294,22 @@ class JobCardScreen extends StatelessWidget {
                                     onPressed: () {
                                       jobCardScreenController.takePhoto();
                                     },
-                                    child:
-                                        const Icon(Icons.camera_alt_outlined)),
+                                    child: const Icon(Icons.camera_alt_outlined,
+                                        color: Colors.white)),
                                 ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: secColor),
                                     onPressed: () {
                                       jobCardScreenController.recordVideo();
                                     },
-                                    child: jobCardScreenController
-                                            .recorded.isFalse
-                                        ? const Icon(Icons.video_camera_back)
-                                        : const Icon(Icons.done))
+                                    child:
+                                        jobCardScreenController.recorded.isFalse
+                                            ? const Icon(
+                                                Icons.video_camera_back,
+                                                color: Colors.white,
+                                              )
+                                            : const Icon(Icons.done,
+                                                color: Colors.white))
                               ],
                             ),
                             const SizedBox(

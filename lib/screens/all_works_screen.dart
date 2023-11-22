@@ -16,7 +16,10 @@ class AllWorksScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('New Cards'),
+          title: const Text(
+            'New Cards',
+            style: TextStyle(color: Colors.white),
+          ),
           centerTitle: true,
           backgroundColor: mainColor,
           actions: [
@@ -24,7 +27,10 @@ class AllWorksScreen extends StatelessWidget {
                 onPressed: () {
                   showSearch(context: context, delegate: DataSearch());
                 },
-                icon: const Icon(Icons.search))
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ))
           ],
         ),
         // floatingActionButton: FloatingActionButton(
@@ -76,6 +82,7 @@ class AllWorksScreen extends StatelessWidget {
                         }
 
                         return Card(
+                          surfaceTintColor: Colors.white,
                           elevation: 10,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -321,6 +328,7 @@ class DataSearch extends SearchDelegate {
                 }
               }
               return Card(
+                surfaceTintColor: Colors.white,
                 elevation: 10,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

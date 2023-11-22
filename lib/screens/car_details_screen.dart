@@ -22,7 +22,18 @@ class CarDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: mainColor,
-          title: const Text('Details'),
+          title: const Text(
+            'Details',
+            style: TextStyle(color: Colors.white),
+          ),
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              )),
           centerTitle: true,
           actions: [
             TextButton(
