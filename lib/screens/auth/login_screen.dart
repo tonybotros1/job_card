@@ -1,31 +1,107 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class CurvedScreenClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(0, size.height - 100); // Start at the bottom-left
-    path.quadraticBezierTo(size.width /5, size.height, size.width / 1.7,
-        size.height - 50); // Create a quadratic Bezier curve
-    path.lineTo(size.width, 0); // Finish at the top-right
-    return path;
-  }
+import '../../const.dart';
+import '../../controllers/login_screen_controller.dart';
 
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
-class CurvedScreen extends StatelessWidget {
+  final LoginScreenController loginScreenController =
+      Get.put(LoginScreenController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ClipPath(
-        clipper: CurvedScreenClipper(),
-        child: Container(
-          color: Colors.blue, // Background color
-          height: 200, // Adjust the height as needed
-        ),
-      ),
-    );
+        backgroundColor: Colors.white,
+        body: GetBuilder<LoginScreenController>(
+            init: LoginScreenController(),
+            builder: (controller) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 130,
+                          ),
+                          Container(
+                            child: Image.asset(
+                              'assets/COMPASS_LOGO.jpg',
+                            ),
+                            width: Get.width,
+                            height: 300,
+                          ),
+                          myTextFormField(
+                              labelText: 'Email',
+                              hintText: 'Enter your email',
+                              keyboardType: TextInputType.emailAddress,
+                              validate: true),
+                          myTextFormField(
+                              labelText: 'Password',
+                              hintText: 'Enter your password',
+                              validate: true),
+                          SizedBox(
+                            height: 70,
+                          ),
+                          Container(
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                'Login',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: mainColor,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }));
   }
+}
+
+Padding myTextFormField(
+    {required String labelText,
+    required String hintText,
+    //  TextEditingController controller,
+    required validate,
+    keyboardType}) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
+    child: TextFormField(
+      onTap: () {
+        // controller.selection = TextSelection(
+        //   baseOffset: 0,
+        //   extentOffset: controller.text.length,
+        // );
+      },
+      keyboardType: keyboardType,
+      // controller: controller,
+      decoration: InputDecoration(
+        hintStyle: const TextStyle(color: Colors.grey),
+        labelText: labelText,
+        hintText: hintText,
+        labelStyle: TextStyle(color: Colors.grey.shade700),
+        focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey, width: 2.0)),
+      ),
+      validator: validate != false
+          ? (value) {
+              if (value!.isEmpty) {
+                return 'Please Enter $labelText';
+              }
+              return null;
+            }
+          : null,
+    ),
+  );
 }
