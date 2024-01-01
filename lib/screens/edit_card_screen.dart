@@ -292,7 +292,39 @@ class EditCardScreen extends StatelessWidget {
                                     right: 0,
                                     child: IconButton(
                                         onPressed: () {
-                                          controller.imagesList.removeAt(i);
+                                          // controller.imagesList.removeAt(i);
+                                          // controller.updateMethod();
+                                          showCupertinoDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  CupertinoAlertDialog(
+                                                    title: Text('Alert'),
+                                                    content: Text(
+                                                        'Are you sure you want to delete this picture?'),
+                                                    actions: [
+                                                      CupertinoDialogAction(
+                                                        child: Text(
+                                                          'No',
+                                                          style: TextStyle(
+                                                              color: mainColor),
+                                                        ),
+                                                        isDefaultAction: true,
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                      ),
+                                                      CupertinoDialogAction(
+                                                        child: Text('Yes'),
+                                                        onPressed: () {
+                                                          controller.imagesList
+                                                              .removeAt(i);
+                                                          controller
+                                                              .updateMethod();
+                                                          Get.back();
+                                                        },
+                                                      )
+                                                    ],
+                                                  ));
                                         },
                                         icon: const Icon(
                                           Icons.remove_circle,

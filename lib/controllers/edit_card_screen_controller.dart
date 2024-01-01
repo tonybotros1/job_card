@@ -198,4 +198,8 @@ class EditCardScreenController extends GetxController {
       }
     }
   }
+
+  updateMethod() {
+    update();
+  }
 }
