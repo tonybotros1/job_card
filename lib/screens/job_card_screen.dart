@@ -317,7 +317,7 @@ class JobCardScreen extends StatelessWidget {
                             ),
                             Center(
                               child: Container(
-                                width: Get.width / 1.2,
+                                width: Get.width / 1.1,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Padding(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -221,17 +223,30 @@ class EditCardScreen extends StatelessWidget {
                       const SizedBox(
                         height: 30,
                       ),
-                      editCardScreenController.carImages.isNotEmpty
-                          ? Text(
-                              'Images of the car',
-                              style: TextStyle(
-                                  color: secColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          : const SizedBox(
-                              height: 30,
-                            ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          editCardScreenController.carImages.isNotEmpty
+                              ? Text(
+                                  'Images of the car',
+                                  style: TextStyle(
+                                      color: secColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              : const SizedBox(
+                                  height: 30,
+                                ),
+                          ElevatedButton(
+                              onPressed: () {
+                                editCardScreenController.takePhoto();
+                              },
+                              child: Text(
+                                'New Image',
+                                style: TextStyle(color: secColor),
+                              )),
+                        ],
+                      ),
                       const SizedBox(
                         height: 30,
                       ),
@@ -241,19 +256,20 @@ class EditCardScreen extends StatelessWidget {
             GetBuilder<EditCardScreenController>(
                 init: EditCardScreenController(),
                 builder: (controller) {
-                  return SizedBox(
-                    width: Get.width / 1.3,
-                    // height: 200,
+                  return Container(
+                    width: Get.width / 1.1,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(15)),
                     child: GridView.builder(
+                        itemCount: controller.imagesList.length,
                         shrinkWrap: true,
-                        itemCount: controller.carImages.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3),
                         itemBuilder: (context, i) {
-                          if (controller.carImages.isEmpty) {
-                            return const SizedBox(
-                              height: 100,
+                          if (controller.imagesList.isEmpty) {
+                            return const Center(
+                              child: Text('Add Photo'),
                             );
                           } else {
                             return Container(
@@ -264,50 +280,19 @@ class EditCardScreen extends StatelessWidget {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(20),
                                     child: FittedBox(
-                                        fit: BoxFit.cover,
-                                        clipBehavior: Clip.hardEdge,
-                                        child: InkWell(
-                                          onTap: () =>
-                                              Get.to(() => ImagesScreen()),
-                                          child: Image.network(
-                                              controller.carImages[i]),
-                                        )),
+                                      fit: BoxFit.cover,
+                                      clipBehavior: Clip.hardEdge,
+                                      child: Image.file(
+                                        File(controller.imagesList[i].path),
+                                      ),
+                                    ),
                                   ),
                                   Positioned(
                                     top: 0,
                                     right: 0,
                                     child: IconButton(
                                         onPressed: () {
-                                          showCupertinoDialog(
-                                              context: context,
-                                              builder: (context) =>
-                                                  CupertinoAlertDialog(
-                                                    title: Text('Alert'),
-                                                    content: Text(
-                                                        'Are you sure you want to delete this picture?'),
-                                                    actions: [
-                                                      CupertinoDialogAction(
-                                                        child: Text(
-                                                          'No',
-                                                          style: TextStyle(
-                                                              color: mainColor),
-                                                        ),
-                                                        isDefaultAction: true,
-                                                        onPressed: () {
-                                                          Get.back();
-                                                        },
-                                                      ),
-                                                      CupertinoDialogAction(
-                                                        child: Text('Yes'),
-                                                        onPressed: () {
-                                                          controller.removeImage(
-                                                              controller
-                                                                  .carImages[i]);
-                                                          Get.back();
-                                                        },
-                                                      )
-                                                    ],
-                                                  ));
+                                          controller.imagesList.removeAt(i);
                                         },
                                         icon: const Icon(
                                           Icons.remove_circle,
@@ -320,7 +305,87 @@ class EditCardScreen extends StatelessWidget {
                           }
                         }),
                   );
-                })
+                }),
+            GetBuilder<EditCardScreenController>(builder: (controller) {
+              return SizedBox(
+                width: Get.width / 1.1,
+                // height: 200,
+                child: GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: controller.carImages.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3),
+                    itemBuilder: (context, i) {
+                      if (controller.carImages.isEmpty) {
+                        return const SizedBox(
+                          height: 100,
+                        );
+                      } else {
+                        return Container(
+                          margin: const EdgeInsets.all(3),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    clipBehavior: Clip.hardEdge,
+                                    child: InkWell(
+                                      onTap: () => Get.to(() => ImagesScreen()),
+                                      child: Image.network(
+                                          controller.carImages[i]),
+                                    )),
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                    onPressed: () {
+                                      showCupertinoDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              CupertinoAlertDialog(
+                                                title: Text('Alert'),
+                                                content: Text(
+                                                    'Are you sure you want to delete this picture?'),
+                                                actions: [
+                                                  CupertinoDialogAction(
+                                                    child: Text(
+                                                      'No',
+                                                      style: TextStyle(
+                                                          color: mainColor),
+                                                    ),
+                                                    isDefaultAction: true,
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                  ),
+                                                  CupertinoDialogAction(
+                                                    child: Text('Yes'),
+                                                    onPressed: () {
+                                                      controller.removeImage(
+                                                          controller
+                                                              .carImages[i]);
+                                                      Get.back();
+                                                    },
+                                                  )
+                                                ],
+                                              ));
+                                    },
+                                    icon: const Icon(
+                                      Icons.remove_circle,
+                                      color: Colors.red,
+                                    )),
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                    }),
+              );
+            })
           ],
         ),
       ),

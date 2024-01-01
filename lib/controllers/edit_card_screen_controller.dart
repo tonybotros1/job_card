@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:signature/signature.dart';
 
 class EditCardScreenController extends GetxController {
@@ -29,6 +32,10 @@ class EditCardScreenController extends GetxController {
   Uint8List? signatureAsImage;
   RxString signatureImageDownloadUrl = RxString('');
   RxBool errorWhileUploading = RxBool(false);
+  final picker = ImagePicker();
+  File? file;
+  RxList<File> imagesList = RxList([]);
+  RxBool uploading = RxBool(false);
 
   @override
   void onInit() async {
@@ -90,6 +97,9 @@ class EditCardScreenController extends GetxController {
         "customer_signature": signatureImageDownloadUrl.value,
       });
     }
+    if (imagesList.isNotEmpty) {
+      await saveCarImages();
+    }
     FirebaseFirestore.instance
         .collection('car_card')
         .doc(arguments.docID)
@@ -108,7 +118,6 @@ class EditCardScreenController extends GetxController {
       "car_images": carImages
     });
   }
-
 
 // this function is to edit the signature
 
@@ -151,5 +160,42 @@ class EditCardScreenController extends GetxController {
 
     carBrandList.value = carBrands.split('\n')..sort();
     carColorsList.value = carColors.split('\n')..sort();
+  }
+
+  // this functions is to take photos
+  void takePhoto() async {
+    try {
+      final XFile? cameraImage =
+          await picker.pickImage(source: ImageSource.camera);
+      if (cameraImage != null) {
+        File image = File(cameraImage.path);
+        imagesList.add(image);
+      }
+    } catch (e) {
+      //
+    }
+    update();
+  }
+
+  // this function is to save car images in firebase
+  saveCarImages() async {
+    if (errorWhileUploading.value != true) {
+      try {
+        uploading.value = true;
+        for (var element in imagesList) {
+          final Reference ref = FirebaseStorage.instance
+              .ref()
+              .child('car_pictures')
+              .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+          final UploadTask uploadTask = ref.putFile(element);
+          await uploadTask.then((p0) async {
+            final url = await ref.getDownloadURL();
+            carImages.add(url);
+          });
+        }
+      } catch (e) {
+        errorWhileUploading.value = true;
+      }
+    }
   }
 }
