@@ -34,7 +34,7 @@ class JobCardScreenController extends GetxController {
   final picker = ImagePicker();
   File? file;
 
-  RxBool uploading = RxBool(false);
+  RxBool uploading = RxBool(false); 
 
   UploadTask? videoUploadTask;
 

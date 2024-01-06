@@ -166,224 +166,214 @@ class JobCardScreen extends StatelessWidget {
                       controller: jobCardScreenController.emailAddress,
                       validate: false,
                       keyboardType: TextInputType.emailAddress),
-                  Obx(
-                    () => Padding(
-                      padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
-                      child: ListTile(
-                        title: Text(
-                          "Date: ",
-                          style: fontStyle,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
+                    child: ListTile(
+                      title: Text(
+                        "Date: ",
+                        style: fontStyle,
+                      ),
+                      subtitle: Text(jobCardScreenController.formatDate(
+                          jobCardScreenController.selectedDate.value)),
+                      trailing: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: secColor,
                         ),
-                        subtitle: Text(jobCardScreenController.formatDate(
-                            jobCardScreenController.selectedDate.value)),
-                        trailing: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: secColor,
-                          ),
-                          onPressed: () => jobCardScreenController
-                              .selectDateContext(context),
-                          child: const FittedBox(
-                              child: Text(
-                            'Select Date',
-                            style: TextStyle(color: Colors.white),
-                          )),
-                        ),
+                        onPressed: () =>
+                            jobCardScreenController.selectDateContext(context),
+                        child: const FittedBox(
+                            child: Text(
+                          'Select Date',
+                          style: TextStyle(color: Colors.white),
+                        )),
                       ),
                     ),
                   ),
-                  Obx(() => Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Fuel:',
+                          style: TextStyle(
+                              color: secColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 25),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('E'),
+                              Text('H'),
+                              Text('F'),
+                            ],
+                          ),
+                        ),
+                        Slider(
+                          activeColor: Colors.blue,
+                          value: jobCardScreenController.fuelAmount.value,
+                          onChanged: (newValue) {
+                            jobCardScreenController.fuelAmount.value = newValue;
+                          },
+                          min: 0,
+                          max: 100,
+                          divisions: 100,
+                          label: jobCardScreenController.fuelAmount.value
+                              .round()
+                              .toString(),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          'Customer Signature:',
+                          style: TextStyle(
+                              color: secColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey)),
+                            width: Get.width * 0.8,
+                            height: Get.height * 0.4,
+                            child: Signature(
+                              controller: jobCardScreenController.controller,
+                              backgroundColor: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: secColor,
+                            ),
+                            onPressed: () {
+                              jobCardScreenController.controller.clear();
+                            },
+                            child: const Text(
+                              'Clear',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        Text(
+                          'Add Images/Video:',
+                          style: TextStyle(
+                              color: secColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              'Fuel:',
-                              style: TextStyle(
-                                  color: secColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 25),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('E'),
-                                  Text('H'),
-                                  Text('F'),
-                                ],
-                              ),
-                            ),
-                            Slider(
-                              activeColor: Colors.blue,
-                              value: jobCardScreenController.fuelAmount.value,
-                              onChanged: (newValue) {
-                                jobCardScreenController.fuelAmount.value =
-                                    newValue;
-                              },
-                              min: 0,
-                              max: 100,
-                              divisions: 100,
-                              label: jobCardScreenController.fuelAmount.value
-                                  .round()
-                                  .toString(),
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            Text(
-                              'Customer Signature:',
-                              style: TextStyle(
-                                  color: secColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Center(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey)),
-                                width: Get.width * 0.8,
-                                height: Get.height * 0.4,
-                                child: Signature(
-                                  controller:
-                                      jobCardScreenController.controller,
-                                  backgroundColor: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: ElevatedButton(
+                            ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: secColor,
-                                ),
+                                    backgroundColor: secColor),
                                 onPressed: () {
-                                  jobCardScreenController.controller.clear();
+                                  jobCardScreenController.takePhoto();
                                 },
-                                child: const Text(
-                                  'Clear',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            Text(
-                              'Add Images/Video:',
-                              style: TextStyle(
-                                  color: secColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: secColor),
-                                    onPressed: () {
-                                      jobCardScreenController.takePhoto();
-                                    },
-                                    child: const Icon(Icons.camera_alt_outlined,
-                                        color: Colors.white)),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: secColor),
-                                    onPressed: () {
-                                      jobCardScreenController.recordVideo();
-                                    },
-                                    child:
-                                        jobCardScreenController.recorded.isFalse
-                                            ? const Icon(
-                                                Icons.video_camera_back,
-                                                color: Colors.white,
-                                              )
-                                            : const Icon(Icons.done,
-                                                color: Colors.white))
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Center(
-                              child: Container(
-                                width: Get.width / 1.1,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: GridView.builder(
-                                        itemCount: jobCardScreenController
-                                            .imagesList.length,
-                                        shrinkWrap: true,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 3),
-                                        itemBuilder: (context, i) {
-                                          if (jobCardScreenController
-                                              .imagesList.isEmpty) {
-                                            return const Center(
-                                              child: Text('Add Photo'),
-                                            );
-                                          } else {
-                                            return Container(
-                                              margin: const EdgeInsets.all(3),
-                                              child: Stack(
-                                                fit: StackFit.expand,
-                                                children: [
-                                                  ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    child: FittedBox(
-                                                      fit: BoxFit.cover,
-                                                      clipBehavior:
-                                                          Clip.hardEdge,
-                                                      child: Image.file(
-                                                        File(
-                                                            jobCardScreenController
-                                                                .imagesList[i]
-                                                                .path),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    top: 0,
-                                                    right: 0,
-                                                    child: IconButton(
-                                                        onPressed: () {
-                                                          jobCardScreenController
-                                                              .imagesList
-                                                              .removeAt(i);
-                                                        },
-                                                        icon: const Icon(
-                                                          Icons.remove_circle,
-                                                          color: Colors.red,
-                                                        )),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          }
-                                        })),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 50,
-                            ),
+                                child: const Icon(Icons.camera_alt_outlined,
+                                    color: Colors.white)),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: secColor),
+                                onPressed: () {
+                                  jobCardScreenController.recordVideo();
+                                },
+                                child: jobCardScreenController.recorded.isFalse
+                                    ? const Icon(
+                                        Icons.video_camera_back,
+                                        color: Colors.white,
+                                      )
+                                    : const Icon(Icons.done,
+                                        color: Colors.white))
                           ],
                         ),
-                      )),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                          child: Container(
+                            width: Get.width / 1.1,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GridView.builder(
+                                    itemCount: jobCardScreenController
+                                        .imagesList.length,
+                                    shrinkWrap: true,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3),
+                                    itemBuilder: (context, i) {
+                                      if (jobCardScreenController
+                                          .imagesList.isEmpty) {
+                                        return const Center(
+                                          child: Text('Add Photo'),
+                                        );
+                                      } else {
+                                        return Container(
+                                          margin: const EdgeInsets.all(3),
+                                          child: Stack(
+                                            fit: StackFit.expand,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                child: FittedBox(
+                                                  fit: BoxFit.cover,
+                                                  clipBehavior: Clip.hardEdge,
+                                                  child: Image.file(
+                                                    File(jobCardScreenController
+                                                        .imagesList[i].path),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 0,
+                                                right: 0,
+                                                child: IconButton(
+                                                    onPressed: () {
+                                                      jobCardScreenController
+                                                          .imagesList
+                                                          .removeAt(i);
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.remove_circle,
+                                                      color: Colors.red,
+                                                    )),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    })),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(
                     height: 50,
                   )

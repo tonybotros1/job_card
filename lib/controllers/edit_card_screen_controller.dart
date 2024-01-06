@@ -35,7 +35,12 @@ class EditCardScreenController extends GetxController {
   final picker = ImagePicker();
   File? file;
   RxList<File> imagesList = RxList([]);
+
+  // this is to show loading mark while saving data
   RxBool uploading = RxBool(false);
+
+  // this is to follow the loading process
+  UploadTask? addedImagesUploadTask;
 
   @override
   void onInit() async {
@@ -85,7 +90,9 @@ class EditCardScreenController extends GetxController {
     exportBackgroundColor: Colors.white,
   );
 
-  void editValues() async {
+   editValues() async {
+    uploading.value = true;
+    print('sssssssssssssssssssssssssssssss ${uploading.value}');
     signatureAsImage = await controller.toPngBytes();
 
     if (signatureAsImage != null) {
@@ -116,6 +123,9 @@ class EditCardScreenController extends GetxController {
       "fuel_amount": fuelAmount.value,
       "editing_time": FieldValue.serverTimestamp(),
       "car_images": carImages
+    }).then((value) {
+      uploading.value = false;
+      print('eeeeeeeeeeeeeeeee ${uploading.value}');
     });
   }
 
@@ -187,8 +197,8 @@ class EditCardScreenController extends GetxController {
               .ref()
               .child('car_pictures')
               .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-          final UploadTask uploadTask = ref.putFile(element);
-          await uploadTask.then((p0) async {
+          addedImagesUploadTask = ref.putFile(element);
+          await addedImagesUploadTask!.then((p0) async {
             final url = await ref.getDownloadURL();
             carImages.add(url);
           });
