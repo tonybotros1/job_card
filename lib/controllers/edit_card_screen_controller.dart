@@ -49,11 +49,6 @@ class EditCardScreenController extends GetxController {
     super.onInit();
   }
 
-  @override
-  void onClose() {
-    // controller.dispose();
-    super.onClose();
-  }
 
   // this function is to give the fields the values when i want to edit the selected car card
   setValuesToFields() {
@@ -92,7 +87,6 @@ class EditCardScreenController extends GetxController {
 
    editValues() async {
     uploading.value = true;
-    print('sssssssssssssssssssssssssssssss ${uploading.value}');
     signatureAsImage = await controller.toPngBytes();
 
     if (signatureAsImage != null) {
@@ -125,7 +119,6 @@ class EditCardScreenController extends GetxController {
       "car_images": carImages
     }).then((value) {
       uploading.value = false;
-      print('eeeeeeeeeeeeeeeee ${uploading.value}');
     });
   }
 

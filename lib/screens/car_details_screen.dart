@@ -36,33 +36,35 @@ class CarDetailsScreen extends StatelessWidget {
               )),
           centerTitle: true,
           actions: [
-            TextButton(
-                onPressed: () {
-                  Get.to(
-                    () => EditCardScreen(),
-                    arguments: JobCardModel(
-                        carImages: cardDetailsController.carImages,
-                        customerSignature:
-                            cardDetailsController.customerSignature,
-                        carBrand: cardDetailsController.carBrand,
-                        carMileage: cardDetailsController.carMileage,
-                        carModel: cardDetailsController.carModel,
-                        chassisNumber: cardDetailsController.chassisNumber,
-                        color: cardDetailsController.color,
-                        customerName: cardDetailsController.customerName,
-                        date: cardDetailsController.date,
-                        emailAddress: cardDetailsController.emailAddress,
-                        fuelAmount: cardDetailsController.fuelAmount,
-                        phoneNumber: cardDetailsController.phoneNumber,
-                        plateNumber: cardDetailsController.plateNumber,
-                        docID: cardDetailsController.id,
-                        carVideo: cardDetailsController.video),
-                  );
-                },
-                child: const Text(
-                  'Edit',
-                  style: TextStyle(color: Colors.white),
-                ))
+            cardDetailsController.status == true
+                ? TextButton(
+                    onPressed: () {
+                      Get.to(
+                        () => EditCardScreen(),
+                        arguments: JobCardModel(
+                            carImages: cardDetailsController.carImages,
+                            customerSignature:
+                                cardDetailsController.customerSignature,
+                            carBrand: cardDetailsController.carBrand,
+                            carMileage: cardDetailsController.carMileage,
+                            carModel: cardDetailsController.carModel,
+                            chassisNumber: cardDetailsController.chassisNumber,
+                            color: cardDetailsController.color,
+                            customerName: cardDetailsController.customerName,
+                            date: cardDetailsController.date,
+                            emailAddress: cardDetailsController.emailAddress,
+                            fuelAmount: cardDetailsController.fuelAmount,
+                            phoneNumber: cardDetailsController.phoneNumber,
+                            plateNumber: cardDetailsController.plateNumber,
+                            docID: cardDetailsController.id,
+                            carVideo: cardDetailsController.video),
+                      );
+                    },
+                    child: const Text(
+                      'Edit',
+                      style: TextStyle(color: Colors.white),
+                    ))
+                : SizedBox()
           ],
         ),
         body: Padding(

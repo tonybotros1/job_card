@@ -271,7 +271,7 @@ class JobCardScreen extends StatelessWidget {
                           height: 50,
                         ),
                         Text(
-                          'Add Images/Video:',
+                          'Add Images',
                           style: TextStyle(
                               color: secColor,
                               fontSize: 20,
@@ -291,19 +291,19 @@ class JobCardScreen extends StatelessWidget {
                                 },
                                 child: const Icon(Icons.camera_alt_outlined,
                                     color: Colors.white)),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: secColor),
-                                onPressed: () {
-                                  jobCardScreenController.recordVideo();
-                                },
-                                child: jobCardScreenController.recorded.isFalse
-                                    ? const Icon(
-                                        Icons.video_camera_back,
-                                        color: Colors.white,
-                                      )
-                                    : const Icon(Icons.done,
-                                        color: Colors.white))
+                            // ElevatedButton(
+                            //     style: ElevatedButton.styleFrom(
+                            //         backgroundColor: secColor),
+                            //     onPressed: () {
+                            //       jobCardScreenController.recordVideo();
+                            //     },
+                            //     child: jobCardScreenController.recorded.isFalse
+                            //         ? const Icon(
+                            //             Icons.video_camera_back,
+                            //             color: Colors.white,
+                            //           )
+                            //         : const Icon(Icons.done,
+                            //             color: Colors.white))
                           ],
                         ),
                         const SizedBox(

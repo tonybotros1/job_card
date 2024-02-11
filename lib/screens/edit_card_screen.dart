@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
-import 'package:job_card/screens/all_works_screen.dart';
 import 'package:job_card/screens/images_screen.dart';
 import 'package:job_card/screens/main_cards_screen.dart';
 import 'package:signature/signature.dart';
@@ -13,6 +12,8 @@ import 'package:video_player/video_player.dart';
 import '../const.dart';
 import '../controllers/edit_card_screen_controller.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+
+import 'car_details_screen.dart';
 
 class EditCardScreen extends StatelessWidget {
   EditCardScreen({super.key});

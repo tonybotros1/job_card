@@ -1,23 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:job_card/screens/auth/loading_screen.dart';
 // import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AllWorksController extends GetxController {
   final RxList<DocumentSnapshot> carCards = RxList<DocumentSnapshot>([]);
   final RxList<DocumentSnapshot> filteredCarCards =
       RxList<DocumentSnapshot>([]);
 
+  RxString userId = RxString('');
+
   @override
-  void onInit() {
+  void onInit() async {
+    await getUserId();
     getAllWorks();
     super.onInit();
+  }
+
+// this function is to get user id:
+  getUserId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId.value = (await prefs.getString('userId'))!;
+  }
+
+// this function is to logout from app:
+  void logOut() async {
+    await FirebaseAuth.instance.signOut();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('devideToken', '');
+    await prefs.setString('userId', '');
+    Get.offAll(() => LoadingScreen());
   }
 
 // this function is to get the works from firebase
   getAllWorks() async {
     FirebaseFirestore.instance
         .collection('car_card')
+        .where('user_id', isEqualTo: userId.value)
         .where('status', isEqualTo: true)
         // .orderBy('status', descending: true)
         .orderBy('timestamp', descending: true)

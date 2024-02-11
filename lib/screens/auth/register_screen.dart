@@ -3,19 +3,20 @@ import 'package:get/get.dart';
 
 import '../../const.dart';
 import '../../controllers/Auth controllers/login_screen_controller.dart';
+import '../../controllers/Auth controllers/register_screen_controller.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  RegisterScreen({super.key});
 
-  final LoginScreenController loginScreenController =
-      Get.put(LoginScreenController());
+  final RegisterController RegisterScreenController =
+      Get.put(RegisterController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: GetBuilder<LoginScreenController>(
-            init: LoginScreenController(),
+        body: GetBuilder<RegisterController>(
+            init: RegisterController(),
             builder: (controller) {
               return Column(
                 children: [
@@ -52,10 +53,10 @@ class LoginScreen extends StatelessWidget {
                           Container(
                             child: ElevatedButton(
                               onPressed: () {
-                                controller.singIn();
+                                controller.register();
                               },
                               child: Text(
-                                'Login',
+                                'Create Account',
                                 style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(

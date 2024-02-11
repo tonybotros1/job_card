@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/all_works_screen_controller.dart';
+import 'package:job_card/screens/auth/loading_screen.dart';
+import 'package:job_card/screens/auth/login_screen.dart';
 import 'package:job_card/screens/car_details_screen.dart';
 import '../models/job_card_model.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -15,6 +18,38 @@ class AllWorksScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                showCupertinoDialog(
+                    context: context,
+                    builder: (context) => CupertinoAlertDialog(
+                          title: Text('Alert'),
+                          content: Text('Are you sure you want to Logout?'),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: mainColor),
+                              ),
+                              isDefaultAction: true,
+                              onPressed: () {
+                                Get.back();
+                              },
+                            ),
+                            CupertinoDialogAction(
+                              child: Text('Yes'),
+                              onPressed: () {
+                                allWorksController.logOut();
+                                Get.offAll(() => LoginScreen());
+                              },
+                            )
+                          ],
+                        ));
+              },
+              icon: Icon(
+                Icons.logout,
+                color: Colors.white,
+              )),
           automaticallyImplyLeading: false,
           title: const Text(
             'New Cards',

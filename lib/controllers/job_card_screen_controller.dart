@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:job_card/screens/main_cards_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signature/signature.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -53,6 +54,7 @@ class JobCardScreenController extends GetxController {
   RxList<String> carImagesDownloadURL = RxList<String>([]);
 
   RxBool recorded = RxBool(false);
+  RxString userId = RxString('');
 
   @override
   void onInit() {
@@ -68,6 +70,12 @@ class JobCardScreenController extends GetxController {
 
     readCarBrandsColors();
     super.onInit();
+  }
+
+  // this function is to get user id:
+  getUserId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId.value = (await prefs.getString('userId'))!;
   }
 
   // this function is to clear the fields
@@ -142,7 +150,8 @@ class JobCardScreenController extends GetxController {
           "car_images": carImagesDownloadURL,
           "timestamp": FieldValue.serverTimestamp(),
           "editing_time": '',
-          "status": true
+          "status": true,
+          "user_id":userId.value,
         }).then((value) {
           uploading.value = false;
 
@@ -154,8 +163,10 @@ class JobCardScreenController extends GetxController {
     }
   }
 
-// for signature:
 
+
+
+// for signature:
   SignatureController controller = SignatureController(
     penStrokeWidth: 3,
     penColor: Colors.black,

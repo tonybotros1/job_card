@@ -26,7 +26,6 @@ class CardDetailsController extends GetxController {
     super.onInit();
   }
 
- 
 
   void getDetails() {
     if (Get.arguments != null) {
@@ -49,6 +48,7 @@ class CardDetailsController extends GetxController {
       video = arguments.carVideo;
       status = arguments.status;
     }
+    update();
   }
 
   void changeStatus(stat) {
@@ -57,6 +57,10 @@ class CardDetailsController extends GetxController {
         .collection('car_card')
         .doc(id)
         .update({"status": stat});
+    update();
+  }
+
+  void updateMethod() {
     update();
   }
 }
