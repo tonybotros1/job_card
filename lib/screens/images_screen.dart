@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:job_card/controllers/edit_card_screen_controller.dart';
+import 'package:job_card/controllers/Cards%20Screens%20Controllers/edit_card_screen_controller.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 

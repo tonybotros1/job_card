@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../screens/main_cards_screen.dart';
+import '../../screens/Cards screens/main_cards_screen.dart';
 
 class LoginScreenController extends GetxController {
   late TextEditingController email = TextEditingController();
@@ -74,7 +74,7 @@ class LoginScreenController extends GetxController {
 
   saveTokenInSharedPref() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('devideToken', currentUserToken);
+    await prefs.setString('deviceToken', currentUserToken);
     await prefs.setString('userId', userId);
     // final String? action = prefs.getString('devideToken');
   }

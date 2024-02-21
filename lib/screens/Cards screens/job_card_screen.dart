@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:job_card/controllers/job_card_screen_controller.dart';
+import 'package:job_card/controllers/Cards%20Screens%20Controllers/job_card_screen_controller.dart';
 import 'package:signature/signature.dart';
-import '../const.dart';
+import '../../const.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -54,8 +54,12 @@ class JobCardScreen extends StatelessWidget {
       body: Obx(() {
         if (jobCardScreenController.uploading.isTrue) {
           return StreamBuilder<TaskSnapshot>(
-              stream: jobCardScreenController.videoUploadTask?.snapshotEvents,
+              stream:
+                  jobCardScreenController.addedImagesUploadTask?.snapshotEvents,
               builder: (context, snapshot) {
+                print('ffffffffffffffffffffffffffffffffffffffff');
+                print(jobCardScreenController.addedImagesUploadTask);
+                print(snapshot.hasData);
                 if (snapshot.hasData) {
                   final data = snapshot.data;
                   double progress = data!.bytesTransferred / data.totalBytes;
@@ -245,7 +249,7 @@ class JobCardScreen extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey)),
-                            width: Get.width * 0.8,
+                            width: Get.width * 0.9,
                             height: Get.height * 0.4,
                             child: Signature(
                               controller: jobCardScreenController.controller,

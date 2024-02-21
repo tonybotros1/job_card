@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
-import 'package:job_card/controllers/finished_works_screen_controller.dart';
-import 'package:job_card/screens/car_details_screen.dart';
-import '../models/job_card_model.dart';
+import 'package:job_card/controllers/Cards%20Screens%20Controllers/finished_works_screen_controller.dart';
+import 'package:job_card/screens/Cards%20screens/card_details_screen.dart';
+import '../../models/job_card_model.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class FinishedWorksScreen extends StatelessWidget {

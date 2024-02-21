@@ -49,7 +49,6 @@ class EditCardScreenController extends GetxController {
     super.onInit();
   }
 
-
   // this function is to give the fields the values when i want to edit the selected car card
   setValuesToFields() {
     if (Get.arguments == null) {
@@ -85,10 +84,12 @@ class EditCardScreenController extends GetxController {
     exportBackgroundColor: Colors.white,
   );
 
-   editValues() async {
+  editValues() async {
     uploading.value = true;
     signatureAsImage = await controller.toPngBytes();
-
+    if (imagesList.isNotEmpty) {
+      await saveCarImages();
+    }
     if (signatureAsImage != null) {
       await editSignature();
       FirebaseFirestore.instance
@@ -98,9 +99,7 @@ class EditCardScreenController extends GetxController {
         "customer_signature": signatureImageDownloadUrl.value,
       });
     }
-    if (imagesList.isNotEmpty) {
-      await saveCarImages();
-    }
+
     FirebaseFirestore.instance
         .collection('car_card')
         .doc(arguments.docID)

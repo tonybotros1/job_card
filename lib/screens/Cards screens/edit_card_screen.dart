@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:job_card/screens/images_screen.dart';
-import 'package:job_card/screens/main_cards_screen.dart';
+import 'package:job_card/screens/Cards%20screens/main_cards_screen.dart';
 import 'package:signature/signature.dart';
 import 'package:video_player/video_player.dart';
-import '../const.dart';
-import '../controllers/edit_card_screen_controller.dart';
+import '../../const.dart';
+import '../../controllers/Cards Screens Controllers/edit_card_screen_controller.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-import 'car_details_screen.dart';
+import 'card_details_screen.dart';
 
 class EditCardScreen extends StatelessWidget {
   EditCardScreen({super.key});
@@ -105,7 +105,7 @@ class EditCardScreen extends StatelessWidget {
                     child: CircularPercentIndicator(
                       animation: true,
                       animationDuration: 1000,
-                      radius: 180,
+                      radius: 150,
                       lineWidth: 30,
                       percent: progress,
                       progressColor: mainColor,
@@ -263,7 +263,7 @@ class EditCardScreen extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey)),
-                              width: Get.width * 0.8,
+                              width: Get.width * 0.9,
                               height: Get.height * 0.4,
                               child: Signature(
                                 controller: editCardScreenController.controller,

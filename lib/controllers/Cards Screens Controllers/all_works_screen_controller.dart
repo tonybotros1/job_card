@@ -30,7 +30,7 @@ class AllWorksController extends GetxController {
   void logOut() async {
     await FirebaseAuth.instance.signOut();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('devideToken', '');
+    await prefs.setString('deviceToken', '');
     await prefs.setString('userId', '');
     Get.offAll(() => LoadingScreen());
   }

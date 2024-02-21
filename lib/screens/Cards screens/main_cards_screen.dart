@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:job_card/const.dart';
-import 'package:job_card/screens/all_works_screen.dart';
-import 'package:job_card/screens/finished_works_screen.dart';
-import 'package:job_card/screens/job_card_screen.dart';
+import 'package:job_card/screens/Cards%20screens/all_works_screen.dart';
+import 'package:job_card/screens/Cards%20screens/finished_works_screen.dart';
+import 'package:job_card/screens/Cards%20screens/job_card_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class MainCardsScreen extends StatelessWidget {

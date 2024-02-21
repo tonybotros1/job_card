@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
-import 'package:job_card/controllers/card_details_screen_controller.dart';
+import 'package:job_card/controllers/Cards%20Screens%20Controllers/card_details_screen_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:job_card/models/image_model.dart';
 import 'package:job_card/models/job_card_model.dart';
-import 'package:job_card/screens/edit_card_screen.dart';
+import 'package:job_card/screens/Cards%20screens/edit_card_screen.dart';
 import 'package:job_card/screens/single_image_viewer.dart';
 import 'package:job_card/screens/video_screen.dart';
+
+import 'card_images_screen.dart';
 
 class CarDetailsScreen extends StatelessWidget {
   CarDetailsScreen({super.key});
@@ -126,49 +128,154 @@ class CarDetailsScreen extends StatelessWidget {
                   width: Get.width,
                   color: containerColor,
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    // padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.only(bottom: 20, top: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Images',
-                          style: GoogleFonts.mooli(
-                              fontSize: 14, color: Colors.grey[900]),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20, left: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Images',
+                                style: GoogleFonts.mooli(
+                                    fontSize: 14, color: Colors.grey[900]),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(() => CardImagesScreen(),
+                                      arguments: JobCardModel(
+                                          customerName: cardDetailsController
+                                              .customerName,
+                                          carImages:
+                                              cardDetailsController.carImages),
+                                      transition: Transition.leftToRight);
+                                },
+                                child: SizedBox(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '${cardDetailsController.carImages.length}',
+                                        style: GoogleFonts.mooli(
+                                            fontSize: 14,
+                                            color: Colors.grey[900]),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        color: Colors.grey[900],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         cardDetailsController.carImages.isNotEmpty
-                            ? GridView.builder(
-                                // padding: const EdgeInsets.all(8),
-                                shrinkWrap: true,
-                                itemCount:
-                                    cardDetailsController.carImages.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3),
-                                itemBuilder: (context, i) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: FittedBox(
-                                          fit: BoxFit.cover,
-                                          clipBehavior: Clip.hardEdge,
-                                          child: InkWell(
-                                            onTap: () {
-                                              Get.to(() => SingleImageViewer(),
-                                                  arguments: ImageModel(
-                                                      url: cardDetailsController
-                                                          .carImages[i]));
+                            ? SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: List.generate(
+                                      cardDetailsController.carImages.length >=
+                                              5
+                                          ? 5
+                                          : cardDetailsController
+                                              .carImages.length, //length
+                                      (index) {
+                                    if (cardDetailsController
+                                                .carImages.length >=
+                                            5 &&
+                                        index == 4) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: IconButton.filledTonal(
+                                            onPressed: () {
+                                              Get.to(() => CardImagesScreen(),
+                                                  arguments: JobCardModel(
+                                                      customerName:
+                                                          cardDetailsController
+                                                              .customerName,
+                                                      carImages:
+                                                          cardDetailsController
+                                                              .carImages),
+                                                  transition:
+                                                      Transition.leftToRight);
                                             },
-                                            child: Image.network(
+                                            icon: Icon(Icons
+                                                .arrow_forward_ios_rounded)),
+                                      );
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        width: /* set your desired width */
+                                            125,
+                                        height: /* set your desired height */
+                                            125,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          child: FittedBox(
+                                            fit: BoxFit.cover,
+                                            clipBehavior: Clip.hardEdge,
+                                            child: InkWell(
+                                              onTap: () {
+                                                Get.to(
+                                                    () => SingleImageViewer(),
+                                                    arguments: ImageModel(
+                                                        url:
+                                                            cardDetailsController
+                                                                    .carImages[
+                                                                index]));
+                                              },
+                                              child: Image.network(
                                                 cardDetailsController
-                                                    .carImages[i]),
-                                          )),
-                                    ),
-                                  );
-                                })
+                                                    .carImages[index],
+                                                loadingBuilder:
+                                                    (BuildContext context,
+                                                        Widget child,
+                                                        ImageChunkEvent?
+                                                            loadingProgress) {
+                                                  if (loadingProgress == null) {
+                                                    return child; // Return the actual image if it's already loaded.
+                                                  } else {
+                                                    // Show a loading indicator while the image is loading.
+                                                    return Center(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(30.0),
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          color: secColor,
+                                                          value: loadingProgress
+                                                                      .expectedTotalBytes !=
+                                                                  null
+                                                              ? loadingProgress
+                                                                      .cumulativeBytesLoaded /
+                                                                  (loadingProgress
+                                                                          .expectedTotalBytes ??
+                                                                      1)
+                                                              : null,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              )
                             : const SizedBox(),
                       ],
                     ),
@@ -177,34 +284,36 @@ class CarDetailsScreen extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                Container(
-                  width: Get.width,
-                  color: containerColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Video',
-                          style: GoogleFonts.mooli(
-                              fontSize: 14, color: Colors.grey[900]),
-                        ),
-                        cardDetailsController.video.isNotEmpty
-                            ? ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: secColor),
-                                onPressed: () {
-                                  Get.to(() => VideoScreen(),
-                                      arguments: ImageModel(
-                                          url: cardDetailsController.video));
-                                },
-                                child: const Text('Watch Video'))
-                            : const SizedBox()
-                      ],
-                    ),
-                  ),
-                ),
+
+                // // uncomment for video
+                // Container(
+                //   width: Get.width,
+                //   color: containerColor,
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(20.0),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         Text(
+                //           'Video',
+                //           style: GoogleFonts.mooli(
+                //               fontSize: 14, color: Colors.grey[900]),
+                //         ),
+                //         cardDetailsController.video.isNotEmpty
+                //             ? ElevatedButton(
+                //                 style: ElevatedButton.styleFrom(
+                //                     backgroundColor: secColor),
+                //                 onPressed: () {
+                //                   Get.to(() => VideoScreen(),
+                //                       arguments: ImageModel(
+                //                           url: cardDetailsController.video));
+                //                 },
+                //                 child: const Text('Watch Video'))
+                //             : const SizedBox()
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 const SizedBox(
                   height: 5,
                 ),
