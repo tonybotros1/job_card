@@ -57,9 +57,6 @@ class JobCardScreen extends StatelessWidget {
               stream:
                   jobCardScreenController.addedImagesUploadTask?.snapshotEvents,
               builder: (context, snapshot) {
-                print('ffffffffffffffffffffffffffffffffffffffff');
-                print(jobCardScreenController.addedImagesUploadTask);
-                print(snapshot.hasData);
                 if (snapshot.hasData) {
                   final data = snapshot.data;
                   double progress = data!.bytesTransferred / data.totalBytes;
@@ -69,7 +66,7 @@ class JobCardScreen extends StatelessWidget {
                     child: CircularPercentIndicator(
                       animation: true,
                       animationDuration: 1000,
-                      radius: 180,
+                      radius: 150,
                       lineWidth: 30,
                       percent: progress,
                       progressColor: mainColor,

@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +8,7 @@ class LoadingScreenController extends GetxController {
   @override
   void onInit() async {
     await checkLogStatus();
-
+    getNotifyWhileAppOpen();
     super.onInit();
   }
 
@@ -18,8 +16,8 @@ class LoadingScreenController extends GetxController {
   checkLogStatus() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final String? action = prefs.getString('devideToken');
-    if (action!.isEmpty) {
+    String? action = prefs.getString('deviceToken');
+    if (action == null || action == '') {
       Get.offAll(() => LoginScreen());
     } else {
       Get.offAll(() => MainCardsScreen());
@@ -28,8 +26,8 @@ class LoadingScreenController extends GetxController {
 
 // this function to recive notificationwhile app open:
   getNotifyWhileAppOpen() {
-    FirebaseMessaging.onMessage.listen((event) {
-      
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('ffffffffffffffffffffffffffffffff');
     });
   }
 }

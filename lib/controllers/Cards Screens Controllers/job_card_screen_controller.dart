@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -222,7 +221,7 @@ class JobCardScreenController extends GetxController {
   getUserTokens() async {
     QuerySnapshot userSnapshot = await FirebaseFirestore.instance
         .collection('users')
-        .where('user_id', isEqualTo: userId)
+        .where('user_id', isEqualTo: userId.value)
         .get();
 
     if (userSnapshot.docs.isNotEmpty) {
@@ -230,7 +229,7 @@ class JobCardScreenController extends GetxController {
       String documentId = userSnapshot.docs.first.id;
       print('Document ID: $documentId');
       var userData = userSnapshot.docs.first.data() as Map<String, dynamic>;
-      tokens = userData['users_tokens'];
+      tokens.value = userData['users_tokens'];
     }
   }
 

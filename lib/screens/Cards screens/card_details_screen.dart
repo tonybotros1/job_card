@@ -419,7 +419,9 @@ class CarDetailsScreen extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Image.network(cardDetailsController.customerSignature),
+                cardDetailsController.customerSignature.isNotEmpty
+                    ? Image.network(cardDetailsController.customerSignature)
+                    : SizedBox(),
                 const SizedBox(
                   height: 20,
                 ),
