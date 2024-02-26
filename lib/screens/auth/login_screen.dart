@@ -14,62 +14,79 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: GetBuilder<LoginScreenController>(
-            init: LoginScreenController(),
-            builder: (controller) {
-              return Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 130,
-                          ),
-                          Container(
-                            child: Image.asset(
-                              'assets/COMPASS_LOGO.jpg',
-                            ),
-                            width: Get.width,
-                            height: 300,
-                          ),
-                          myTextFormField(
-                              controller: controller.email,
-                              labelText: 'Email',
-                              hintText: 'Enter your email',
-                              keyboardType: TextInputType.emailAddress,
-                              validate: true),
-                          myTextFormField(
-                              controller: controller.pass,
-                              labelText: 'Password',
-                              hintText: 'Enter your password',
-                              validate: true),
-                          SizedBox(
-                            height: 70,
-                          ),
-                          Container(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                controller.singIn();
-                              },
-                              child: Text(
-                                'Login',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: mainColor,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 130,
                     ),
-                  ),
-                ],
-              );
-            }));
+                    Container(
+                      child: Image.asset(
+                        'assets/COMPASS_LOGO.jpg',
+                      ),
+                      width: Get.width,
+                      height: 300,
+                    ),
+                    myTextFormField(
+                        obscureText: false,
+                        controller: loginScreenController.email,
+                        labelText: 'Email',
+                        hintText: 'Enter your email',
+                        keyboardType: TextInputType.emailAddress,
+                        validate: true),
+                    myTextFormField(
+                        icon: IconButton(
+                            onPressed: () {
+                              loginScreenController.changeObscureTextValue();
+                            },
+                            icon: Icon(loginScreenController.obscureText == true
+                                ? Icons.remove_red_eye_outlined
+                                : Icons.visibility_off)),
+                        obscureText: loginScreenController.obscureText,
+                        controller: loginScreenController.pass,
+                        labelText: 'Password',
+                        hintText: 'Enter your password',
+                        validate: true),
+                    SizedBox(
+                      height: 70,
+                    ),
+                    Obx(() => Container(
+                          child: ElevatedButton(
+                            onPressed:
+                                loginScreenController.sigingInProcess == true
+                                    ? null
+                                    : () {
+                                      
+                                        loginScreenController.singIn();
+                                      },
+                            child:
+                                loginScreenController.sigingInProcess == false
+                                    ? Text(
+                                        'Login',
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: mainColor,
+                            ),
+                          ),
+                        ))
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
 
@@ -78,10 +95,13 @@ Padding myTextFormField(
     required String hintText,
     required TextEditingController controller,
     required validate,
+    required obscureText,
+    IconButton? icon,
     keyboardType}) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
     child: TextFormField(
+      obscureText: obscureText,
       onTap: () {
         // controller.selection = TextSelection(
         //   baseOffset: 0,
@@ -91,6 +111,7 @@ Padding myTextFormField(
       keyboardType: keyboardType,
       controller: controller,
       decoration: InputDecoration(
+        suffixIcon: icon,
         hintStyle: const TextStyle(color: Colors.grey),
         labelText: labelText,
         hintText: hintText,

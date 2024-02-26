@@ -13,7 +13,6 @@ import '../../const.dart';
 import '../../controllers/Cards Screens Controllers/edit_card_screen_controller.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-import 'card_details_screen.dart';
 
 class EditCardScreen extends StatelessWidget {
   EditCardScreen({super.key});
@@ -491,10 +490,10 @@ class EditCardScreen extends StatelessWidget {
   }
 }
 
-class _ControlsOverlay extends StatelessWidget {
+class ControlsOverlay extends StatelessWidget {
   final VideoPlayerController controller;
 
-  const _ControlsOverlay({required this.controller});
+  const ControlsOverlay({required this.controller});
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../const.dart';
-import '../../controllers/Auth controllers/login_screen_controller.dart';
 import '../../controllers/Auth controllers/register_screen_controller.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -36,6 +35,11 @@ class RegisterScreen extends StatelessWidget {
                             width: Get.width,
                             height: 300,
                           ),
+                          myTextFormField(
+                              controller: controller.name,
+                              labelText: 'Name',
+                              hintText: 'Enter Area Name:',
+                              validate: true),
                           myTextFormField(
                               controller: controller.email,
                               labelText: 'Email',

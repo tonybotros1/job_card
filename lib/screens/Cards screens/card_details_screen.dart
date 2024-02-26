@@ -8,7 +8,6 @@ import 'package:job_card/models/image_model.dart';
 import 'package:job_card/models/job_card_model.dart';
 import 'package:job_card/screens/Cards%20screens/edit_card_screen.dart';
 import 'package:job_card/screens/single_image_viewer.dart';
-import 'package:job_card/screens/video_screen.dart';
 
 import 'card_images_screen.dart';
 

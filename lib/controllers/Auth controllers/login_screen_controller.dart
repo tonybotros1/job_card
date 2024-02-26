@@ -12,6 +12,8 @@ class LoginScreenController extends GetxController {
   late TextEditingController pass = TextEditingController();
   late String currentUserToken;
   late String userId;
+  bool obscureText = true;
+  RxBool sigingInProcess = RxBool(false);
   @override
   void onInit() {
     // myTest();
@@ -33,6 +35,16 @@ class LoginScreenController extends GetxController {
 
   //   // print(docs);
   // }
+
+// this function is to change the obscureText value:
+  void changeObscureTextValue() {
+    if (obscureText == true)
+      obscureText = false;
+    else
+      obscureText = true;
+
+    update();
+  }
 
 // this function is to show a snackbae with the state of the login process:
   void showSnackBar(title, body) {
@@ -82,8 +94,8 @@ class LoginScreenController extends GetxController {
 // this function is to sigin in
   void singIn() async {
     try {
-      print(email.text);
-      print(pass.text);
+      sigingInProcess.value = true;
+
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.text,
@@ -95,9 +107,12 @@ class LoginScreenController extends GetxController {
       userId = user!.uid;
       await saveToken(userId);
       await saveTokenInSharedPref();
+      sigingInProcess.value = false;
       showSnackBar('Login Success', 'Welcome');
       Get.offAll(() => MainCardsScreen());
     } on FirebaseAuthException catch (e) {
+      sigingInProcess.value = false;
+
       if (e.code == 'invalid-email') {
         print('No user found for that email.');
 

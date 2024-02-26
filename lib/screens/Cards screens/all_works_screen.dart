@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/Cards%20Screens%20Controllers/all_works_screen_controller.dart';
-import 'package:job_card/screens/auth/loading_screen.dart';
 import 'package:job_card/screens/auth/login_screen.dart';
 import 'package:job_card/screens/Cards%20screens/card_details_screen.dart';
 import '../../models/job_card_model.dart';
@@ -85,14 +84,29 @@ class AllWorksScreen extends StatelessWidget {
             init: AllWorksController(),
             builder: (controller) {
               if (controller.carCards.isEmpty) {
-                return Center(
-                    child: Text(
-                  'No Cards Yet',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: mainColor,
-                      fontSize: 25),
-                ));
+                return LiquidPullToRefresh(
+                  onRefresh: () => controller.getAllWorks(),
+                  color: mainColor,
+                  // backgroundColor: secColor,
+                  animSpeedFactor: 2,
+                  height: 300,
+                  showChildOpacityTransition: false,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'No Cards Yet',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: mainColor,
+                                fontSize: 25),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               } else {
                 return LiquidPullToRefresh(
                   onRefresh: () => controller.getAllWorks(),
