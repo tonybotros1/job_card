@@ -39,19 +39,19 @@ class LoginScreen extends StatelessWidget {
                         hintText: 'Enter your email',
                         keyboardType: TextInputType.emailAddress,
                         validate: true),
-                    myTextFormField(
+                   Obx(() =>  myTextFormField(
                         icon: IconButton(
                             onPressed: () {
                               loginScreenController.changeObscureTextValue();
                             },
-                            icon: Icon(loginScreenController.obscureText == true
+                            icon: Icon(loginScreenController.obscureText.value == true
                                 ? Icons.remove_red_eye_outlined
                                 : Icons.visibility_off)),
-                        obscureText: loginScreenController.obscureText,
+                        obscureText: loginScreenController.obscureText.value,
                         controller: loginScreenController.pass,
                         labelText: 'Password',
                         hintText: 'Enter your password',
-                        validate: true),
+                        validate: true)),
                     SizedBox(
                       height: 70,
                     ),

@@ -12,7 +12,7 @@ class LoginScreenController extends GetxController {
   late TextEditingController pass = TextEditingController();
   late String currentUserToken;
   late String userId;
-  bool obscureText = true;
+  RxBool obscureText = RxBool(true);
   RxBool sigingInProcess = RxBool(false);
   @override
   void onInit() {
@@ -38,12 +38,10 @@ class LoginScreenController extends GetxController {
 
 // this function is to change the obscureText value:
   void changeObscureTextValue() {
-    if (obscureText == true)
-      obscureText = false;
+    if (obscureText.value == true)
+      obscureText.value = false;
     else
-      obscureText = true;
-
-    update();
+      obscureText.value = true;
   }
 
 // this function is to show a snackbae with the state of the login process:
