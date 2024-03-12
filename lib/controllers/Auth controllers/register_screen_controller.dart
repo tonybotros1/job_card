@@ -9,6 +9,24 @@ class RegisterController extends GetxController {
   late TextEditingController pass = TextEditingController();
   late TextEditingController name = TextEditingController();
 
+  List<String> areaName = [];
+  String selectedAreaValue='';
+
+  @override
+  void onInit() {
+    readAreasNames();
+    super.onInit();
+  }
+
+  void readAreasNames() async {
+    
+        await FirebaseFirestore.instance.collection('area').get().then((value) {
+      for (var element in value.docs) {
+        areaName.add(element.data()['area name']);
+      }
+    });
+  }
+
   register() async {
     try {
       UserCredential userCredential =

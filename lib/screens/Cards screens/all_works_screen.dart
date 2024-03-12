@@ -229,7 +229,7 @@ class AllWorksScreen extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'Received On:',
@@ -550,3 +550,7 @@ class DataSearch extends SearchDelegate {
 //                                   ],
 //                                 ),
 //                               ),
+
+
+
+

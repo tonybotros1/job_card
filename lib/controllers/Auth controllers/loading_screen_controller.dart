@@ -30,7 +30,7 @@ class LoadingScreenController extends GetxController {
         FirebaseFirestore.instance
             .collection('car_card')
             .doc(element.id)
-            .update({"user_id": 'U9NX17IjbmQD0x27TV8x09YkoXH3'});
+            .update({"user_id": 'BTY5BqpEHGU5eoxbXnPCXXDo3M42'});
       }
     });
 
