@@ -8,7 +8,7 @@ import '../../screens/Cards screens/main_cards_screen.dart';
 class LoadingScreenController extends GetxController {
   @override
   void onInit() async {
-    // myTest();
+    // await myTest();
     await checkLogStatus();
     getNotifyWhileAppOpen();
     super.onInit();
@@ -16,21 +16,22 @@ class LoadingScreenController extends GetxController {
 
   myTest() {
     FirebaseFirestore.instance.collection('car_card').get().then((value) {
-      // print('==========================================');
-      // var arr = [];
+      
       // for (var element in value.docs) {
-      //   if (element.data()['user_id'] != 'U9NX17IjbmQD0x27TV8x09YkoXH3') {
-      //     arr.add(element.data());
-      //   }
+      //   print(element.data()['user_id']);
+
+      //   FirebaseFirestore.instance
+      //       .collection('car_card')
+      //       .doc(element.id)
+      //       .update({"user_id": 'BTY5BqpEHGU5eoxbXnPCXXDo3M42'});
       // }
-      // print(arr);
       for (var element in value.docs) {
-        print(element.data()['user_id']);
+        print(element.data()['comments']);
 
         FirebaseFirestore.instance
             .collection('car_card')
             .doc(element.id)
-            .update({"user_id": 'BTY5BqpEHGU5eoxbXnPCXXDo3M42'});
+            .update({"comments": ''});
       }
     });
 

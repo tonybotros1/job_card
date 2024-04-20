@@ -167,6 +167,7 @@ class JobCardScreen extends StatelessWidget {
                       controller: jobCardScreenController.emailAddress,
                       validate: false,
                       keyboardType: TextInputType.emailAddress),
+                  commentBox(controller: jobCardScreenController.commentBox),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
                     child: ListTile(
@@ -421,6 +422,54 @@ Padding myTextFormField(
               return null;
             }
           : null,
+    ),
+  );
+}
+
+Padding commentBox({
+  required TextEditingController controller,
+}) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 15, 30, 5),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Add Comments:',
+          style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade700),
+          ),
+          height: 200,
+          width: Get.width,
+          child: TextFormField(
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.all(10),
+              hintText: 'Type your comment here...',
+            ),
+            onTap: () {
+              controller.selection = TextSelection(
+                baseOffset: 0,
+                extentOffset: controller.text.length,
+              );
+            },
+            onChanged: (value) {
+              controller.text = value;
+              controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: controller.text.length),
+              );
+            },
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+          ),
+        ),
+      ],
     ),
   );
 }

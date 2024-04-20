@@ -26,6 +26,7 @@ class JobCardScreenController extends GetxController {
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController emailAddress = TextEditingController();
   TextEditingController color = TextEditingController();
+  TextEditingController commentBox = TextEditingController();
   RxString selectedColorValue = RxString('');
   RxString theDate = RxString('');
   RxDouble fuelAmount = RxDouble(25);
@@ -67,6 +68,7 @@ class JobCardScreenController extends GetxController {
     chassisNumber.text = '';
     emailAddress.text = '';
     phoneNumber.text = '';
+    commentBox.text = '';
     // carModel.text = 'Audi';
     // color.text = 'red';
     // carModel.text = '2022';
@@ -94,6 +96,7 @@ class JobCardScreenController extends GetxController {
     phoneNumber.text = '';
     emailAddress.text = '';
     color.text = '';
+    commentBox.text = '';
     signatureAsImage = null;
     imagesList.clear();
   }
@@ -151,6 +154,7 @@ class JobCardScreenController extends GetxController {
           "email_address": emailAddress.text,
           "color": color.text,
           "date": theDate.value,
+          'comments': commentBox.text,
           "fuel_amount": fuelAmount.value,
           "customer_signature": signatureImageDownloadUrl.value,
           "car_video": videoDownloadUrl.value,
@@ -255,6 +259,7 @@ class JobCardScreenController extends GetxController {
         });
       } catch (e) {
         errorWhileUploading.value = true;
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee $e");
       }
     }
   }

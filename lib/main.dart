@@ -25,6 +25,7 @@ void main() async {
               apiKey: 'AIzaSyB2ql5CI0sSUQ0igdwh0G1Bmsu6TUtBpIw',
               appId: '1:9681419746:android:278788a51a443d7647cdbb',
               messagingSenderId: '9681419746',
+              storageBucket: 'job-card-62478.appspot.com',
               projectId: 'job-card-62478'))
       : await Firebase.initializeApp();
   await FirebaseAppCheck.instance.activate(

@@ -18,6 +18,7 @@ class EditCardScreenController extends GetxController {
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController emailAddress = TextEditingController();
   TextEditingController color = TextEditingController();
+  TextEditingController commentBox = TextEditingController();
   RxDouble fuelAmount = RxDouble(25);
   RxString customerSignature = RxString('');
   var arguments = Get.arguments;
@@ -65,6 +66,7 @@ class EditCardScreenController extends GetxController {
       emailAddress.text = arguments.emailAddress;
       color.text = arguments.color;
       fuelAmount.value = arguments.fuelAmount;
+      commentBox.text = arguments.comments;
       // controller =
       //     VideoPlayerController.networkUrl(Uri.parse('${arguments.carVideo}'));
       // controller.addListener(() {
@@ -111,6 +113,7 @@ class EditCardScreenController extends GetxController {
       "car_mileage": carMileage.text,
       "chassis_number": chassisNumber.text,
       "phone_number": phoneNumber.text,
+      "comments": commentBox.text,
       "email_address": emailAddress.text,
       "color": color.text,
       "fuel_amount": fuelAmount.value,

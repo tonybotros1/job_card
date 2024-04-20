@@ -8,7 +8,7 @@ import 'package:job_card/models/image_model.dart';
 import 'package:job_card/models/job_card_model.dart';
 import 'package:job_card/screens/Cards%20screens/edit_card_screen.dart';
 import 'package:job_card/screens/single_image_viewer.dart';
-
+import 'package:readmore/readmore.dart';
 import 'card_images_screen.dart';
 
 class CarDetailsScreen extends StatelessWidget {
@@ -58,6 +58,7 @@ class CarDetailsScreen extends StatelessWidget {
                             phoneNumber: cardDetailsController.phoneNumber,
                             plateNumber: cardDetailsController.plateNumber,
                             docID: cardDetailsController.id,
+                            comments: cardDetailsController.comments,
                             carVideo: cardDetailsController.video),
                       );
                     },
@@ -283,7 +284,47 @@ class CarDetailsScreen extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-
+                cardDetailsController.comments.isNotEmpty
+                    ? Container(
+                        width: Get.width,
+                        color: containerColor,
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Comments',
+                                style: GoogleFonts.mooli(
+                                    fontSize: 14, color: Colors.grey[900]),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                width: Get.width,
+                                child: ReadMoreText(
+                                  isExpandable: true,
+                                  cardDetailsController.comments,
+                                  trimLines: 1,
+                                  trimMode: TrimMode.Line,
+                                  trimCollapsedText: 'Read more',
+                                  trimExpandedText: ' Read less',
+                                  style: TextStyle(fontSize: 15),
+                                  textAlign: TextAlign.start,
+                                  moreStyle: TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                  lessStyle: TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
                 // // uncomment for video
                 // Container(
                 //   width: Get.width,

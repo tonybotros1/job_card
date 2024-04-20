@@ -16,6 +16,7 @@ class CardDetailsController extends GetxController {
   late String id;
   late String video;
   late bool status;
+  late String comments;
   double fuelAmount = 25;
   late String customerSignature;
   List<String> carImages = [];
@@ -25,7 +26,6 @@ class CardDetailsController extends GetxController {
     getDetails();
     super.onInit();
   }
-
 
   void getDetails() {
     if (Get.arguments != null) {
@@ -39,6 +39,7 @@ class CardDetailsController extends GetxController {
       plateNumber = arguments.plateNumber;
       carMileage = arguments.carMileage;
       chassisNumber = arguments.chassisNumber;
+      comments = arguments.comments;
       phoneNumber = arguments.phoneNumber;
       emailAddress = arguments.emailAddress;
       color = arguments.color;
