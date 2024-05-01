@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class CardDetailsController extends GetxController {
   late String customerName;
@@ -26,6 +27,11 @@ class CardDetailsController extends GetxController {
     getDetails();
     super.onInit();
   }
+
+  
+// this is for cached images 
+   final customCachedManeger = CacheManager(
+      Config('customCacheKey', stalePeriod: const Duration(days: 3)));
 
   void getDetails() {
     if (Get.arguments != null) {
@@ -60,6 +66,7 @@ class CardDetailsController extends GetxController {
         .update({"status": stat});
     update();
   }
+
 
   void updateMethod() {
     update();

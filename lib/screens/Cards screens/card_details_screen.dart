@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -233,41 +234,67 @@ class CarDetailsScreen extends StatelessWidget {
                                                                     .carImages[
                                                                 index]));
                                               },
-                                              child: Image.network(
-                                                cardDetailsController
+                                              child: CachedNetworkImage(
+                                                cacheManager:
+                                                    cardDetailsController
+                                                        .customCachedManeger,
+                                                progressIndicatorBuilder:
+                                                    (context, url, progress) =>
+                                                        Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      30.0),
+                                                  child: Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      value: progress.progress,
+                                                      color: mainColor,
+                                                      strokeWidth: 3,
+                                                    ),
+                                                  ),
+                                                ),
+                                                imageUrl: cardDetailsController
                                                     .carImages[index],
-                                                loadingBuilder:
-                                                    (BuildContext context,
-                                                        Widget child,
-                                                        ImageChunkEvent?
-                                                            loadingProgress) {
-                                                  if (loadingProgress == null) {
-                                                    return child; // Return the actual image if it's already loaded.
-                                                  } else {
-                                                    // Show a loading indicator while the image is loading.
-                                                    return Center(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(30.0),
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          color: secColor,
-                                                          value: loadingProgress
-                                                                      .expectedTotalBytes !=
-                                                                  null
-                                                              ? loadingProgress
-                                                                      .cumulativeBytesLoaded /
-                                                                  (loadingProgress
-                                                                          .expectedTotalBytes ??
-                                                                      1)
-                                                              : null,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                },
+                                                key: UniqueKey(),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
                                               ),
+
+                                              // child: Image.network(
+                                              //   cardDetailsController
+                                              //       .carImages[index],
+                                              //   loadingBuilder:
+                                              //       (BuildContext context,
+                                              //           Widget child,
+                                              //           ImageChunkEvent?
+                                              //               loadingProgress) {
+                                              //     if (loadingProgress == null) {
+                                              //       return child; // Return the actual image if it's already loaded.
+                                              //     } else {
+                                              //       // Show a loading indicator while the image is loading.
+                                              //       return Center(
+                                              //         child: Padding(
+                                              //           padding:
+                                              //               const EdgeInsets
+                                              //                   .all(30.0),
+                                              //           child:
+                                              //               CircularProgressIndicator(
+                                              //             color: secColor,
+                                              //             value: loadingProgress
+                                              //                         .expectedTotalBytes !=
+                                              //                     null
+                                              //                 ? loadingProgress
+                                              //                         .cumulativeBytesLoaded /
+                                              //                     (loadingProgress
+                                              //                             .expectedTotalBytes ??
+                                              //                         1)
+                                              //                 : null,
+                                              //           ),
+                                              //         ),
+                                              //       );
+                                              //     }
+                                              //   },
+                                              // ),
                                             ),
                                           ),
                                         ),
