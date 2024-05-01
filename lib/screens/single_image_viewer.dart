@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class SingleImageViewer extends StatelessWidget {
   SingleImageViewer({super.key});
@@ -9,8 +10,10 @@ class SingleImageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CachedNetworkImageProvider cachedImageProvider = CachedNetworkImageProvider(argument.url);
+
     return Scaffold(
-      body: PhotoView(imageProvider: NetworkImage(argument.url)),
+      body: PhotoView(imageProvider: cachedImageProvider),
     );
   }
 }
