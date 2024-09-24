@@ -37,14 +37,12 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer=""></script>
   
+
   
   
   
   
-  
-  
-  
-  
+<!--   
   <style id="splash-screen-style">
     html {
       height: 100%
@@ -109,9 +107,44 @@
       document.getElementById("splash-branding")?.remove();
       document.body.style.background = "transparent";
     }
-  </script>
-</head>
+  </script> -->
+</head> 
 <body>
+  <!-- <script src="flutter_bootstrap.js" async></script> -->
+  
+  <script type="module">
+    // Import the functions you need from the Firebase SDKs you need
+    import { initializeApp } from "firebase/app";
+    import { getAnalytics } from "firebase/analytics";
+    import { getAuth } from "firebase/auth";
+    import { getFirestore } from "firebase/firestore";
+    import { getStorage } from "firebase/storage";
+    import { getMessaging } from "firebase/messaging";
+
+  
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQE2wU5fSbsePR5XAzhxRhHv3eHppwv94",
+      authDomain: "job-card-62478.firebaseapp.com",
+      projectId: "job-card-62478",
+      storageBucket: "job-card-62478.appspot.com",
+      messagingSenderId: "9681419746",
+      appId: "1:9681419746:web:4f6f116df48e511f47cdbb",
+      measurementId: "G-LDQZ5NLESB"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const messaging = getMessaging(app);
+  </script>
+  
   
   <script>
     window.addEventListener('load', function(ev) {
@@ -127,7 +160,8 @@
         }
       });
     });
-  </script>
+  </script> 
+  <script src="main.dart.js" type="application/javascript"></script>
 
 
 </body></html>

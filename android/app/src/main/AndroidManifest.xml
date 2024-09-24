@@ -4,7 +4,6 @@
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
-        android:enableOnBackInvokedCallback="true"
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -27,11 +26,14 @@
             </intent-filter>
         </activity>
 
-        <receiver
+        <!-- <receiver
             android:name="dev.fluttercommunity.plus.share.ShareSuccessManager"
-            android:exported="true">
-            <!-- If there are any specific intent filters or permissions, add them here -->
-        </receiver>
+            android:exported="false">
+            <intent-filter>
+                <action android:name="dev.fluttercommunity.plus.share.SHARE_SUCCESS" />
+            </intent-filter>
+        </receiver> -->
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

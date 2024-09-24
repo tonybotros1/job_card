@@ -68,6 +68,7 @@ dependencies:
   cached_network_image: ^3.3.1
   sqflite: ^2.3.3
   flutter_cache_manager: ^3.3.1
+  flutter_js: ^0.8.1
 
 dev_dependencies:
   flutter_test:
@@ -77,11 +78,11 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.0
   flutter_lints: ^4.0.0
 
-flutter_native_splash:
-  color: "#FFFFFF"
-  image: assets/splash_screen.jpg
-  android_gravity: center
-  ios: true
+# flutter_native_splash:
+#   color: "#FFFFFF"
+#   image: assets/splash_screen.jpg
+#   android_gravity: center
+#   ios: true
 
 
 
@@ -138,10 +139,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
