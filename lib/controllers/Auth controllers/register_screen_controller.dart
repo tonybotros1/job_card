@@ -39,9 +39,8 @@ class RegisterController extends GetxController {
       String? uid;
       if (user != null) {
         token = await FirebaseMessaging.instance.getToken();
-        uid = await user.uid;
-        print('User Token: $token');
-        print('User uid: $uid');
+        uid = user.uid;
+       
       }
       FirebaseFirestore.instance.collection('users').add({
         "email": email.text,
@@ -51,12 +50,12 @@ class RegisterController extends GetxController {
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        // print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        // print('The account already exists for that email.');
       }
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 }

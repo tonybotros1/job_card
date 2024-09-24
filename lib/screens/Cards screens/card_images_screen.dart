@@ -25,7 +25,7 @@ class CardImagesScreen extends StatelessWidget {
             onPressed: () {
               Get.back();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
@@ -54,7 +54,7 @@ class CardImagesScreen extends StatelessWidget {
                 init: CardImagesScreenController(),
                 builder: (controller) {
                   return GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       // padding: const EdgeInsets.all(8),
                       shrinkWrap: true,
                       itemCount: controller.carImages.length,
@@ -98,7 +98,7 @@ class CardImagesScreen extends StatelessWidget {
                                                 key: UniqueKey(),
                                                 errorWidget:
                                                     (context, url, error) =>
-                                                        Icon(Icons.error),
+                                                        const Icon(Icons.error),
                                               ),
                                   // child: Image.network(
                                   //   controller.carImages[i],

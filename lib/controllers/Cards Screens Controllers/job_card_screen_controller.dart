@@ -82,7 +82,7 @@ class JobCardScreenController extends GetxController {
   // this function is to get user id:
   getUserId() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId.value = (await prefs.getString('userId'))!;
+    userId.value = (prefs.getString('userId'))!;
   }
 
   // this function is to clear the fields
@@ -212,12 +212,12 @@ class JobCardScreenController extends GetxController {
     req.body = json.encode(body);
 
     var res = await req.send();
-    final resBody = await res.stream.bytesToString();
+    // final resBody = await res.stream.bytesToString();
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      print(resBody);
+      // print(resBody);
     } else {
-      print(res.reasonPhrase);
+      // print(res.reasonPhrase);
     }
   }
 
@@ -230,8 +230,8 @@ class JobCardScreenController extends GetxController {
 
     if (userSnapshot.docs.isNotEmpty) {
       // Get the document ID of the first document (assuming there's only one match)
-      String documentId = userSnapshot.docs.first.id;
-      print('Document ID: $documentId');
+      // String documentId = userSnapshot.docs.first.id;
+      // print('Document ID: $documentId');
       var userData = userSnapshot.docs.first.data() as Map<String, dynamic>;
       tokens.value = userData['users_tokens'];
     }
@@ -259,7 +259,7 @@ class JobCardScreenController extends GetxController {
         });
       } catch (e) {
         errorWhileUploading.value = true;
-        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee $e");
+        // print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee $e");
       }
     }
   }

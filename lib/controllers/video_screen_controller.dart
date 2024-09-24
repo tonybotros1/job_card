@@ -27,9 +27,9 @@ class VideoController extends GetxController {
         await initVideoPlayerFuture;
         controller.setLooping(true);
         controller.setVolume(1.0);
-      } catch (e, stackTrace) {
-        print('Error initializing video: $e');
-        print('Stack Trace: $stackTrace');
+      } catch (e) {
+        // print('Error initializing video: $e');
+        // print('Stack Trace: $stackTrace');
       }
     }
     update();

@@ -32,7 +32,7 @@ class CarDetailsScreen extends StatelessWidget {
               onPressed: () {
                 Get.back();
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.white,
               )),
@@ -67,7 +67,7 @@ class CarDetailsScreen extends StatelessWidget {
                       'Edit',
                       style: TextStyle(color: Colors.white),
                     ))
-                : SizedBox()
+                : const SizedBox()
           ],
         ),
         body: Padding(
@@ -207,13 +207,13 @@ class CarDetailsScreen extends StatelessWidget {
                                                   transition:
                                                       Transition.leftToRight);
                                             },
-                                            icon: Icon(Icons
+                                            icon: const Icon(Icons
                                                 .arrow_forward_ios_rounded)),
                                       );
                                     }
                                     return Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Container(
+                                      child: SizedBox(
                                         width: /* set your desired width */
                                             125,
                                         height: /* set your desired height */
@@ -257,7 +257,7 @@ class CarDetailsScreen extends StatelessWidget {
                                                 key: UniqueKey(),
                                                 errorWidget:
                                                     (context, url, error) =>
-                                                        Icon(Icons.error),
+                                                        const Icon(Icons.error),
                                               ),
 
                                               // child: Image.network(
@@ -316,7 +316,7 @@ class CarDetailsScreen extends StatelessWidget {
                         width: Get.width,
                         color: containerColor,
                         child: Padding(
-                          padding: EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(20.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -325,10 +325,10 @@ class CarDetailsScreen extends StatelessWidget {
                                 style: GoogleFonts.mooli(
                                     fontSize: 14, color: Colors.grey[900]),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
-                              Container(
+                              SizedBox(
                                 width: Get.width,
                                 child: ReadMoreText(
                                   isExpandable: true,
@@ -337,12 +337,12 @@ class CarDetailsScreen extends StatelessWidget {
                                   trimMode: TrimMode.Line,
                                   trimCollapsedText: 'Read more',
                                   trimExpandedText: ' Read less',
-                                  style: TextStyle(fontSize: 15),
+                                  style: const TextStyle(fontSize: 15),
                                   textAlign: TextAlign.start,
-                                  moreStyle: TextStyle(
+                                  moreStyle: const TextStyle(
                                     color: Colors.blue,
                                   ),
-                                  lessStyle: TextStyle(
+                                  lessStyle: const TextStyle(
                                     color: Colors.blue,
                                   ),
                                 ),
@@ -351,7 +351,7 @@ class CarDetailsScreen extends StatelessWidget {
                           ),
                         ),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
                 // // uncomment for video
                 // Container(
                 //   width: Get.width,
@@ -488,7 +488,7 @@ class CarDetailsScreen extends StatelessWidget {
                 ),
                 cardDetailsController.customerSignature.isNotEmpty
                     ? Image.network(cardDetailsController.customerSignature)
-                    : SizedBox(),
+                    : const SizedBox(),
                 const SizedBox(
                   height: 20,
                 ),

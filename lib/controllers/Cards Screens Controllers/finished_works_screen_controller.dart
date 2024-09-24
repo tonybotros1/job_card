@@ -21,7 +21,7 @@ class FinishedWorksController extends GetxController {
 // this function is to get user id:
   getUserId() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId.value = (await prefs.getString('userId'))!;
+    userId.value = (prefs.getString('userId'))!;
   }
 
 // this function is to get the works from firebase
@@ -37,7 +37,7 @@ class FinishedWorksController extends GetxController {
       carCards.assignAll(event.docs);
     });
 
-    return await Future.delayed(Duration(seconds: 2));
+    return await Future.delayed(const Duration(seconds: 2));
   }
 
   // Function to filter the list based on search criteria

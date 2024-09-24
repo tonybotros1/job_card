@@ -22,21 +22,21 @@ class AllWorksScreen extends StatelessWidget {
                 showCupertinoDialog(
                     context: context,
                     builder: (context) => CupertinoAlertDialog(
-                          title: Text('Alert'),
-                          content: Text('Are you sure you want to Logout?'),
+                          title: const Text('Alert'),
+                          content: const Text('Are you sure you want to Logout?'),
                           actions: [
                             CupertinoDialogAction(
-                              child: Text(
-                                'No',
-                                style: TextStyle(color: mainColor),
-                              ),
                               isDefaultAction: true,
                               onPressed: () {
                                 Get.back();
                               },
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: mainColor),
+                              ),
                             ),
                             CupertinoDialogAction(
-                              child: Text('Yes'),
+                              child: const Text('Yes'),
                               onPressed: () {
                                 allWorksController.logOut();
                                 Get.offAll(() => LoginScreen());
@@ -45,7 +45,7 @@ class AllWorksScreen extends StatelessWidget {
                           ],
                         ));
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.logout,
                 color: Colors.white,
               )),
@@ -270,19 +270,19 @@ class AllWorksScreen extends StatelessWidget {
                                                       BorderRadius.circular(25),
                                                   color:
                                                       carCard['status'] == true
-                                                          ? Color.fromARGB(
+                                                          ? const Color.fromARGB(
                                                               255, 50, 212, 56)
                                                           : Colors.grey),
                                               child: Center(
                                                   child: carCard['status'] ==
                                                           true
-                                                      ? Text(
+                                                      ? const Text(
                                                           'New',
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.white),
                                                         )
-                                                      : Text(
+                                                      : const Text(
                                                           'Added',
                                                           style: TextStyle(
                                                               color:

@@ -224,19 +224,19 @@ class FinishedWorksScreen extends StatelessWidget {
                                                       BorderRadius.circular(25),
                                                   color:
                                                       carCard['status'] == true
-                                                          ? Color.fromARGB(
+                                                          ? const Color.fromARGB(
                                                               255, 50, 212, 56)
                                                           : Colors.grey),
                                               child: Center(
                                                   child: carCard['status'] ==
                                                           true
-                                                      ? Text(
+                                                      ? const Text(
                                                           'New',
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.white),
                                                         )
-                                                      : Text(
+                                                      : const Text(
                                                           'Added',
                                                           style: TextStyle(
                                                               color:

@@ -26,15 +26,15 @@ class RegisterScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 130,
                           ),
-                          Container(
+                          SizedBox(
+                            width: Get.width,
+                            height: 300,
                             child: Image.asset(
                               'assets/COMPASS_LOGO.jpg',
                             ),
-                            width: Get.width,
-                            height: 300,
                           ),
                           dropDownValues(
                             labelText: 'Area Name',
@@ -58,21 +58,19 @@ class RegisterScreen extends StatelessWidget {
                             hintText: 'Enter your password',
                             // validate: true
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 70,
                           ),
-                          Container(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                controller.register();
-                              },
-                              child: Text(
-                                'Create Account',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: mainColor,
-                              ),
+                          ElevatedButton(
+                            onPressed: () {
+                              controller.register();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: mainColor,
+                            ),
+                            child: const Text(
+                              'Create Account',
+                              style: TextStyle(color: Colors.white),
                             ),
                           )
                         ],
@@ -131,42 +129,50 @@ Padding dropDownValues({
   // required bool validate,
 }) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
-    child: TypeAheadFormField(
-      textFieldConfiguration: TextFieldConfiguration(
-        controller: controller,
-        decoration: InputDecoration(
-          iconColor: Colors.grey.shade700,
-          suffixIcon: Icon(
-            Icons.arrow_downward_rounded,
-            color: Colors.grey.shade700,
-          ),
-          hintText: hintText,
-          labelText: labelText,
-          hintStyle: const TextStyle(color: Colors.grey),
-          labelStyle: TextStyle(color: Colors.grey.shade700),
+      padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
+      child: TypeAheadField<Object?>(
+        builder: (context, textEditingController, focusNode) {
+          return TextField(
+            controller: textEditingController,
+            focusNode: focusNode,
+            decoration: InputDecoration(
+              iconColor: Colors.grey.shade700,
+              suffixIcon: Icon(
+                Icons.arrow_downward_rounded,
+                color: Colors.grey.shade700,
+              ),
+              hintText: hintText,
+              labelText: labelText,
+              hintStyle: const TextStyle(color: Colors.grey),
+              labelStyle: TextStyle(color: Colors.grey.shade700),
+            ),
+          );
+        },
+        suggestionsCallback: (pattern) async {
+          return list
+              .where(
+                  (item) => item.toLowerCase().contains(pattern.toLowerCase()))
+              .toList();
+        },
+        itemBuilder: (context, suggestion) {
+          return ListTile(
+            title: Text(suggestion.toString()),
+          );
+        },
+        onSelected: (suggestion) {
+          controller.text = suggestion.toString();
+        },
+        // validator: validate != false
+        //     ? (value) {
+        //         if (value!.isEmpty) {
+        //           return 'Please Enter $labelText';
+        //         }
+        //         return null;
+        //       }
+        //     : null,
+        emptyBuilder: (context) => const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('No items found'),
         ),
-      ),
-      suggestionsCallback: (pattern) {
-        return list.where(
-            (item) => item.toLowerCase().contains(pattern.toLowerCase()));
-      },
-      itemBuilder: (context, suggestion) {
-        return ListTile(
-          title: Text(suggestion),
-        );
-      },
-      onSuggestionSelected: (suggestion) {
-        controller.text = suggestion;
-      },
-      // validator: validate != false
-      //     ? (value) {
-      //         if (value!.isEmpty) {
-      //           return 'Please Enter $labelText';
-      //         }
-      //         return null;
-      //       }
-      //     : null,
-    ),
-  );
+      ));
 }

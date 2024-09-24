@@ -28,7 +28,7 @@ class EditCardScreen extends StatelessWidget {
             onPressed: () {
               Get.back();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
@@ -44,22 +44,22 @@ class EditCardScreen extends StatelessWidget {
                 showCupertinoDialog(
                     context: context,
                     builder: (context) => CupertinoAlertDialog(
-                          title: Text('Alert'),
-                          content: Text(
+                          title: const Text('Alert'),
+                          content: const Text(
                               'Are you sure you want to delete this card?'),
                           actions: [
                             CupertinoDialogAction(
-                              child: Text(
-                                'No',
-                                style: TextStyle(color: mainColor),
-                              ),
                               isDefaultAction: true,
                               onPressed: () {
                                 Get.back();
                               },
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: mainColor),
+                              ),
                             ),
                             CupertinoDialogAction(
-                              child: Text('Yes'),
+                              child: const Text('Yes'),
                               onPressed: () {
                                 editCardScreenController.deleteCard();
                                 Get.offAll(() => MainCardsScreen(),
@@ -360,23 +360,23 @@ class EditCardScreen extends StatelessWidget {
                                             context: context,
                                             builder: (context) =>
                                                 CupertinoAlertDialog(
-                                                  title: Text('Alert'),
-                                                  content: Text(
+                                                  title: const Text('Alert'),
+                                                  content: const Text(
                                                       'Are you sure you want to delete this picture?'),
                                                   actions: [
                                                     CupertinoDialogAction(
+                                                      isDefaultAction: true,
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
                                                       child: Text(
                                                         'No',
                                                         style: TextStyle(
                                                             color: mainColor),
                                                       ),
-                                                      isDefaultAction: true,
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
                                                     ),
                                                     CupertinoDialogAction(
-                                                      child: Text('Yes'),
+                                                      child: const Text('Yes'),
                                                       onPressed: () {
                                                         editCardScreenController
                                                             .imagesList
@@ -442,23 +442,23 @@ class EditCardScreen extends StatelessWidget {
                                             context: context,
                                             builder: (context) =>
                                                 CupertinoAlertDialog(
-                                                  title: Text('Alert'),
-                                                  content: Text(
+                                                  title: const Text('Alert'),
+                                                  content: const Text(
                                                       'Are you sure you want to delete this picture?'),
                                                   actions: [
                                                     CupertinoDialogAction(
+                                                      isDefaultAction: true,
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
                                                       child: Text(
                                                         'No',
                                                         style: TextStyle(
                                                             color: mainColor),
                                                       ),
-                                                      isDefaultAction: true,
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
                                                     ),
                                                     CupertinoDialogAction(
-                                                      child: Text('Yes'),
+                                                      child: const Text('Yes'),
                                                       onPressed: () {
                                                         editCardScreenController
                                                             .removeImage(
@@ -493,7 +493,7 @@ class EditCardScreen extends StatelessWidget {
 class ControlsOverlay extends StatelessWidget {
   final VideoPlayerController controller;
 
-  const ControlsOverlay({required this.controller});
+  const ControlsOverlay({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -563,7 +563,7 @@ Padding commentBox({
           'Add Comments:',
           style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Container(
@@ -574,7 +574,7 @@ Padding commentBox({
           width: Get.width,
           child: TextFormField(
             controller: controller,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10),
               hintText: 'Type your comment here...',
@@ -608,34 +608,43 @@ Padding dropDownValues({
   required String selectedValue,
 }) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
-    child: TypeAheadFormField(
-      textFieldConfiguration: TextFieldConfiguration(
+      padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
+      child: TypeAheadField(
         controller: controller,
-        decoration: InputDecoration(
-          iconColor: Colors.grey.shade700,
-          suffixIcon: Icon(
-            Icons.arrow_downward_rounded,
-            color: Colors.grey.shade700,
-          ),
-          hintText: hintText,
-          labelText: labelText,
-          hintStyle: const TextStyle(color: Colors.grey),
-          labelStyle: TextStyle(color: Colors.grey.shade700),
+        builder: (context, textEditingController, focusNode) {
+          return TextField(
+            controller: textEditingController,
+            focusNode: focusNode,
+            decoration: InputDecoration(
+              iconColor: Colors.grey.shade700,
+              suffixIcon: Icon(
+                Icons.arrow_downward_rounded,
+                color: Colors.grey.shade700,
+              ),
+              hintText: hintText,
+              labelText: labelText,
+              hintStyle: const TextStyle(color: Colors.grey),
+              labelStyle: TextStyle(color: Colors.grey.shade700),
+            ),
+          );
+        },
+        suggestionsCallback: (pattern) async {
+          return list
+              .where(
+                  (item) => item.toLowerCase().contains(pattern.toLowerCase()))
+              .toList();
+        },
+        itemBuilder: (context, suggestion) {
+          return ListTile(
+            title: Text(suggestion.toString()),
+          );
+        },
+        onSelected: (suggestion) {
+          controller.text = suggestion.toString();
+        },
+        emptyBuilder: (context) => const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('No items found'),
         ),
-      ),
-      suggestionsCallback: (pattern) {
-        return list.where(
-            (item) => item.toLowerCase().contains(pattern.toLowerCase()));
-      },
-      itemBuilder: (context, suggestion) {
-        return ListTile(
-          title: Text(suggestion),
-        );
-      },
-      onSuggestionSelected: (suggestion) {
-        controller.text = suggestion;
-      },
-    ),
-  );
+      ));
 }

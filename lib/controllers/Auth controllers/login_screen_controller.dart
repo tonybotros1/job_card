@@ -10,7 +10,7 @@ import '../../screens/Cards screens/main_cards_screen.dart';
 class LoginScreenController extends GetxController {
   late TextEditingController email = TextEditingController();
   late TextEditingController pass = TextEditingController();
-  late String currentUserToken;
+  late String currentUserToken = '';
   late String userId;
   RxBool obscureText = RxBool(true);
   RxBool sigingInProcess = RxBool(false);
@@ -38,10 +38,11 @@ class LoginScreenController extends GetxController {
 
 // this function is to change the obscureText value:
   void changeObscureTextValue() {
-    if (obscureText.value == true)
+    if (obscureText.value == true) {
       obscureText.value = false;
-    else
+    } else {
       obscureText.value = true;
+    }
   }
 
 // this function is to show a snackbae with the state of the login process:
@@ -50,7 +51,7 @@ class LoginScreenController extends GetxController {
       title,
       body,
       snackPosition: SnackPosition.BOTTOM,
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
       backgroundColor: Colors.grey,
       colorText: Colors.white,
     );
@@ -66,7 +67,7 @@ class LoginScreenController extends GetxController {
     if (userSnapshot.docs.isNotEmpty) {
       // Get the document ID of the first document (assuming there's only one match)
       String documentId = userSnapshot.docs.first.id;
-      print('Document ID: $documentId');
+      // print('Document ID: $documentId');
       var userData = userSnapshot.docs.first.data() as Map<String, dynamic>;
       var tokens = userData['users_tokens'];
 
@@ -112,15 +113,15 @@ class LoginScreenController extends GetxController {
       sigingInProcess.value = false;
 
       if (e.code == 'invalid-email') {
-        print('No user found for that email.');
+        // print('No user found for that email.');
 
         showSnackBar('Wrong Email', 'This Email is not registed');
       } else if (e.code == 'invalid-credential') {
-        print('Wrong password provided for that user.');
+        // print('Wrong password provided for that user.');
         showSnackBar('Wrong Email or Password',
             'Please recheck your Email and Password then try again');
       } else {
-        print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ${e.code}');
+        // print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ${e.code}');
         showSnackBar('Unexpected Error', 'Please try again');
       }
     }
