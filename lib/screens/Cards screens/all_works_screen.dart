@@ -22,7 +22,7 @@ class AllWorksScreen extends StatelessWidget {
         drawer: kIsWeb
             ? ScreenSize.isNotWeb(context)
                 ? SizedBox(
-                    width: 180,
+                    width:ScreenSize.isMobile(context) ? 100 : 180,
                     child: SideMenuWidget(),
                   )
                 : null
