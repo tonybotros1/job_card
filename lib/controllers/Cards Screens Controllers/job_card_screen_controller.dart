@@ -166,7 +166,7 @@ class JobCardScreenController extends GetxController {
         }).then((value) async {
           uploading.value = false;
 
-          Get.offAll(() => MainCardsScreen());
+          Get.offAll(() => const MainCardsScreen());
           await getUserTokens();
           // send the notifications:
           if (tokens.isNotEmpty) {

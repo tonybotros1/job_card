@@ -45,7 +45,7 @@ class LoadingScreenController extends GetxController {
     if (action == null || action == '') {
       Get.offAll(() => LoginScreen());
     } else {
-      Get.offAll(() => MainCardsScreen());
+      Get.offAll(() => const MainCardsScreen());
     }
   }
 

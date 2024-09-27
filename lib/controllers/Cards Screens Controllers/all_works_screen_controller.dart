@@ -82,5 +82,6 @@ class AllWorksController extends GetxController {
     Share.share(content);
   }
 
-  String shortenedUrl = '';
+  
+
 }

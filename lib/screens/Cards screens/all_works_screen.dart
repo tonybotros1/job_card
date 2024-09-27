@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
@@ -7,6 +8,8 @@ import 'package:job_card/screens/auth/login_screen.dart';
 import 'package:job_card/screens/Cards%20screens/card_details_screen.dart';
 import '../../models/job_card_model.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+
+import '../../widgets/screen_size_widget.dart';
 
 class AllWorksScreen extends StatelessWidget {
   AllWorksScreen({super.key});
@@ -17,45 +20,55 @@ class AllWorksScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                showCupertinoDialog(
-                    context: context,
-                    builder: (context) => CupertinoAlertDialog(
-                          title: const Text('Alert'),
-                          content: const Text('Are you sure you want to Logout?'),
-                          actions: [
-                            CupertinoDialogAction(
-                              isDefaultAction: true,
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: Text(
-                                'No',
-                                style: TextStyle(color: mainColor),
-                              ),
-                            ),
-                            CupertinoDialogAction(
-                              child: const Text('Yes'),
-                              onPressed: () {
-                                allWorksController.logOut();
-                                Get.offAll(() => LoginScreen());
-                              },
-                            )
-                          ],
-                        ));
-              },
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.white,
-              )),
+          leading: kIsWeb
+              ? ScreenSize.isNotWeb(context)
+                  ? const Icon(Icons.menu)
+                  : null
+              : IconButton(
+                  onPressed: () {
+                    showCupertinoDialog(
+                        context: context,
+                        builder: (context) => CupertinoAlertDialog(
+                              title: const Text('Alert'),
+                              content: const Text(
+                                  'Are you sure you want to Logout?'),
+                              actions: [
+                                CupertinoDialogAction(
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    'No',
+                                    style: TextStyle(color: mainColor),
+                                  ),
+                                ),
+                                CupertinoDialogAction(
+                                  child: const Text('Yes'),
+                                  onPressed: () {
+                                    allWorksController.logOut();
+                                    Get.offAll(() => LoginScreen());
+                                  },
+                                )
+                              ],
+                            ));
+                  },
+                  icon: const Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                  )),
           automaticallyImplyLeading: false,
-          title: const Text(
-            'New Cards',
-            style: TextStyle(color: Colors.white),
-          ),
-          centerTitle: true,
-          backgroundColor: mainColor,
+          title: kIsWeb
+              ? const Text(
+                  'Compass Automatic Gear',
+                  style: TextStyle(color: iconColor),
+                )
+              : const Text(
+                  'New Cards',
+                  style: TextStyle(color: Colors.white),
+                ),
+          centerTitle: kIsWeb ? false : true,
+          backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
             IconButton(
                 onPressed: () {
@@ -63,23 +76,15 @@ class AllWorksScreen extends StatelessWidget {
                 },
                 icon: const Icon(
                   Icons.search,
-                  color: Colors.white,
-                ))
+                  color: kIsWeb ? iconColor : Colors.white,
+                )),
+            kIsWeb
+                ? const SizedBox(
+                    width: 20,
+                  )
+                : const SizedBox(),
           ],
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(10.0),
-        //   ),
-        //   backgroundColor: mainColor,
-        //   onPressed: () {},
-        //   child: IconButton(
-        //     icon: const Icon(Icons.add),
-        //     onPressed: () {
-        //       Get.to(() => JobCardScreen(), transition: Transition.leftToRight);
-        //     },
-        //   ),
-        // ),
         body: GetX<AllWorksController>(
             init: AllWorksController(),
             builder: (controller) {
@@ -252,27 +257,17 @@ class AllWorksScreen extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            // Display a green checkmark if status is true, otherwise display a red "X"
-                                            // Icon(
-                                            //   carCard['status'] == true
-                                            //       ? Icons.check_circle
-                                            //       : Icons.cancel,
-                                            //   color: carCard['status'] == true
-                                            //       ? Colors.green
-                                            //       : Colors.grey,
-                                            //   size: 35,
-                                            // ),
                                             Container(
                                               width: 70,
                                               height: 30,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(25),
-                                                  color:
-                                                      carCard['status'] == true
-                                                          ? const Color.fromARGB(
-                                                              255, 50, 212, 56)
-                                                          : Colors.grey),
+                                                  color: carCard['status'] ==
+                                                          true
+                                                      ? const Color.fromARGB(
+                                                          255, 50, 212, 56)
+                                                      : Colors.grey),
                                               child: Center(
                                                   child: carCard['status'] ==
                                                           true
@@ -462,21 +457,6 @@ class DataSearch extends SearchDelegate {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              // const Text(
-                              //   'Mileage:',
-                              //   style: TextStyle(
-                              //     fontSize: 19,
-                              //     fontWeight: FontWeight.bold,
-                              //     color: Colors.black54,
-                              //   ),
-                              // ),
-                              // Text(
-                              //   '${carCard['car_mileage']} km',
-                              //   style: const TextStyle(
-                              //     fontSize: 16,
-                              //     color: Colors.black54,
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
@@ -523,36 +503,3 @@ class DataSearch extends SearchDelegate {
     });
   }
 }
-
-
-
-// ListTile(
-//                                 contentPadding: const EdgeInsets.all(16),
-//                                 title: Text(
-//                                   '${carCard['customer_name']}',
-//                                   style: fontStyle,
-//                                 ),
-//                                 subtitle: Text('${carCard['date']}'),
-//                                 trailing: Column(
-//                                   mainAxisAlignment:
-//                                       MainAxisAlignment.spaceAround,
-//                                   children: [
-//                                     SizedBox(
-//                                       child: Text(
-//                                         '${carCard['car_brand']}  ${carCard['car_model']}',
-//                                         style: fontStyle,
-//                                       ),
-//                                     ),
-//                                     SizedBox(
-//                                       child: Text(
-//                                         '${carCard['plate_number']}',
-//                                         style: fontStyle,
-//                                       ),
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-
-
-
-

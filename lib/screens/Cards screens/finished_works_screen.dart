@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
@@ -17,12 +18,17 @@ class FinishedWorksScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(
-            'Finished Cards',
-            style: TextStyle(color: Colors.white),
-          ),
-          centerTitle: true,
-          backgroundColor: mainColor,
+          title: kIsWeb
+              ? const Text(
+                  'Compass Automatic Gear',
+                  style: TextStyle(color: iconColor),
+                )
+              : const Text(
+                  'Finished Cards',
+                  style: TextStyle(color: Colors.white),
+                ),
+          centerTitle: kIsWeb ? false : true,
+          backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
             IconButton(
                 onPressed: () {
@@ -30,23 +36,15 @@ class FinishedWorksScreen extends StatelessWidget {
                 },
                 icon: const Icon(
                   Icons.search,
-                  color: Colors.white,
-                ))
+                  color: kIsWeb ? iconColor : Colors.white,
+                )),
+            kIsWeb
+                ? const SizedBox(
+                    width: 20,
+                  )
+                : const SizedBox(),
           ],
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(10.0),
-        //   ),
-        //   backgroundColor: mainColor,
-        //   onPressed: () {},
-        //   child: IconButton(
-        //     icon: const Icon(Icons.add),
-        //     onPressed: () {
-        //       Get.to(() => JobCardScreen(), transition: Transition.leftToRight);
-        //     },
-        //   ),
-        // ),
         body: GetX<FinishedWorksController>(
             init: FinishedWorksController(),
             builder: (controller) {
@@ -222,11 +220,11 @@ class FinishedWorksScreen extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(25),
-                                                  color:
-                                                      carCard['status'] == true
-                                                          ? const Color.fromARGB(
-                                                              255, 50, 212, 56)
-                                                          : Colors.grey),
+                                                  color: carCard['status'] ==
+                                                          true
+                                                      ? const Color.fromARGB(
+                                                          255, 50, 212, 56)
+                                                      : Colors.grey),
                                               child: Center(
                                                   child: carCard['status'] ==
                                                           true
@@ -477,32 +475,3 @@ class DataSearch extends SearchDelegate {
     });
   }
 }
-
-
-
-// ListTile(
-//                                 contentPadding: const EdgeInsets.all(16),
-//                                 title: Text(
-//                                   '${carCard['customer_name']}',
-//                                   style: fontStyle,
-//                                 ),
-//                                 subtitle: Text('${carCard['date']}'),
-//                                 trailing: Column(
-//                                   mainAxisAlignment:
-//                                       MainAxisAlignment.spaceAround,
-//                                   children: [
-//                                     SizedBox(
-//                                       child: Text(
-//                                         '${carCard['car_brand']}  ${carCard['car_model']}',
-//                                         style: fontStyle,
-//                                       ),
-//                                     ),
-//                                     SizedBox(
-//                                       child: Text(
-//                                         '${carCard['plate_number']}',
-//                                         style: fontStyle,
-//                                       ),
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),

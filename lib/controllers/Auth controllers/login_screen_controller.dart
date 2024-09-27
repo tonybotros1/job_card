@@ -10,10 +10,16 @@ import '../../screens/Cards screens/main_cards_screen.dart';
 class LoginScreenController extends GetxController {
   late TextEditingController email = TextEditingController();
   late TextEditingController pass = TextEditingController();
+  final FocusNode focusNode = FocusNode(); // To keep track of focus
+
   late String currentUserToken = '';
   late String userId;
   RxBool obscureText = RxBool(true);
   RxBool sigingInProcess = RxBool(false);
+
+  var width = Get.width;
+  var height = Get.height;
+
   @override
   void onInit() {
     // myTest();
@@ -108,7 +114,7 @@ class LoginScreenController extends GetxController {
       await saveTokenInSharedPref();
       sigingInProcess.value = false;
       showSnackBar('Login Success', 'Welcome');
-      Get.offAll(() => MainCardsScreen());
+      Get.offAll(() => const MainCardsScreen());
     } on FirebaseAuthException catch (e) {
       sigingInProcess.value = false;
 

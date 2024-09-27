@@ -62,7 +62,7 @@ class EditCardScreen extends StatelessWidget {
                               child: const Text('Yes'),
                               onPressed: () {
                                 editCardScreenController.deleteCard();
-                                Get.offAll(() => MainCardsScreen(),
+                                Get.offAll(() => const MainCardsScreen(),
                                     transition: Transition.leftToRight);
                               },
                             )
