@@ -23,7 +23,7 @@ class MainScreenForWeb extends StatelessWidget {
                     ? Obx(
                         () => Expanded(
                           flex: menuCon.visible.value ? 2 : 1,
-                          child: SideMenuWidget(menuCon: menuCon),
+                          child: SideMenuWidget(),
                         ),
                       )
                     : const SizedBox(),

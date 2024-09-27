@@ -5,7 +5,7 @@ import '../controllers/Widgets controller/side_menu_widget_controller.dart';
 import 'side_menu_data.dart';
 
 class SideMenuWidget extends StatelessWidget {
-  SideMenuWidget({super.key, required menuCon});
+  SideMenuWidget({super.key});
 
   final SideMenuController menuCon = Get.put(SideMenuController());
 

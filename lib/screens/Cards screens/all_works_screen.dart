@@ -10,6 +10,7 @@ import '../../models/job_card_model.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 import '../../widgets/screen_size_widget.dart';
+import '../../widgets/side_menu_widgets.dart';
 
 class AllWorksScreen extends StatelessWidget {
   AllWorksScreen({super.key});
@@ -18,11 +19,27 @@ class AllWorksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: kIsWeb
+            ? ScreenSize.isNotWeb(context)
+                ? SizedBox(
+                    width: 180,
+                    child: SideMenuWidget(),
+                  )
+                : null
+            : null,
         backgroundColor: Colors.white,
         appBar: AppBar(
           leading: kIsWeb
               ? ScreenSize.isNotWeb(context)
-                  ? const Icon(Icons.menu)
+                  ? Builder(builder: (context) {
+                      return IconButton(
+                        icon: const Icon(Icons.menu),
+                        color: iconColor,
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      );
+                    })
                   : null
               : IconButton(
                   onPressed: () {
