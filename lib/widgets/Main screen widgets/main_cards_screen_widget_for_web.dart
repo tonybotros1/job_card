@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/widgets/screen_size_widget.dart';
-import 'package:job_card/widgets/side_menu_widgets.dart';
+import 'package:job_card/widgets/Side%20menu%20widgets/side_menu_widgets.dart';
 
-import '../controllers/Widgets controller/side_menu_widget_controller.dart';
+import '../../controllers/Widgets controller/side_menu_widget_controller.dart';
 
 class MainScreenForWeb extends StatelessWidget {
   MainScreenForWeb({super.key});

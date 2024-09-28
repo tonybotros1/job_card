@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:job_card/controllers/Cards%20Screens%20Controllers/card_images_screen_controller.dart';
 import '../../const.dart';
 import '../../models/image_model.dart';
-import '../single_image_viewer.dart';
+import '../images and videos screens/single_image_viewer.dart';
 
 class CardImagesScreen extends StatelessWidget {
   CardImagesScreen({super.key});

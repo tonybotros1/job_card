@@ -19,9 +19,20 @@ class FinishedWorksScreen extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: kIsWeb
-              ? const Text(
-                  'Compass Automatic Gear',
-                  style: TextStyle(color: iconColor),
+              ? Row(
+                  children: [
+                    Image.asset(
+                      'assets/logo2.png',
+                      width: 40,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const Text(
+                      'Compass Automatic Gear',
+                      style: TextStyle(color: iconColor),
+                    ),
+                  ],
                 )
               : const Text(
                   'Finished Cards',

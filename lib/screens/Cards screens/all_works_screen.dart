@@ -10,7 +10,7 @@ import '../../models/job_card_model.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 import '../../widgets/screen_size_widget.dart';
-import '../../widgets/side_menu_widgets.dart';
+import '../../widgets/Side menu widgets/side_menu_widgets.dart';
 
 class AllWorksScreen extends StatelessWidget {
   AllWorksScreen({super.key});
@@ -22,7 +22,7 @@ class AllWorksScreen extends StatelessWidget {
         drawer: kIsWeb
             ? ScreenSize.isNotWeb(context)
                 ? SizedBox(
-                    width:ScreenSize.isMobile(context) ? 100 : 180,
+                    width: ScreenSize.isMobile(context) ? 100 : 180,
                     child: SideMenuWidget(),
                   )
                 : null
@@ -76,9 +76,20 @@ class AllWorksScreen extends StatelessWidget {
                   )),
           automaticallyImplyLeading: false,
           title: kIsWeb
-              ? const Text(
-                  'Compass Automatic Gear',
-                  style: TextStyle(color: iconColor),
+              ? Row(
+                  children: [
+                    Image.asset(
+                      'assets/logo2.png',
+                      width: 40,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const Text(
+                      'Compass Automatic Gear',
+                      style: TextStyle(color: iconColor),
+                    ),
+                  ],
                 )
               : const Text(
                   'New Cards',

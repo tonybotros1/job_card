@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
-import 'package:job_card/screens/images_screen.dart';
+import 'package:job_card/screens/images%20and%20videos%20screens/images_screen.dart';
 import 'package:job_card/screens/Cards%20screens/main_cards_screen.dart';
 import 'package:signature/signature.dart';
 import 'package:video_player/video_player.dart';

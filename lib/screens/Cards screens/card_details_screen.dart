@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:job_card/models/image_model.dart';
 import 'package:job_card/models/job_card_model.dart';
 import 'package:job_card/screens/Cards%20screens/edit_card_screen.dart';
-import 'package:job_card/screens/single_image_viewer.dart';
+import 'package:job_card/screens/images%20and%20videos%20screens/single_image_viewer.dart';
 import 'package:readmore/readmore.dart';
 import 'card_images_screen.dart';
 

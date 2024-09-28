@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../const.dart';
-import '../controllers/Widgets controller/side_menu_widget_controller.dart';
+import '../../const.dart';
+import '../../controllers/Widgets controller/side_menu_widget_controller.dart';
 import 'side_menu_data.dart';
 
 class SideMenuWidget extends StatelessWidget {

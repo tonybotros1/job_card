@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
-import '../controllers/Cards Screens Controllers/main_card_screen_controller.dart';
+import '../../controllers/Cards Screens Controllers/main_card_screen_controller.dart';
 
 class MainScreenForMobile extends StatelessWidget {
    MainScreenForMobile({super.key});

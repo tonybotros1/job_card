@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/side_menu_model.dart';
+import '../../models/side_menu_model.dart';
 
 class SideMenuData {
   final menu = const <MenuModel>[
