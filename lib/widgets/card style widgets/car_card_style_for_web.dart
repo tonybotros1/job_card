@@ -75,23 +75,23 @@ Widget carCardStyleForMWeb(
                   child: Container(
                     width: constraints.maxWidth,
                     decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8),
-                      ),
-                      // color: Color.fromARGB(255, 250, 177, 177),
-                      // color: Color(0xffA1D6B2),
-                      color: Color.fromARGB(255, 176, 233, 194),
-                    ),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
+                        ),
+                        // color: Color.fromARGB(255, 250, 177, 177),
+                        // color: Color(0xffA1D6B2),
+                        color: Colors.black),
                     child: Center(
                       child: AutoSizeText(
                         overflow: TextOverflow.ellipsis,
-                        '${carCard['customer_name']}',
+                        // '${carCard['customer_name']}',
+                        '${carCard['car_brand']}'.toUpperCase(),
                         // maxLines: 2,
                         style: GoogleFonts.fredoka(
-                          color: Colors.black54,
-                          fontSize: 20,
-                        ),
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -107,7 +107,16 @@ Widget carCardStyleForMWeb(
                         AutoSizeText(
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          '- ${carCard['car_brand']} | ${carCard['car_model']}',
+                          '- ${carCard['car_model']}',
+                          style: GoogleFonts.fredoka(
+                            color: Colors.black54,
+                            fontSize: 17,
+                          ),
+                        ),
+                        AutoSizeText(
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          '- ${carCard['customer_name']}',
                           style: GoogleFonts.fredoka(
                             color: Colors.black54,
                             fontSize: 17,

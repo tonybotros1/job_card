@@ -10,7 +10,6 @@ import 'package:job_card/widgets/card%20style%20widgets/car_card_style_for_web.d
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 import '../../widgets/card style widgets/car_card_style_for_mobile.dart';
-import '../../widgets/card style widgets/car_card_style_for_web copy.dart';
 import '../../widgets/screen_size_widget.dart';
 import '../../widgets/Side menu widgets/side_menu_widgets.dart';
 
