@@ -11,6 +11,8 @@ class AllWorksController extends GetxController {
   final RxList<DocumentSnapshot> filteredCarCards =
       RxList<DocumentSnapshot>([]);
 
+  final RxInt numberOfCars = RxInt(0);
+
   RxString userId = RxString('');
 
   @override
@@ -46,6 +48,7 @@ class AllWorksController extends GetxController {
         .snapshots()
         .listen((event) {
       carCards.assignAll(event.docs);
+      numberOfCars.value = carCards.length;
     });
 
     return await Future.delayed(const Duration(seconds: 2));
@@ -81,7 +84,4 @@ class AllWorksController extends GetxController {
   void shareToSocialMedia(content) {
     Share.share(content);
   }
-
-  
-
 }

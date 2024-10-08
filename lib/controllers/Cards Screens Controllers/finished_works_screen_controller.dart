@@ -8,6 +8,7 @@ class FinishedWorksController extends GetxController {
   final RxList<DocumentSnapshot> carCards = RxList<DocumentSnapshot>([]);
   final RxList<DocumentSnapshot> filteredCarCards =
       RxList<DocumentSnapshot>([]);
+  final RxInt numberOfCars = RxInt(0);
 
   RxString userId = RxString('');
 
@@ -35,6 +36,7 @@ class FinishedWorksController extends GetxController {
         .snapshots()
         .listen((event) {
       carCards.assignAll(event.docs);
+      numberOfCars.value = carCards.length;
     });
 
     return await Future.delayed(const Duration(seconds: 2));

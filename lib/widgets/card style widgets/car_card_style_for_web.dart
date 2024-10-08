@@ -109,7 +109,7 @@ Widget carCardStyleForMWeb(
                           children: [
                             Icon(
                               Icons.model_training,
-                              color: Colors.grey[800],
+                              color: secColor,
                             ),
                             const SizedBox(
                               width: 10,
@@ -129,7 +129,7 @@ Widget carCardStyleForMWeb(
                           children: [
                             Icon(
                               Icons.person,
-                              color: Colors.grey[800],
+                              color: secColor,
                             ),
                             const SizedBox(
                               width: 10,
@@ -147,8 +147,13 @@ Widget carCardStyleForMWeb(
                         ),
                         Row(
                           children: [
-                            Icon(Icons.pin, color: Colors.grey[800],),
-                           const SizedBox(width: 10,),
+                            Icon(
+                              Icons.pin,
+                              color: secColor,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
                             AutoSizeText(
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
@@ -162,8 +167,13 @@ Widget carCardStyleForMWeb(
                         ),
                         Row(
                           children: [
-                            Icon(Icons.calendar_month,color: Colors.grey[800],),
-                            const SizedBox(width: 10,),
+                            Icon(
+                              Icons.calendar_month,
+                              color: secColor,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
                             AutoSizeText(
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,

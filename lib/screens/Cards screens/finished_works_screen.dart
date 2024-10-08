@@ -43,6 +43,13 @@ class FinishedWorksScreen extends StatelessWidget {
           centerTitle: kIsWeb ? false : true,
           backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
+              Obx(() => AutoSizeText(
+                  'Number of Cards: ${finishedWorksController.numberOfCars.value}',
+                  style: const TextStyle(color: iconColor),
+                )),
+            const SizedBox(
+              width: 10,
+            ),
             IconButton(
                 onPressed: () {
                   showSearch(context: context, delegate: DataSearch());
