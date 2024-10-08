@@ -5,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
-import 'package:job_card/screens/images%20and%20videos%20screens/images_screen.dart';
-import 'package:job_card/screens/Cards%20screens/main_cards_screen.dart';
 import 'package:signature/signature.dart';
 import 'package:video_player/video_player.dart';
 import '../../const.dart';
@@ -62,8 +60,9 @@ class EditCardScreen extends StatelessWidget {
                               child: const Text('Yes'),
                               onPressed: () {
                                 editCardScreenController.deleteCard();
-                                Get.offAll(() => const MainCardsScreen(),
-                                    transition: Transition.leftToRight);
+                                Get.offAllNamed('/mainCardsScreen',
+                                    // transition: Transition.leftToRight
+                                    );
                               },
                             )
                           ],
@@ -427,7 +426,7 @@ class EditCardScreen extends StatelessWidget {
                                       clipBehavior: Clip.hardEdge,
                                       child: InkWell(
                                         onTap: () =>
-                                            Get.to(() => ImagesScreen()),
+                                            Get.toNamed('/imagesScreen'),
                                         child: Image.network(
                                             editCardScreenController
                                                 .carImages[i]),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../const.dart';
 import '../../controllers/Widgets controller/side_menu_widget_controller.dart';
-import '../../screens/auth/login_screen.dart';
 import 'side_menu_data.dart';
 
 class SideMenuWidget extends StatelessWidget {
@@ -69,7 +68,7 @@ class SideMenuWidget extends StatelessWidget {
                                   child: const Text('Yes'),
                                   onPressed: () {
                                     menuCon.logOut();
-                                    Get.offAll(() => LoginScreen());
+                                    Get.offAllNamed('/loginScreen');
                                   },
                                 )
                               ],

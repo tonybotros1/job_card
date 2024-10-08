@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../screens/Cards screens/main_cards_screen.dart';
 
 class LoginScreenController extends GetxController {
   late TextEditingController email = TextEditingController();
@@ -116,7 +115,7 @@ class LoginScreenController extends GetxController {
       await saveTokenInSharedPref();
       sigingInProcess.value = false;
       showSnackBar('Login Success', 'Welcome');
-      Get.offAll(() => const MainCardsScreen());
+      Get.offAllNamed('/mainCardsScreen');
     } on FirebaseAuthException catch (e) {
       sigingInProcess.value = false;
 

@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../screens/auth/login_screen.dart';
-import '../../screens/Cards screens/main_cards_screen.dart';
 
 class LoadingScreenController extends GetxController {
   @override
@@ -43,9 +41,9 @@ class LoadingScreenController extends GetxController {
 
     String? action = prefs.getString('deviceToken');
     if (action == null || action == '') {
-      Get.offAll(() => LoginScreen());
+      Get.offAllNamed('/loginScreen');
     } else {
-      Get.offAll(() => const MainCardsScreen());
+      Get.offAllNamed('/mainCardsScreen');
     }
   }
 

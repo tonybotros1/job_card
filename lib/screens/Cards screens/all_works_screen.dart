@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/Cards%20Screens%20Controllers/all_works_screen_controller.dart';
-import 'package:job_card/screens/auth/login_screen.dart';
 import 'package:job_card/widgets/card%20style%20widgets/car_card_style_for_web.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
@@ -65,7 +64,7 @@ class AllWorksScreen extends StatelessWidget {
                                   child: const Text('Yes'),
                                   onPressed: () {
                                     allWorksController.logOut();
-                                    Get.offAll(() => LoginScreen());
+                                    Get.offAllNamed('/loginScreen');
                                   },
                                 )
                               ],

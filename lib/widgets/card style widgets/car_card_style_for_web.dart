@@ -46,8 +46,8 @@ Widget carCardStyleForMWeb(
           ),
           child: InkWell(
             onTap: () {
-              Get.to
-              (() => CardDetailsScreenForWeb(),
+              Get.toNamed
+              ('/cardDetailsScreenForWeb',
                   arguments: JobCardModel(
                       carImages: carImages,
                       customerSignature: carCard['customer_signature'],
@@ -66,7 +66,8 @@ Widget carCardStyleForMWeb(
                       docID: carCard.id,
                       carVideo: carCard['car_video'],
                       status: carCard['status']),
-                  transition: Transition.leftToRight);
+                  // transition: Transition.leftToRight
+                  );
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

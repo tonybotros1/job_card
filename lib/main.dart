@@ -4,7 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart'; // Add this import
 
+import 'screens/Cards screens/card_details_screen.dart';
+import 'screens/Cards screens/card_details_screen_for_web.dart';
+import 'screens/Cards screens/card_images_screen.dart';
+import 'screens/Cards screens/edit_card_screen.dart';
+import 'screens/Cards screens/main_cards_screen.dart';
 import 'screens/auth/loading_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/images and videos screens/images_screen.dart';
+import 'screens/images and videos screens/single_image_viewer.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -51,7 +59,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home:const LoadingScreen(),
       getPages: [
-        GetPage(name:'/' , page: () => const LoadingScreen() )
+        GetPage(name:'/' , page: () => const LoadingScreen()),
+        GetPage(name: '/loginScreen', page:()=> LoginScreen()),
+        GetPage(name: '/mainCardsScreen', page: ()=> const MainCardsScreen()),
+        GetPage(name: '/editCardScreen', page: ()=> EditCardScreen()),
+        GetPage(name: '/cardImagesScreen', page: ()=>CardImagesScreen()),
+        GetPage(name: '/singleImageViewer', page:()=> SingleImageViewer()),
+        GetPage(name: '/imagesScreen', page: ()=> ImagesScreen()),
+        GetPage(name: '/carDetailsScreen', page: ()=> CarDetailsScreen()),
+        GetPage(name: '/cardDetailsScreenForWeb', page: ()=> CardDetailsScreenForWeb())
       ],
     );
   }

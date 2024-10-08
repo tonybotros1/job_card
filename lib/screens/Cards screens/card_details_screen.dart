@@ -7,10 +7,7 @@ import 'package:job_card/controllers/Cards%20Screens%20Controllers/card_details_
 import 'package:google_fonts/google_fonts.dart';
 import 'package:job_card/models/image_model.dart';
 import 'package:job_card/models/job_card_model.dart';
-import 'package:job_card/screens/Cards%20screens/edit_card_screen.dart';
-import 'package:job_card/screens/images%20and%20videos%20screens/single_image_viewer.dart';
 import 'package:readmore/readmore.dart';
-import 'card_images_screen.dart';
 
 class CarDetailsScreen extends StatelessWidget {
   CarDetailsScreen({super.key});
@@ -41,8 +38,8 @@ class CarDetailsScreen extends StatelessWidget {
             cardDetailsController.status == true
                 ? TextButton(
                     onPressed: () {
-                      Get.to(
-                        () => EditCardScreen(),
+                      Get.toNamed(
+                        '/editCardScreen',
                         arguments: JobCardModel(
                             carImages: cardDetailsController.carImages,
                             customerSignature:
@@ -146,13 +143,14 @@ class CarDetailsScreen extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(() => CardImagesScreen(),
+                                  Get.toNamed('/cardImagesScreen',
                                       arguments: JobCardModel(
                                           customerName: cardDetailsController
                                               .customerName,
                                           carImages:
                                               cardDetailsController.carImages),
-                                      transition: Transition.leftToRight);
+                                      // transition: Transition.leftToRight,
+                                      );
                                 },
                                 child: SizedBox(
                                   child: Row(
@@ -196,7 +194,7 @@ class CarDetailsScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(16.0),
                                         child: IconButton.filledTonal(
                                             onPressed: () {
-                                              Get.to(() => CardImagesScreen(),
+                                              Get.toNamed('/cardImagesScreen',
                                                   arguments: JobCardModel(
                                                       customerName:
                                                           cardDetailsController
@@ -204,8 +202,9 @@ class CarDetailsScreen extends StatelessWidget {
                                                       carImages:
                                                           cardDetailsController
                                                               .carImages),
-                                                  transition:
-                                                      Transition.leftToRight);
+                                                  // transition:
+                                                  //     Transition.leftToRight
+                                                      );
                                             },
                                             icon: const Icon(Icons
                                                 .arrow_forward_ios_rounded)),
@@ -226,8 +225,8 @@ class CarDetailsScreen extends StatelessWidget {
                                             clipBehavior: Clip.hardEdge,
                                             child: InkWell(
                                               onTap: () {
-                                                Get.to(
-                                                    () => SingleImageViewer(),
+                                                Get.toNamed(
+                                                    '/singleImageViewer',
                                                     arguments: ImageModel(
                                                         url:
                                                             cardDetailsController
