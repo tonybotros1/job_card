@@ -21,7 +21,7 @@ class CardDetailsScreenForWeb extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         backgroundColor: mainColorForWeb,
         title: const Text('Details', style: TextStyle(color: iconColor)),
       ),

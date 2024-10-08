@@ -21,20 +21,20 @@ class SideMenuWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Obx(
-            () => Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () => menuCon.shrink(),
-                icon: Icon(
-                  menuCon.visible.value
-                      ? Icons.menu_rounded
-                      : Icons.arrow_forward_ios_rounded,
-                  color: iconColor,
-                ),
-              ),
-            ),
-          ),
+          // Obx(
+          //   () => Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: IconButton(
+          //       onPressed: () => menuCon.shrink(),
+          //       icon: Icon(
+          //         menuCon.visible.value
+          //             ? Icons.menu_rounded
+          //             : Icons.arrow_forward_ios_rounded,
+          //         color: iconColor,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           verticalSpace(),
           ListView.builder(
             shrinkWrap: true,

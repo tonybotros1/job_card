@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:job_card/screens/Cards%20screens/card_details_screen_for_web.dart';
 import '../../const.dart';
 import '../../models/job_card_model.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -46,28 +45,28 @@ Widget carCardStyleForMWeb(
           ),
           child: InkWell(
             onTap: () {
-              Get.toNamed
-              ('/cardDetailsScreenForWeb',
-                  arguments: JobCardModel(
-                      carImages: carImages,
-                      customerSignature: carCard['customer_signature'],
-                      carBrand: carCard['car_brand'],
-                      carMileage: carCard['car_mileage'],
-                      carModel: carCard['car_model'],
-                      chassisNumber: carCard['chassis_number'],
-                      color: carCard['color'],
-                      customerName: carCard['customer_name'],
-                      date: carCard['date'],
-                      emailAddress: carCard['email_address'],
-                      fuelAmount: carCard['fuel_amount'],
-                      phoneNumber: carCard['phone_number'],
-                      plateNumber: carCard['plate_number'],
-                      comments: carCard['comments'],
-                      docID: carCard.id,
-                      carVideo: carCard['car_video'],
-                      status: carCard['status']),
-                  // transition: Transition.leftToRight
-                  );
+              Get.toNamed(
+                '/cardDetailsScreenForWeb',
+                arguments: JobCardModel(
+                    carImages: carImages,
+                    customerSignature: carCard['customer_signature'],
+                    carBrand: carCard['car_brand'],
+                    carMileage: carCard['car_mileage'],
+                    carModel: carCard['car_model'],
+                    chassisNumber: carCard['chassis_number'],
+                    color: carCard['color'],
+                    customerName: carCard['customer_name'],
+                    date: carCard['date'],
+                    emailAddress: carCard['email_address'],
+                    fuelAmount: carCard['fuel_amount'],
+                    phoneNumber: carCard['phone_number'],
+                    plateNumber: carCard['plate_number'],
+                    comments: carCard['comments'],
+                    docID: carCard.id,
+                    carVideo: carCard['car_video'],
+                    status: carCard['status']),
+                // transition: Transition.leftToRight
+              );
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,46 +100,80 @@ Widget carCardStyleForMWeb(
                 Expanded(
                   flex: 4,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        AutoSizeText(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          '- ${carCard['car_model']}',
-                          style: GoogleFonts.fredoka(
-                            color: Colors.black54,
-                            fontSize: 17,
-                          ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.model_training,
+                              color: Colors.grey[800],
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            AutoSizeText(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              ' ${carCard['car_model']}',
+                              style: GoogleFonts.fredoka(
+                                color: Colors.black54,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
-                        AutoSizeText(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          '- ${carCard['customer_name']}',
-                          style: GoogleFonts.fredoka(
-                            color: Colors.black54,
-                            fontSize: 17,
-                          ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.person,
+                              color: Colors.grey[800],
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            AutoSizeText(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              ' ${carCard['customer_name']}',
+                              style: GoogleFonts.fredoka(
+                                color: Colors.black54,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
-                        AutoSizeText(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          '- ${carCard['plate_number']}',
-                          style: GoogleFonts.fredoka(
-                            color: Colors.black54,
-                            fontSize: 17,
-                          ),
+                        Row(
+                          children: [
+                            Icon(Icons.pin, color: Colors.grey[800],),
+                           const SizedBox(width: 10,),
+                            AutoSizeText(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              ' ${carCard['plate_number']}',
+                              style: GoogleFonts.fredoka(
+                                color: Colors.black54,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
-                        AutoSizeText(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          '- ${carCard['date']}',
-                          style: GoogleFonts.fredoka(
-                            color: secColor,
-                            fontSize: 17,
-                          ),
+                        Row(
+                          children: [
+                            Icon(Icons.calendar_month,color: Colors.grey[800],),
+                            const SizedBox(width: 10,),
+                            AutoSizeText(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              ' ${carCard['date']}',
+                              style: GoogleFonts.fredoka(
+                                color: secColor,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
                         // const Spacer(),
                         Row(
