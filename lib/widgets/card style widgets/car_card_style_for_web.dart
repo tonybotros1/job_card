@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:job_card/screens/Cards%20screens/card_details_screen_for_web.dart';
 import '../../const.dart';
 import '../../models/job_card_model.dart';
-import '../../screens/Cards screens/card_details_screen.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 Widget carCardStyleForMWeb(
@@ -46,7 +46,8 @@ Widget carCardStyleForMWeb(
           ),
           child: InkWell(
             onTap: () {
-              Get.to(() => CarDetailsScreen(),
+              Get.to
+              (() => CardDetailsScreenForWeb(),
                   arguments: JobCardModel(
                       carImages: carImages,
                       customerSignature: carCard['customer_signature'],
