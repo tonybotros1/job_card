@@ -7,10 +7,9 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 class CardImagesScreenController extends GetxController {
   late String customerName;
   List<String> carImages = [];
-    OverlayEntry? overlayEntry;
-Timer? hoverTimer;
-bool isOverlayVisible = false;
-
+  OverlayEntry? overlayEntry;
+  Timer? hoverTimer;
+  bool isOverlayVisible = false;
 
   final customCachedManeger = CacheManager(
       Config('customCacheKey', stalePeriod: const Duration(days: 3)));
@@ -28,7 +27,6 @@ bool isOverlayVisible = false;
     }
     update();
   }
-
 
   void showFullScreen(BuildContext context, String imageUrl) {
     // تجنب عرض الصورة مجددًا إذا كانت موجودة بالفعل
@@ -55,7 +53,7 @@ bool isOverlayVisible = false;
     isOverlayVisible = true; // يتم عرض الصورة
   }
 
-     void removeOverlay() {
+  void removeOverlay() {
     hoverTimer?.cancel(); // تأكد من إلغاء المؤقت
     overlayEntry?.remove();
     overlayEntry = null;

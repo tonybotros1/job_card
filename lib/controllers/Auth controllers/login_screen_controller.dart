@@ -20,10 +20,12 @@ class LoginScreenController extends GetxController {
   var width = Get.width;
   var height = Get.height;
 
+  var isPermissionGranted = false.obs; // حالة الإذن
+
   @override
   void onInit() {
     // myTest();
-
+    checkPermission();
     super.onInit();
   }
 
@@ -131,5 +133,54 @@ class LoginScreenController extends GetxController {
         showSnackBar('Unexpected Error', 'Please try again');
       }
     }
+  }
+
+  Future<void> checkPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.getNotificationSettings();
+
+    // تحقق مما إذا كانت الإشعارات مُفعلة بالفعل
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      isPermissionGranted.value = true;
+    } else {
+      requestPermission();
+    }
+  }
+
+// this function is to order permission from users
+  Future<void> requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission();
+
+    if (settings.authorizationStatus == AuthorizationStatus.denied) {
+      // إذا تم رفض الإذن
+      isPermissionGranted.value = false;
+      _showPermissionDeniedDialog();
+    } else if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      // الإذن مُعطى
+      isPermissionGranted.value = true;
+    } else {
+      // في حالة عدم اتخاذ أي إجراء، يمكنك طلب الإذن
+      requestPermission();
+    }
+  }
+
+// this function to show dialog if the user denided the permission
+  void _showPermissionDeniedDialog() {
+    Get.defaultDialog(
+      title: "إذن الإشعارات مطلوب",
+      middleText:
+          "للاستخدام الكامل للتطبيق، يرجى السماح بالإشعارات في إعدادات المتصفح.",
+      textConfirm: "إعادة المحاولة",
+      textCancel: "إغلاق",
+      onConfirm: () {
+        requestPermission(); // إعادة محاولة طلب الإذن
+        Get.back(); // إغلاق مربع الحوار
+      },
+      onCancel: () {
+        Get.back(); // إغلاق مربع الحوار
+      },
+    );
   }
 }

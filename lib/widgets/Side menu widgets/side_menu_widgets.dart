@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../const.dart';
 import '../../controllers/Widgets controller/side_menu_widget_controller.dart';
+import '../../screens/auth/login_screen.dart';
 import 'side_menu_data.dart';
 
 class SideMenuWidget extends StatelessWidget {
@@ -45,7 +47,34 @@ class SideMenuWidget extends StatelessWidget {
           const Spacer(),
           FittedBox(
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                showCupertinoDialog(
+                        context: context,
+                        builder: (context) => CupertinoAlertDialog(
+                              title: const Text('Alert'),
+                              content: const Text(
+                                  'Are you sure you want to Logout?'),
+                              actions: [
+                                CupertinoDialogAction(
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    'No',
+                                    style: TextStyle(color: mainColor),
+                                  ),
+                                ),
+                                CupertinoDialogAction(
+                                  child: const Text('Yes'),
+                                  onPressed: () {
+                                    menuCon.logOut();
+                                    Get.offAll(() => LoginScreen());
+                                  },
+                                )
+                              ],
+                            ));
+              },
               child: menuCon.visible.value
                   ? const Text(
                       'LOGOUT',
