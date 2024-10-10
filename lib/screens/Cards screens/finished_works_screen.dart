@@ -7,7 +7,9 @@ import 'package:job_card/controllers/Cards%20Screens%20Controllers/finished_work
 import 'package:job_card/widgets/card%20style%20widgets/car_card_style_for_web.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
+import '../../widgets/Side menu widgets/side_menu_widgets.dart';
 import '../../widgets/card style widgets/car_card_style_for_mobile.dart';
+import '../../widgets/screen_size_widget.dart';
 
 class FinishedWorksScreen extends StatelessWidget {
   FinishedWorksScreen({super.key});
@@ -17,8 +19,29 @@ class FinishedWorksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: kIsWeb
+            ? ScreenSize.isNotWeb(context)
+                ? SizedBox(
+                    width: ScreenSize.isMobile(context) ? 100 : 180,
+                    child: SideMenuWidget(),
+                  )
+                : null
+            : null,
         backgroundColor: Colors.white,
         appBar: AppBar(
+          leading: kIsWeb
+              ? ScreenSize.isNotWeb(context)
+                  ? Builder(builder: (context) {
+                      return IconButton(
+                        icon: const Icon(Icons.menu),
+                        color: iconColor,
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      );
+                    })
+                  : null
+              : null,
           automaticallyImplyLeading: false,
           title: kIsWeb
               ? Row(
@@ -30,9 +53,11 @@ class FinishedWorksScreen extends StatelessWidget {
                     const SizedBox(
                       width: 20,
                     ),
-                    const AutoSizeText(
-                      'Compass Automatic Gear',
-                      style: TextStyle(color: iconColor),
+                    const Flexible(
+                      child: AutoSizeText(
+                        'Compass Automatic Gear',
+                        style: TextStyle(color: iconColor),
+                      ),
                     ),
                   ],
                 )
@@ -43,7 +68,7 @@ class FinishedWorksScreen extends StatelessWidget {
           centerTitle: kIsWeb ? false : true,
           backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
-              Obx(() => AutoSizeText(
+            Obx(() => AutoSizeText(
                   'Number of Cards: ${finishedWorksController.numberOfCars.value}',
                   style: const TextStyle(color: iconColor),
                 )),

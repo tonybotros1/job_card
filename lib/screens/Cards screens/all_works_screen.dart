@@ -85,9 +85,11 @@ class AllWorksScreen extends StatelessWidget {
                     const SizedBox(
                       width: 20,
                     ),
-                    const AutoSizeText(
-                      'Compass Automatic Gear',
-                      style: TextStyle(color: iconColor),
+                    const Flexible(
+                      child: AutoSizeText(
+                        'Compass Automatic Gear',
+                        style: TextStyle(color: iconColor),
+                      ),
                     ),
                   ],
                 )

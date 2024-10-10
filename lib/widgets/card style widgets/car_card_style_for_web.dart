@@ -134,13 +134,15 @@ Widget carCardStyleForMWeb(
                             const SizedBox(
                               width: 10,
                             ),
-                            AutoSizeText(
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              ' ${carCard['customer_name']}',
-                              style: GoogleFonts.fredoka(
-                                color: Colors.black54,
-                                fontSize: 17,
+                            Flexible(
+                              child: AutoSizeText(
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                ' ${carCard['customer_name']}',
+                                style: GoogleFonts.fredoka(
+                                  color: Colors.black54,
+                                  fontSize: 17,
+                                ),
                               ),
                             ),
                           ],
