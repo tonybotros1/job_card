@@ -153,7 +153,7 @@ class CardDetailsScreenForWeb extends StatelessWidget {
                                       title: 'Car Brand | Model:',
                                       icon: Icons.directions_car,
                                       controller:
-                                          '${cardDetailsController.carBrand} | ${cardDetailsController.carModel}'),
+                                          '${cardDetailsController.carBrand} ${cardDetailsController.carModel}'),
                                   cardDetails(
                                       title: 'Car Color:',
                                       icon: Icons.color_lens,
@@ -217,7 +217,7 @@ class CardDetailsScreenForWeb extends StatelessWidget {
                                                 title: 'Car Brand | Model:',
                                                 icon: Icons.directions_car,
                                                 controller:
-                                                    '${cardDetailsController.carBrand} | ${cardDetailsController.carModel}'),
+                                                    '${cardDetailsController.carBrand} ${cardDetailsController.carModel}'),
                                             cardDetails(
                                                 title: 'Car Color:',
                                                 icon: Icons.color_lens,

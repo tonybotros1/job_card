@@ -15,10 +15,12 @@ class SideMenuController extends GetxController {
 
   Widget buildRightContent(int index) {
     switch (index) {
+      // case 0:
+      //   return const DashboardScreen();
       case 0:
         return AllWorksScreen();
       case 1:
-        return  FinishedWorksScreen();
+        return FinishedWorksScreen();
       // case 2:
       //   return  const PatientArchiveView();
       default:

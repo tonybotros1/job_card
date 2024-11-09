@@ -3,23 +3,25 @@ import 'package:get/get.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class CardDetailsController extends GetxController {
-  late String customerName;
+  late String customerName =
+      'ggggggggggggggggggggggggggggggggggggggggggggggggggggg';
 
-  late String carBrand;
-  late String carModel;
-  late String plateNumber;
-  late String carMileage;
-  late String chassisNumber;
-  late String phoneNumber;
-  late String emailAddress;
-  late String color;
-  late String date;
-  late String id;
-  late String video;
-  late bool status;
-  late String comments;
+  late String carBrand = 'gg';
+  late String carModel = 'gg';
+  late String plateNumber = 'gggg';
+  late String carMileage =
+      'ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggtttttttttttttttttt';
+  late String chassisNumber = 'ggggggggggg';
+  late String phoneNumber = 'gggggggggg';
+  late String emailAddress = 'gggggggg';
+  late String color = 'ggggggggg';
+  late String date = 'ggggggggg';
+  late String id = 'gggggggggg';
+  late String video = 'ggggggggggg';
+  late bool status = true;
+  late String comments = 'gggggggggggg';
   double fuelAmount = 25;
-  late String customerSignature;
+  late String customerSignature = 'gggggggggggg';
   List<String> carImages = [];
 
   @override
@@ -28,9 +30,8 @@ class CardDetailsController extends GetxController {
     super.onInit();
   }
 
-  
-// this is for cached images 
-   final customCachedManeger = CacheManager(
+// this is for cached images
+  final customCachedManeger = CacheManager(
       Config('customCacheKey', stalePeriod: const Duration(days: 3)));
 
   void getDetails() {
@@ -66,7 +67,6 @@ class CardDetailsController extends GetxController {
         .update({"status": stat});
     update();
   }
-
 
   void updateMethod() {
     update();

@@ -57,9 +57,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home:const LoadingScreen(),
+      home: const LoadingScreen(),
+      initialRoute: '/',
       getPages: [
-        GetPage(name:'/' , page: () => const LoadingScreen()),
+        GetPage(name:'/' , page: () =>  const LoadingScreen()),
         GetPage(name: '/loginScreen', page:()=> LoginScreen()),
         GetPage(name: '/mainCardsScreen', page: ()=> const MainCardsScreen()),
         GetPage(name: '/editCardScreen', page: ()=> EditCardScreen()),
