@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/Cards%20Screens%20Controllers/finished_works_screen_controller.dart';
+import 'package:job_card/widgets/Main%20screen%20widgets/search_engine.dart';
 import 'package:job_card/widgets/card%20style%20widgets/car_card_style_for_web.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
@@ -75,6 +76,7 @@ class FinishedWorksScreen extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
+            !kIsWeb?
             IconButton(
                 onPressed: () {
                   showSearch(context: context, delegate: DataSearch());
@@ -82,7 +84,7 @@ class FinishedWorksScreen extends StatelessWidget {
                 icon: const Icon(
                   Icons.search,
                   color: kIsWeb ? iconColor : Colors.white,
-                )),
+                )):const SizedBox(),
             kIsWeb
                 ? const SizedBox(
                     width: 20,
@@ -90,38 +92,53 @@ class FinishedWorksScreen extends StatelessWidget {
                 : const SizedBox(),
           ],
         ),
-        body: GetX<FinishedWorksController>(
-            init: FinishedWorksController(),
-            builder: (controller) {
-              if (controller.carCards.isEmpty) {
-                return Center(
-                    child: Text(
-                  'No Cards Yet',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
+        body: Column(
+          children: [
+            GetX<FinishedWorksController>(
+                init: FinishedWorksController(),
+                builder: (controller) {
+                  return searchEngine(controller: controller.search.value);
+                }),
+            Expanded(
+              child: GetX<FinishedWorksController>(builder: (controller) {
+                if (controller.loading.value == true) {
+                  return Center(
+                    child: CircularProgressIndicator(
                       color: mainColor,
-                      fontSize: 25),
-                ));
-              } else {
-                return kIsWeb
-                    ? carCardStyleForMWeb(
-                        controller: controller,
-                        listName: controller.carCards,
-                        color: Colors.grey.shade800,
-                        status: 'Added')
-                    : LiquidPullToRefresh(
-                        onRefresh: () => controller.getFinishedWorks(),
+                    ),
+                  );
+                } else if (controller.carCards.isEmpty) {
+                  return Center(
+                      child: Text(
+                    'No Cards',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
                         color: mainColor,
-                        // backgroundColor: secColor,
-                        animSpeedFactor: 2,
-                        height: 300,
-                        child: carCardStyleForMobile(
-                            controller: controller,
-                            color: Colors.grey,
-                            status: 'Added',
-                            listName: controller.carCards));
-              }
-            }));
+                        fontSize: 25),
+                  ));
+                } else {
+                  return kIsWeb
+                      ? carCardStyleForMWeb(
+                          controller: controller,
+                          listName: controller.carCards,
+                          color: Colors.grey.shade800,
+                          status: 'Added')
+                      : LiquidPullToRefresh(
+                          onRefresh: () => controller.getFinishedWorks(),
+                          color: mainColor,
+                          // backgroundColor: secColor,
+                          animSpeedFactor: 2,
+                          height: 300,
+                          child: carCardStyleForMobile(
+                              controller: controller,
+                              color: Colors.grey,
+                              status: 'Added',
+                              listName: controller.carCards));
+                }
+              }),
+            ),
+          ],
+        ));
   }
 }
 

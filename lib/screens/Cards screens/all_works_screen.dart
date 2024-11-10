@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_card/const.dart';
 import 'package:job_card/controllers/Cards%20Screens%20Controllers/all_works_screen_controller.dart';
+import 'package:job_card/widgets/Main%20screen%20widgets/search_engine.dart';
 import 'package:job_card/widgets/card%20style%20widgets/car_card_style_for_web.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
@@ -107,6 +108,7 @@ class AllWorksScreen extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
+            !kIsWeb?
             IconButton(
                 onPressed: () {
                   showSearch(context: context, delegate: DataSearch());
@@ -114,7 +116,7 @@ class AllWorksScreen extends StatelessWidget {
                 icon: const Icon(
                   Icons.search,
                   color: kIsWeb ? iconColor : Colors.white,
-                )),
+                )):const SizedBox(),
             kIsWeb
                 ? const SizedBox(
                     width: 20,
@@ -122,23 +124,28 @@ class AllWorksScreen extends StatelessWidget {
                 : const SizedBox(),
           ],
         ),
-        body: GetX<AllWorksController>(
-            init: AllWorksController(),
-            builder: (controller) {
-              if (controller.carCards.isEmpty) {
-                return LiquidPullToRefresh(
-                  onRefresh: () => controller.getAllWorks(),
-                  color: mainColor,
-                  // backgroundColor: secColor,
-                  animSpeedFactor: 2,
-                  height: 300,
-                  showChildOpacityTransition: false,
-                  child: Column(
+        body: Column(
+          children: [
+            GetX<AllWorksController>(
+                init: AllWorksController(),
+                builder: (controller) {
+                  return searchEngine(controller: controller.search.value);
+                }),
+            Expanded(
+              child: GetX<AllWorksController>(builder: (controller) {
+                if (controller.loading.value == true) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: mainColor,
+                    ),
+                  );
+                } else if (controller.carCards.isEmpty) {
+                  return Column(
                     children: [
                       Expanded(
                         child: Center(
                           child: Text(
-                            'No Cards Yet',
+                            'No Cards',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: mainColor,
@@ -147,30 +154,32 @@ class AllWorksScreen extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                );
-              } else {
-                return kIsWeb
-                    ? carCardStyleForMWeb(
-                        controller: controller,
-                        listName: controller.carCards,
-                        color: const Color.fromARGB(255, 50, 212, 56),
-                        // color: const Color.fromARGB(255, 177, 250, 189),
-                        status: 'New')
-                    : LiquidPullToRefresh(
-                        onRefresh: () => controller.getAllWorks(),
-                        color: mainColor,
-                        // backgroundColor: secColor,
-                        animSpeedFactor: 2,
-                        height: 300,
-                        child: carCardStyleForMobile(
-                            controller: controller,
-                            color: const Color.fromARGB(255, 50, 212, 56),
-                            status: 'New',
-                            listName: controller.carCards),
-                      );
-              }
-            }));
+                  );
+                } else {
+                  return kIsWeb
+                      ? carCardStyleForMWeb(
+                          controller: controller,
+                          listName: controller.carCards,
+                          color: const Color.fromARGB(255, 50, 212, 56),
+                          // color: const Color.fromARGB(255, 177, 250, 189),
+                          status: 'New')
+                      : LiquidPullToRefresh(
+                          onRefresh: () => controller.getAllWorks(),
+                          color: mainColor,
+                          // backgroundColor: secColor,
+                          animSpeedFactor: 2,
+                          height: 300,
+                          child: carCardStyleForMobile(
+                              controller: controller,
+                              color: const Color.fromARGB(255, 50, 212, 56),
+                              status: 'New',
+                              listName: controller.carCards),
+                        );
+                }
+              }),
+            ),
+          ],
+        ));
   }
 }
 

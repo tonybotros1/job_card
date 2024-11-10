@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
@@ -9,6 +10,11 @@ class FinishedWorksController extends GetxController {
   final RxList<DocumentSnapshot> filteredCarCards =
       RxList<DocumentSnapshot>([]);
   final RxInt numberOfCars = RxInt(0);
+
+  Rx<TextEditingController> search = TextEditingController().obs;
+
+
+  final RxBool loading = RxBool(false);
 
   RxString userId = RxString('');
 
@@ -27,6 +33,8 @@ class FinishedWorksController extends GetxController {
 
 // this function is to get the works from firebase
   getFinishedWorks() async {
+    loading.value = true;
+
     FirebaseFirestore.instance
         .collection('car_card')
         .where('user_id', isEqualTo: userId.value)
@@ -37,6 +45,7 @@ class FinishedWorksController extends GetxController {
         .listen((event) {
       carCards.assignAll(event.docs);
       numberOfCars.value = carCards.length;
+      loading.value = false;
     });
 
     return await Future.delayed(const Duration(seconds: 2));
