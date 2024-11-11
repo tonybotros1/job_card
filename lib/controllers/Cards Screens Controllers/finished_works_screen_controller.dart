@@ -21,7 +21,7 @@ class FinishedWorksController extends GetxController {
   @override
   void onInit() async {
     await getUserId();
-    getFinishedWorks();
+    await getFinishedWorks();
     search.value.addListener(() {
       filterCards();
     });
