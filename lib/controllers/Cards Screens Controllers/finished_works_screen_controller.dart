@@ -12,7 +12,7 @@ class FinishedWorksController extends GetxController {
   final RxInt numberOfCars = RxInt(0);
 
   Rx<TextEditingController> search = TextEditingController().obs;
-
+  RxString query = RxString('');
 
   final RxBool loading = RxBool(false);
 
@@ -22,6 +22,9 @@ class FinishedWorksController extends GetxController {
   void onInit() async {
     await getUserId();
     getFinishedWorks();
+    search.value.addListener(() {
+      filterCards();
+    });
     super.onInit();
   }
 
@@ -51,7 +54,7 @@ class FinishedWorksController extends GetxController {
     return await Future.delayed(const Duration(seconds: 2));
   }
 
-  // Function to filter the list based on search criteria
+  // Function to filter the list based on search criteria for mobile
   void filterResults(String query) {
     query = query.toLowerCase();
 
@@ -75,6 +78,24 @@ class FinishedWorksController extends GetxController {
 
     // Update the list with the filtered results
     filteredCarCards.assignAll(filteredResults);
+  }
+
+  // this function is to filter the search results for web
+  void filterCards() {
+    query.value = search.value.text.toLowerCase();
+    if (query.value.isEmpty) {
+      filteredCarCards.clear();
+    } else {
+      filteredCarCards.assignAll(
+        carCards.where((car) {
+          return car['customer_name'].toString().toLowerCase().contains(query) ||
+              car['car_brand'].toString().toLowerCase().contains(query) ||
+              car['car_model'].toString().toLowerCase().contains(query) ||
+              car['plate_number'].toString().toLowerCase().contains(query) ||
+              car['date'].toString().toLowerCase().contains(query);
+        }).toList(),
+      );
+    }
   }
 
 // this function is to share the details via social media

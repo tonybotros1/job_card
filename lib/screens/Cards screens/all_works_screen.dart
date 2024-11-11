@@ -159,7 +159,7 @@ class AllWorksScreen extends StatelessWidget {
                   return kIsWeb
                       ? carCardStyleForMWeb(
                           controller: controller,
-                          listName: controller.carCards,
+                          listName:controller.query.value.isEmpty? controller.carCards: controller.filteredCarCards,
                           color: const Color.fromARGB(255, 50, 212, 56),
                           // color: const Color.fromARGB(255, 177, 250, 189),
                           status: 'New')

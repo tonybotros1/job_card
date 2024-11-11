@@ -120,7 +120,7 @@ class FinishedWorksScreen extends StatelessWidget {
                   return kIsWeb
                       ? carCardStyleForMWeb(
                           controller: controller,
-                          listName: controller.carCards,
+                          listName:controller.query.value.isEmpty? controller.carCards : controller.filteredCarCards,
                           color: Colors.grey.shade800,
                           status: 'Added')
                       : LiquidPullToRefresh(
