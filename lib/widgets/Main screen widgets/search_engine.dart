@@ -7,7 +7,7 @@ Center searchEngine({
 }) {
   return Center(
     child: Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.symmetric(horizontal: 75),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Container(
@@ -15,15 +15,15 @@ Center searchEngine({
             width: constraints.maxWidth / 1.5,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: mainColorForWeb,
+              color: Colors.white,
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
               child: Row(
                 children: [
-                 const Expanded(
-                  flex: 1,
-                    child:  Icon(
+                  const Expanded(
+                    flex: 1,
+                    child: Icon(
                       Icons.search,
                       color: iconColor,
                     ),

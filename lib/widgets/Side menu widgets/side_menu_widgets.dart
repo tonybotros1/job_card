@@ -15,11 +15,11 @@ class SideMenuWidget extends StatelessWidget {
     final data = SideMenuData();
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       color: mainColorForWeb,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // Obx(
           //   () => Padding(
@@ -35,6 +35,7 @@ class SideMenuWidget extends StatelessWidget {
           //     ),
           //   ),
           // ),
+          Image.asset('assets/logo2.png'),
           verticalSpace(),
           ListView.builder(
             shrinkWrap: true,
@@ -48,31 +49,31 @@ class SideMenuWidget extends StatelessWidget {
             child: TextButton(
               onPressed: () {
                 showCupertinoDialog(
-                        context: context,
-                        builder: (context) => CupertinoAlertDialog(
-                              title: const Text('Alert'),
-                              content: const Text(
-                                  'Are you sure you want to Logout?'),
-                              actions: [
-                                CupertinoDialogAction(
-                                  isDefaultAction: true,
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  child: Text(
-                                    'No',
-                                    style: TextStyle(color: mainColor),
-                                  ),
-                                ),
-                                CupertinoDialogAction(
-                                  child: const Text('Yes'),
-                                  onPressed: () {
-                                    menuCon.logOut();
-                                    Get.offAllNamed('/loginScreen');
-                                  },
-                                )
-                              ],
-                            ));
+                    context: context,
+                    builder: (context) => CupertinoAlertDialog(
+                          title: const Text('Alert'),
+                          content:
+                              const Text('Are you sure you want to Logout?'),
+                          actions: [
+                            CupertinoDialogAction(
+                              isDefaultAction: true,
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: mainColor),
+                              ),
+                            ),
+                            CupertinoDialogAction(
+                              child: const Text('Yes'),
+                              onPressed: () {
+                                menuCon.logOut();
+                                Get.offAllNamed('/loginScreen');
+                              },
+                            )
+                          ],
+                        ));
               },
               child: menuCon.visible.value
                   ? const Text(

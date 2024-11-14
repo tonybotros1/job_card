@@ -44,24 +44,16 @@ class FinishedWorksScreen extends StatelessWidget {
                   : null
               : null,
           automaticallyImplyLeading: false,
+          toolbarHeight: kIsWeb ? 75 : null,
+          flexibleSpace: Center(
+            child: GetX<FinishedWorksController>(
+                init: FinishedWorksController(),
+                builder: (controller) {
+                  return searchEngine(controller: controller.search.value);
+                }),
+          ),
           title: kIsWeb
-              ? Row(
-                  children: [
-                    Image.asset(
-                      'assets/logo2.png',
-                      width: 40,
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const Flexible(
-                      child: AutoSizeText(
-                        'Compass Automatic Gear',
-                        style: TextStyle(color: iconColor),
-                      ),
-                    ),
-                  ],
-                )
+              ? null
               : const Text(
                   'Finished Cards',
                   style: TextStyle(color: Colors.white),
@@ -69,10 +61,10 @@ class FinishedWorksScreen extends StatelessWidget {
           centerTitle: kIsWeb ? false : true,
           backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
-            Obx(() => AutoSizeText(
+           ScreenSize.isWeb(context)? Obx(() => AutoSizeText(
                   'Number of Cards: ${finishedWorksController.numberOfCars.value}',
                   style: const TextStyle(color: iconColor),
-                )),
+                )):const SizedBox(),
             const SizedBox(
               width: 10,
             ),
@@ -92,53 +84,42 @@ class FinishedWorksScreen extends StatelessWidget {
                 : const SizedBox(),
           ],
         ),
-        body: Column(
-          children: [
-            GetX<FinishedWorksController>(
-                init: FinishedWorksController(),
-                builder: (controller) {
-                  return searchEngine(controller: controller.search.value);
-                }),
-            Expanded(
-              child: GetX<FinishedWorksController>(builder: (controller) {
-                if (controller.loading.value == true) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: mainColor,
-                    ),
-                  );
-                } else if (controller.carCards.isEmpty) {
-                  return Center(
-                      child: Text(
-                    'No Cards',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: mainColor,
-                        fontSize: 25),
-                  ));
-                } else {
-                  return kIsWeb
-                      ? carCardStyleForMWeb(
-                          controller: controller,
-                          listName:controller.query.value.isEmpty? controller.carCards : controller.filteredCarCards,
-                          color: Colors.grey.shade800,
-                          status: 'Added')
-                      : LiquidPullToRefresh(
-                          onRefresh: () => controller.getFinishedWorks(),
-                          color: mainColor,
-                          // backgroundColor: secColor,
-                          animSpeedFactor: 2,
-                          height: 300,
-                          child: carCardStyleForMobile(
-                              controller: controller,
-                              color: Colors.grey,
-                              status: 'Added',
-                              listName: controller.carCards));
-                }
-              }),
-            ),
-          ],
-        ));
+        body: GetX<FinishedWorksController>(builder: (controller) {
+          if (controller.loading.value == true) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: mainColor,
+              ),
+            );
+          } else if (controller.carCards.isEmpty) {
+            return Center(
+                child: Text(
+              'No Cards',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: mainColor,
+                  fontSize: 25),
+            ));
+          } else {
+            return kIsWeb
+                ? carCardStyleForMWeb(
+                    controller: controller,
+                    listName:controller.query.value.isEmpty? controller.carCards : controller.filteredCarCards,
+                    color: Colors.grey.shade800,
+                    status: 'Added')
+                : LiquidPullToRefresh(
+                    onRefresh: () => controller.getFinishedWorks(),
+                    color: mainColor,
+                    // backgroundColor: secColor,
+                    animSpeedFactor: 2,
+                    height: 300,
+                    child: carCardStyleForMobile(
+                        controller: controller,
+                        color: Colors.grey,
+                        status: 'Added',
+                        listName: controller.carCards));
+          }
+        }));
   }
 }
 

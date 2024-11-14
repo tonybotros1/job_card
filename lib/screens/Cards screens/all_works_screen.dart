@@ -30,6 +30,7 @@ class AllWorksScreen extends StatelessWidget {
             : null,
         backgroundColor: Colors.white,
         appBar: AppBar(
+          toolbarHeight: kIsWeb ? 75 : null,
           leading: kIsWeb
               ? ScreenSize.isNotWeb(context)
                   ? Builder(builder: (context) {
@@ -76,24 +77,15 @@ class AllWorksScreen extends StatelessWidget {
                     color: Colors.white,
                   )),
           automaticallyImplyLeading: false,
+          flexibleSpace: Center(
+            child: GetX<AllWorksController>(
+                init: AllWorksController(),
+                builder: (controller) {
+                  return searchEngine(controller: controller.search.value);
+                }),
+          ),
           title: kIsWeb
-              ? Row(
-                  children: [
-                    Image.asset(
-                      'assets/logo2.png',
-                      width: 40,
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const Flexible(
-                      child: AutoSizeText(
-                        'Compass Automatic Gear',
-                        style: TextStyle(color: iconColor),
-                      ),
-                    ),
-                  ],
-                )
+              ? null
               : const Text(
                   'New Cards',
                   style: TextStyle(color: Colors.white),
@@ -101,22 +93,23 @@ class AllWorksScreen extends StatelessWidget {
           centerTitle: kIsWeb ? false : true,
           backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
-            Obx(() => AutoSizeText(
+           ScreenSize.isWeb(context)? Obx(() => AutoSizeText(
                   'Number of Cards: ${allWorksController.numberOfCars.value}',
                   style: const TextStyle(color: iconColor),
-                )),
+                )):const SizedBox(),
             const SizedBox(
               width: 10,
             ),
-            !kIsWeb?
-            IconButton(
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                },
-                icon: const Icon(
-                  Icons.search,
-                  color: kIsWeb ? iconColor : Colors.white,
-                )):const SizedBox(),
+            !kIsWeb
+                ? IconButton(
+                    onPressed: () {
+                      showSearch(context: context, delegate: DataSearch());
+                    },
+                    icon: const Icon(
+                      Icons.search,
+                      color: kIsWeb ? iconColor : Colors.white,
+                    ))
+                : const SizedBox(),
             kIsWeb
                 ? const SizedBox(
                     width: 20,
@@ -124,62 +117,53 @@ class AllWorksScreen extends StatelessWidget {
                 : const SizedBox(),
           ],
         ),
-        body: Column(
-          children: [
-            GetX<AllWorksController>(
-                init: AllWorksController(),
-                builder: (controller) {
-                  return searchEngine(controller: controller.search.value);
-                }),
-            Expanded(
-              child: GetX<AllWorksController>(builder: (controller) {
-                if (controller.loading.value == true) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: mainColor,
-                    ),
-                  );
-                } else if (controller.carCards.isEmpty) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'No Cards',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: mainColor,
-                                fontSize: 25),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return kIsWeb
-                      ? carCardStyleForMWeb(
-                          controller: controller,
-                          listName:controller.query.value.isEmpty? controller.carCards: controller.filteredCarCards,
-                          color: const Color.fromARGB(255, 50, 212, 56),
-                          // color: const Color.fromARGB(255, 177, 250, 189),
-                          status: 'New')
-                      : LiquidPullToRefresh(
-                          onRefresh: () => controller.getAllWorks(),
+        body: GetX<AllWorksController>(builder: (controller) {
+          if (controller.loading.value == true) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: mainColor,
+              ),
+            );
+          } else if (controller.carCards.isEmpty) {
+            return Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'No Cards',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
                           color: mainColor,
-                          // backgroundColor: secColor,
-                          animSpeedFactor: 2,
-                          height: 300,
-                          child: carCardStyleForMobile(
-                              controller: controller,
-                              color: const Color.fromARGB(255, 50, 212, 56),
-                              status: 'New',
-                              listName: controller.carCards),
-                        );
-                }
-              }),
-            ),
-          ],
-        ));
+                          fontSize: 25),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return kIsWeb
+                ? carCardStyleForMWeb(
+                    controller: controller,
+                    listName: controller.query.value.isEmpty
+                        ? controller.carCards
+                        : controller.filteredCarCards,
+                    color: const Color.fromARGB(255, 50, 212, 56),
+                    // color: const Color.fromARGB(255, 177, 250, 189),
+                    status: 'New')
+                : LiquidPullToRefresh(
+                    onRefresh: () => controller.getAllWorks(),
+                    color: mainColor,
+                    // backgroundColor: secColor,
+                    animSpeedFactor: 2,
+                    height: 300,
+                    child: carCardStyleForMobile(
+                        controller: controller,
+                        color: const Color.fromARGB(255, 50, 212, 56),
+                        status: 'New',
+                        listName: controller.carCards),
+                  );
+          }
+        }));
   }
 }
 
