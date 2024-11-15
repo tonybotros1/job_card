@@ -77,13 +77,16 @@ class AllWorksScreen extends StatelessWidget {
                     color: Colors.white,
                   )),
           automaticallyImplyLeading: false,
-          flexibleSpace: Center(
-            child: GetX<AllWorksController>(
-                init: AllWorksController(),
-                builder: (controller) {
-                  return searchEngine(controller: controller.search.value);
-                }),
-          ),
+          flexibleSpace: kIsWeb
+              ? Center(
+                  child: GetX<AllWorksController>(
+                      init: AllWorksController(),
+                      builder: (controller) {
+                        return searchEngine(
+                            controller: controller.search.value);
+                      }),
+                )
+              : null,
           title: kIsWeb
               ? null
               : const Text(
@@ -93,10 +96,12 @@ class AllWorksScreen extends StatelessWidget {
           centerTitle: kIsWeb ? false : true,
           backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
-           ScreenSize.isWeb(context)? Obx(() => AutoSizeText(
-                  'Number of Cards: ${allWorksController.numberOfCars.value}',
-                  style: const TextStyle(color: iconColor),
-                )):const SizedBox(),
+            ScreenSize.isWeb(context)
+                ? Obx(() => AutoSizeText(
+                      'Number of Cards: ${allWorksController.numberOfCars.value}',
+                      style: const TextStyle(color: iconColor),
+                    ))
+                : const SizedBox(),
             const SizedBox(
               width: 10,
             ),

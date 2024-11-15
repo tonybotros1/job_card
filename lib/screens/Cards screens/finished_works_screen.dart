@@ -45,13 +45,16 @@ class FinishedWorksScreen extends StatelessWidget {
               : null,
           automaticallyImplyLeading: false,
           toolbarHeight: kIsWeb ? 75 : null,
-          flexibleSpace: Center(
-            child: GetX<FinishedWorksController>(
-                init: FinishedWorksController(),
-                builder: (controller) {
-                  return searchEngine(controller: controller.search.value);
-                }),
-          ),
+          flexibleSpace: kIsWeb
+              ? Center(
+                  child: GetX<FinishedWorksController>(
+                      init: FinishedWorksController(),
+                      builder: (controller) {
+                        return searchEngine(
+                            controller: controller.search.value);
+                      }),
+                )
+              : null,
           title: kIsWeb
               ? null
               : const Text(
@@ -61,22 +64,25 @@ class FinishedWorksScreen extends StatelessWidget {
           centerTitle: kIsWeb ? false : true,
           backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
           actions: [
-           ScreenSize.isWeb(context)? Obx(() => AutoSizeText(
-                  'Number of Cards: ${finishedWorksController.numberOfCars.value}',
-                  style: const TextStyle(color: iconColor),
-                )):const SizedBox(),
+            ScreenSize.isWeb(context)
+                ? Obx(() => AutoSizeText(
+                      'Number of Cards: ${finishedWorksController.numberOfCars.value}',
+                      style: const TextStyle(color: iconColor),
+                    ))
+                : const SizedBox(),
             const SizedBox(
               width: 10,
             ),
-            !kIsWeb?
-            IconButton(
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                },
-                icon: const Icon(
-                  Icons.search,
-                  color: kIsWeb ? iconColor : Colors.white,
-                )):const SizedBox(),
+            !kIsWeb
+                ? IconButton(
+                    onPressed: () {
+                      showSearch(context: context, delegate: DataSearch());
+                    },
+                    icon: const Icon(
+                      Icons.search,
+                      color: kIsWeb ? iconColor : Colors.white,
+                    ))
+                : const SizedBox(),
             kIsWeb
                 ? const SizedBox(
                     width: 20,
@@ -96,15 +102,15 @@ class FinishedWorksScreen extends StatelessWidget {
                 child: Text(
               'No Cards',
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: mainColor,
-                  fontSize: 25),
+                  fontWeight: FontWeight.bold, color: mainColor, fontSize: 25),
             ));
           } else {
             return kIsWeb
                 ? carCardStyleForMWeb(
                     controller: controller,
-                    listName:controller.query.value.isEmpty? controller.carCards : controller.filteredCarCards,
+                    listName: controller.query.value.isEmpty
+                        ? controller.carCards
+                        : controller.filteredCarCards,
                     color: Colors.grey.shade800,
                     status: 'Added')
                 : LiquidPullToRefresh(

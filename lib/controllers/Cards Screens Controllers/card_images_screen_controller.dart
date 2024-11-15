@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+import '../../models/image_date_filter_model.dart';
 
 class CardImagesScreenController extends GetxController {
   late String customerName;
@@ -10,17 +13,19 @@ class CardImagesScreenController extends GetxController {
   OverlayEntry? overlayEntry;
   Timer? hoverTimer;
   bool isOverlayVisible = false;
+  Map<String, List<ImageWithDate>> groupedImages = {};
 
   final customCachedManeger = CacheManager(
       Config('customCacheKey', stalePeriod: const Duration(days: 3)));
 
   @override
-  void onInit() {
-    getDetails();
+  void onInit() async {
+    await getDetails();
+    await getImagesGroupedByDate(carImages);
     super.onInit();
   }
 
-  void getDetails() {
+  getDetails() {
     if (Get.arguments != null) {
       var arguments = Get.arguments;
       carImages = arguments.carImages;
@@ -58,5 +63,47 @@ class CardImagesScreenController extends GetxController {
     overlayEntry?.remove();
     overlayEntry = null;
     isOverlayVisible = false; // تم إزالة الصورة
+  }
+
+  // this fuction is the get the path of the image from url
+  String getFilePathFromUrl(String url) {
+    final uri = Uri.parse(url);
+    final encodedPath = uri.pathSegments[4]; // path segment after /o/
+    return Uri.decodeComponent(encodedPath); // decode %2F back to /
+  }
+
+// this function is to get the date of each image from firebase storage
+  Future<Map<String, List<ImageWithDate>>> getImagesGroupedByDate(
+      List<String> imageUrls) async {
+    for (var url in imageUrls) {
+      // print(url);
+      try {
+        final filePath = getFilePathFromUrl(url);
+        final storageRef = FirebaseStorage.instance.ref().child(filePath);
+        final metadata = await storageRef.getMetadata();
+        final dateAdded = metadata.timeCreated;
+        // print(dateAdded);
+        if (dateAdded != null) {
+          // تحويل التاريخ إلى تنسيق "yyyy-MM-dd"
+          final dateKey =
+              "${dateAdded.year}-${dateAdded.month.toString().padLeft(2, '0')}-${dateAdded.day.toString().padLeft(2, '0')}";
+        
+          // إضافة الصورة إلى المجموعة المناسبة
+          if (groupedImages.containsKey(dateKey)) {
+            groupedImages[dateKey]
+                ?.add(ImageWithDate(imageUrl: url, dateAdded: dateAdded));
+          } else {
+            groupedImages[dateKey] = [
+              ImageWithDate(imageUrl: url, dateAdded: dateAdded)
+            ];
+          }
+        }
+      } catch (e) {
+        // print('error: $e');
+      }
+      update();
+    }
+
+    return groupedImages;
   }
 }

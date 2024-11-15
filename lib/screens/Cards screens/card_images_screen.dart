@@ -32,7 +32,8 @@ class CardImagesScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 16),
@@ -50,34 +51,61 @@ class CardImagesScreen extends StatelessWidget {
               ),
             ),
             GetBuilder<CardImagesScreenController>(
-                init: CardImagesScreenController(),
-                builder: (controller) {
-                  return GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      // padding: const EdgeInsets.all(8),
-                      shrinkWrap: true,
-                      itemCount: controller.carImages.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3),
-                      itemBuilder: (context, i) {
-                        return Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: ClipRRect(
-                            // borderRadius: BorderRadius.circular(20),
-                            child: FittedBox(
-                                fit: BoxFit.cover,
-                                clipBehavior: Clip.hardEdge,
-                                child: InkWell(
-                                  onTap: () {
-                                    Get.toNamed('/singleImageViewer',
-                                        arguments: ImageModel(
-                                            url: controller.carImages[i]));
-                                  },
-                                  child: CachedNetworkImage(
-                                                cacheManager:
-                                                    controller
-                                                        .customCachedManeger,
+              init: CardImagesScreenController(),
+              builder: (controller) {
+                return controller.groupedImages.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: controller.groupedImages.keys.length,
+                        itemBuilder: (context, index) {
+                          final dateKey =
+                              controller.groupedImages.keys.elementAt(index);
+                          final images =
+                              controller.groupedImages[dateKey] ?? [];
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Date: $dateKey',
+                                    style: GoogleFonts.mooli(
+                                        fontSize: 14,
+                                        color: Colors.grey[900],
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                GridView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                  ),
+                                  itemCount: images.length,
+                                  itemBuilder: (context, i) {
+                                    final image = images[i];
+                                    return Padding(
+                                      padding: const EdgeInsets.all(1.0),
+                                      child: ClipRRect(
+                                        child: FittedBox(
+                                            fit: BoxFit.cover,
+                                            clipBehavior: Clip.hardEdge,
+                                            child: InkWell(
+                                              onTap: () {
+                                                Get.toNamed(
+                                                    '/singleImageViewer',
+                                                    arguments: ImageModel(
+                                                        url: image.imageUrl));
+                                              },
+                                              child: CachedNetworkImage(
+                                                cacheManager: controller
+                                                    .customCachedManeger,
                                                 progressIndicatorBuilder:
                                                     (context, url, progress) =>
                                                         Padding(
@@ -92,47 +120,32 @@ class CardImagesScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ),
-                                                imageUrl: controller
-                                                    .carImages[i],
+                                                imageUrl: image.imageUrl,
                                                 key: UniqueKey(),
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         const Icon(Icons.error),
                                               ),
-                                  // child: Image.network(
-                                  //   controller.carImages[i],
-                                  //   loadingBuilder: (BuildContext context,
-                                  //       Widget child,
-                                  //       ImageChunkEvent? loadingProgress) {
-                                  //     if (loadingProgress == null) {
-                                  //       return child; // Return the actual image if it's already loaded.
-                                  //     } else {
-                                  //       // Show a loading indicator while the image is loading.
-                                  //       return Center(
-                                  //         child: Padding(
-                                  //           padding: const EdgeInsets.all(30.0),
-                                  //           child: CircularProgressIndicator(
-                                  //             color: secColor,
-                                  //             value: loadingProgress
-                                  //                         .expectedTotalBytes !=
-                                  //                     null
-                                  //                 ? loadingProgress
-                                  //                         .cumulativeBytesLoaded /
-                                  //                     (loadingProgress
-                                  //                             .expectedTotalBytes ??
-                                  //                         1)
-                                  //                 : null,
-                                  //           ),
-                                  //         ),
-                                  //       );
-                                  //     }
-                                  //   },
-                                  // ),
-                                )),
+                                            )),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(25.0),
+                          child: CircularProgressIndicator(
+                            color: mainColor,
                           ),
-                        );
-                      });
-                }),
+                        ),
+                      );
+              },
+            )
           ],
         ),
       ),

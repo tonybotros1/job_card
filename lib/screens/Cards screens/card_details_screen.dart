@@ -35,8 +35,7 @@ class CarDetailsScreen extends StatelessWidget {
               )),
           centerTitle: true,
           actions: [
-            cardDetailsController.status == true
-                ? TextButton(
+                TextButton(
                     onPressed: () {
                       Get.toNamed(
                         '/editCardScreen',
@@ -64,7 +63,7 @@ class CarDetailsScreen extends StatelessWidget {
                       'Edit',
                       style: TextStyle(color: Colors.white),
                     ))
-                : const SizedBox()
+                
           ],
         ),
         body: Padding(
@@ -148,7 +147,8 @@ class CarDetailsScreen extends StatelessWidget {
                                           customerName: cardDetailsController
                                               .customerName,
                                           carImages:
-                                              cardDetailsController.carImages),
+                                              cardDetailsController.carImages,
+                                              ),
                                       // transition: Transition.leftToRight,
                                       );
                                 },
