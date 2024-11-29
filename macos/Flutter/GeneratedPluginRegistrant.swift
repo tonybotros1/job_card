@@ -16,7 +16,7 @@ import flutter_js
 import path_provider_foundation
 import share_plus
 import shared_preferences_foundation
-import sqflite
+import sqflite_darwin
 import video_player_avfoundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
