@@ -15,7 +15,7 @@ Widget cardDetails(
             children: [
               Icon(
                 icon,
-                color: secColor,
+                color: mainColor,
                 size: 35,
               ),
               const SizedBox(

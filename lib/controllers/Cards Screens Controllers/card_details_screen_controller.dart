@@ -14,23 +14,24 @@ class CardDetailsController extends GetxController {
   Timer? hoverTimer;
   bool isOverlayVisible = false;
 
-  late String customerName = '';
+  late String customerName = 'Tony Botros';
 
-  late String carBrand = '';
-  late String carModel= '';
-  late String plateNumber= '';
-  late String carMileage= '';
-  late String chassisNumber= '';
-  late String phoneNumber= '';
-  late String emailAddress= '';
-  late String color= '';
-  late String date= '';
-  late String id= '';
-  late String video= '';
+  late String carBrand = 'BMW';
+  late String carModel = '2025';
+  late String plateNumber = '131511/1fgvfvgggggggggggggggg';
+  late String carMileage = '5000000';
+  late String chassisNumber = '';
+  late String phoneNumber = '0934914410';
+  late String emailAddress = '';
+  late String color = '';
+  late String date = '';
+  late String id = '';
+  late String video = '';
   late bool status = true;
-  late String comments= '';
-  double fuelAmount = 25;
-  late String customerSignature= '';
+  late String comments =
+      'This is a comment ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt';
+  double fuelAmount = 50;
+  late String customerSignature = '';
   List<String> carImages = [];
 
   @override
@@ -38,7 +39,6 @@ class CardDetailsController extends GetxController {
     await getDetails();
     await getImagesGroupedByDate(carImages);
     super.onInit();
-   
   }
 
 // this is for cached images

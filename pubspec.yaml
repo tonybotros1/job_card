@@ -60,7 +60,7 @@ dependencies:
   http: ^1.1.0
   flutter_native_splash: ^2.2.19 
   liquid_pull_to_refresh: ^3.0.1
-  percent_indicator: ^4.2.3
+  percent_indicator: ^4.2.4
   persistent_bottom_nav_bar: ^6.2.1
   firebase_app_check: ^0.3.0+5
   readmore: ^3.0.0

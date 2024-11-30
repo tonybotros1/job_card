@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:job_card/widgets/screen_size_widget.dart';
 
 import '../../const.dart';
 import '../../controllers/Cards Screens Controllers/card_images_screen_controller.dart';
@@ -36,53 +37,63 @@ GetBuilder<CardImagesScreenController> detailsImagesSide() {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                        ),
-                        itemCount: images.length,
-                        itemBuilder: (context, i) {
-                          final image = images[i];
-                          return Padding(
-                            padding: const EdgeInsets.all(1.0),
-                            child: ClipRRect(
-                              child: FittedBox(
-                                  fit: BoxFit.cover,
-                                  clipBehavior: Clip.hardEdge,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // controller.showFullScreen(
-                                      //     context, image.imageUrl);
-                                      Get.toNamed('/singleImageViewer',
-                                          arguments:
-                                              ImageModel(url: image.imageUrl));
-                                    },
-                                    child: CachedNetworkImage(
-                                      cacheManager:
-                                          controller.customCachedManeger,
-                                      progressIndicatorBuilder:
-                                          (context, url, progress) => Padding(
-                                        padding: const EdgeInsets.all(30.0),
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            value: progress.progress,
-                                            color: mainColor,
-                                            strokeWidth: 3,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: ScreenSize.isWeb(context)
+                                ? 6
+                                : ScreenSize.isNotWeb(context)
+                                    ? 4
+                                    : ScreenSize.isMobile(context)
+                                        ? 3
+                                        : 2,
+                          ),
+                          itemCount: images.length,
+                          itemBuilder: (context, i) {
+                            final image = images[i];
+                            return Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    clipBehavior: Clip.hardEdge,
+                                    child: InkWell(
+                                      onTap: () {
+                                        // controller.showFullScreen(
+                                        //     context, image.imageUrl);
+                                        Get.toNamed('/singleImageViewer',
+                                            arguments: ImageModel(
+                                                url: image.imageUrl));
+                                      },
+                                      child: CachedNetworkImage(
+                                        cacheManager:
+                                            controller.customCachedManeger,
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) => Padding(
+                                          padding: const EdgeInsets.all(30.0),
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                              color: mainColor,
+                                              strokeWidth: 3,
+                                            ),
                                           ),
                                         ),
+                                        imageUrl: image.imageUrl,
+                                        key: UniqueKey(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
                                       ),
-                                      imageUrl: image.imageUrl,
-                                      key: UniqueKey(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
-                                  )),
-                            ),
-                          );
-                        },
+                                    )),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
