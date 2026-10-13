@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../common/messenger.dart';
+
 
 class LoginScreenController extends GetxController {
   late TextEditingController email = TextEditingController();
@@ -55,6 +57,10 @@ class LoginScreenController extends GetxController {
 
 // this function is to show a snackbae with the state of the login process:
   void showSnackBar(title, body) {
+    if (kIsWeb) {
+      showAppBanner('$title', '$body');
+      return;
+    }
     Get.snackbar(
       title,
       body,
@@ -77,13 +83,15 @@ class LoginScreenController extends GetxController {
       String documentId = userSnapshot.docs.first.id;
       // print('Document ID: $documentId');
       var userData = userSnapshot.docs.first.data() as Map<String, dynamic>;
-      var tokens = userData['users_tokens'];
+      final tokens = userData['users_tokens'] is List ? List<dynamic>.from(userData['users_tokens']) : <dynamic>[];
 
-      currentUserToken = (await FirebaseMessaging.instance.getToken())!;
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token == null || token.isEmpty) return;
+      currentUserToken = token;
 
       if (!tokens.contains(currentUserToken)) {
         tokens.add(currentUserToken);
-        FirebaseFirestore.instance
+        await FirebaseFirestore.instance
             .collection('users')
             .doc(documentId)
             .update({'users_tokens': tokens});
@@ -112,7 +120,19 @@ class LoginScreenController extends GetxController {
 
       // Get the user ID
       userId = user!.uid;
-      await saveToken(userId);
+      if (kIsWeb) {
+        // The portal has no push: the stored value only marks the session as
+        // signed in. Asking the browser for a push token here can return null
+        // (permission blocked, incognito) and would leave the button spinning.
+        currentUserToken = 'web';
+      } else {
+        try {
+          await saveToken(userId);
+        } catch (_) {
+          // Push registration is best effort; PushToken.sync retries at start.
+          currentUserToken = currentUserToken.isEmpty ? 'pending' : currentUserToken;
+        }
+      }
       await saveTokenInSharedPref();
       sigingInProcess.value = false;
       // On the web the route change below unmounts the overlay the snackbar
@@ -134,6 +154,10 @@ class LoginScreenController extends GetxController {
         // print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ${e.code}');
         showSnackBar('Unexpected Error', 'Please try again');
       }
+    } catch (_) {
+      // Never leave the button spinning.
+      sigingInProcess.value = false;
+      showSnackBar('Unexpected Error', 'Please try again');
     }
   }
 
