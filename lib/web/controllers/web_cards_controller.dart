@@ -19,6 +19,7 @@ class WebCardsController extends GetxController {
 
   static const pageSize = 48;
   static const _searchDebounce = Duration(milliseconds: 250);
+  static const _countInterval = Duration(seconds: 45);
 
   final cards = <WebJobCard>[].obs;
   final loading = true.obs;
@@ -40,6 +41,7 @@ class WebCardsController extends GetxController {
   Future<List<WebJobCard>>? _allLoading;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _sub;
   Timer? _debounce;
+  Timer? _countTimer;
   bool _firstSnapshot = true;
 
   @override
@@ -52,6 +54,7 @@ class WebCardsController extends GetxController {
   void onClose() {
     _sub?.cancel();
     _debounce?.cancel();
+    _countTimer?.cancel();
     super.onClose();
   }
 
@@ -72,10 +75,12 @@ class WebCardsController extends GetxController {
     _sub = _base.limit(pageSize).snapshots().listen((snap) {
       _firstPage = snap.docs;
       if (!_firstSnapshot && snap.docChanges.isNotEmpty) {
-        // Something changed server-side: the cached full list is stale.
+        // Something changed server-side: the cached full list is stale, and
+        // so is the total.
         _all = null;
         _allLoading = null;
         if (query.value.isNotEmpty) _runSearch(query.value);
+        refreshCount();
       }
       _firstSnapshot = false;
       if (snap.docs.length < pageSize) hasMore.value = false;
@@ -86,6 +91,10 @@ class WebCardsController extends GetxController {
       error.value = 'Could not load cards';
     });
     refreshCount();
+    // Cards finished or reopened further down the list do not show up in the
+    // first page, so the total is also re-read periodically.
+    _countTimer?.cancel();
+    _countTimer = Timer.periodic(_countInterval, (_) => refreshCount());
   }
 
   /// Pull-to-refresh: restart from the first page and drop cached pages.

@@ -4,11 +4,17 @@ import 'package:get/get.dart';
 
 /// A photo in Storage that no card references any more.
 class OrphanPhoto {
-  OrphanPhoto({required this.path, required this.name, required this.date});
+  OrphanPhoto({required this.path, required this.name, required this.date, required this.folder});
 
   /// Storage path, e.g. `car_pictures/1791875661752.jpg`.
   final String path;
   final String name;
+
+  /// Top-level folder: `car_pictures`, `customers_signatures` or `car_videos`.
+  final String folder;
+
+  bool get isVideo => folder == 'car_videos' || name.toLowerCase().endsWith('.mp4');
+  bool get isSignature => folder == 'customers_signatures';
 
   /// Day the photo was taken, from the millisecond timestamp the app names
   /// photos with; null when the name is not a timestamp.
@@ -18,8 +24,9 @@ class OrphanPhoto {
       ? ''
       : '${date!.year}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}';
 
-  /// Thumbnail path the extension / app would have created for it.
-  String get thumbPath {
+  /// Thumbnail path the extension / app would have created for it (photos only).
+  String? get thumbPath {
+    if (folder != 'car_pictures') return null;
     final dot = name.lastIndexOf('.');
     final stem = dot > 0 ? name.substring(0, dot) : name;
     return 'car_pictures/thumbnails/${stem}_600x600.jpg';
@@ -30,7 +37,8 @@ class OrphanPhoto {
 /// ("old data" left behind when cards were deleted) and deletes the ones the
 /// user selects. Scanning only reads; nothing is removed without [deleteSelected].
 class WebOrphansController extends GetxController {
-  static const folder = 'car_pictures';
+  /// Every folder the app writes files to.
+  static const folders = ['car_pictures', 'customers_signatures', 'car_videos'];
   static const _pageSize = 1000;
 
   /// Photos newer than this are not listed: they may belong to a card that is
@@ -70,23 +78,31 @@ class WebOrphansController extends GetxController {
       var total = 0;
       var skippedRecent = 0;
       final cutoff = DateTime.now().subtract(recentGrace);
-      String? token;
-      final root = FirebaseStorage.instance.ref(folder);
-      do {
-        final page = await root.list(ListOptions(maxResults: _pageSize, pageToken: token));
-        for (final item in page.items) {
-          total += 1;
-          if (_referenced.contains(item.fullPath)) continue;
-          final date = _dateFromName(item.name);
-          if (date != null && date.isAfter(cutoff)) {
-            skippedRecent += 1;
-            continue;
+      for (final folder in folders) {
+        String? token;
+        final root = FirebaseStorage.instance.ref(folder);
+        do {
+          final ListResult page;
+          try {
+            page = await root.list(ListOptions(maxResults: _pageSize, pageToken: token));
+          } on FirebaseException catch (e) {
+            if (e.code == 'object-not-found') break; // folder does not exist
+            rethrow;
           }
-          found.add(OrphanPhoto(path: item.fullPath, name: item.name, date: date));
-        }
-        token = page.nextPageToken;
-        progress.value = 'Listing photos in Storage… $total checked, ${found.length} without a card';
-      } while (token != null);
+          for (final item in page.items) {
+            total += 1;
+            if (_referenced.contains(item.fullPath)) continue;
+            final date = _dateFromName(item.name);
+            if (date != null && date.isAfter(cutoff)) {
+              skippedRecent += 1;
+              continue;
+            }
+            found.add(OrphanPhoto(path: item.fullPath, name: item.name, date: date, folder: folder));
+          }
+          token = page.nextPageToken;
+          progress.value = 'Listing $folder… $total files checked, ${found.length} without a card';
+        } while (token != null);
+      }
 
       found.sort((a, b) => (b.date?.millisecondsSinceEpoch ?? 0).compareTo(a.date?.millisecondsSinceEpoch ?? 0));
       totalFiles.value = total;
@@ -98,7 +114,7 @@ class WebOrphansController extends GetxController {
       progress.value = '';
     } on FirebaseException catch (e) {
       error.value = e.code == 'unauthorized' || e.code == 'permission-denied'
-          ? 'Storage rules do not allow listing the folder. Add "allow list: if request.auth != null;" for car_pictures.'
+          ? 'Storage rules do not allow listing the folders. Add "allow list: if request.auth != null;" to the rules.'
           : 'Scan failed (${e.code})';
     } catch (_) {
       error.value = 'Scan failed';
@@ -189,10 +205,13 @@ class WebOrphansController extends GetxController {
         try {
           await FirebaseStorage.instance.ref(o.path).delete();
           done += 1;
-          try {
-            await FirebaseStorage.instance.ref(o.thumbPath).delete();
-          } catch (_) {
-            // No thumbnail for this photo: fine.
+          final thumb = o.thumbPath;
+          if (thumb != null) {
+            try {
+              await FirebaseStorage.instance.ref(thumb).delete();
+            } catch (_) {
+              // No thumbnail for this photo: fine.
+            }
           }
           orphans.remove(o);
           selected.remove(o.path);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,11 +22,22 @@ class WebDashboardController extends GetxController {
   final lastUpdated = Rxn<DateTime>();
 
   String _userId = '';
+  Timer? _timer;
 
   @override
   void onInit() {
     super.onInit();
     load();
+    // Keep the numbers current while the portal stays open.
+    _timer = Timer.periodic(const Duration(seconds: 60), (_) {
+      if (!loading.value) load();
+    });
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
   }
 
   Query<Map<String, dynamic>> _query(bool open) => FirebaseFirestore.instance

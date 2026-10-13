@@ -86,7 +86,8 @@ class WebOrphansPage extends StatelessWidget {
                 icon: Icons.inventory_2_outlined,
                 title: 'Find photos without a card',
                 message: err ??
-                    'The scan reads every file in car_pictures and every card, then lists the photos no card references. '
+                    'The scan reads every file in car_pictures, customers_signatures and car_videos and every card, '
+                        'then lists the files no card references. '
                         'Photos from the last 24 hours are left out in case a card is still being created. '
                         'Nothing is deleted until you select photos and confirm.',
                 action: ElevatedButton.icon(
@@ -275,10 +276,36 @@ class _OrphanTileState extends State<_OrphanTile> {
                           color: WebColors.bg,
                           child: const Icon(Icons.broken_image_outlined, color: WebColors.subtle),
                         )
-                      : _url == null
-                          ? Container(color: WebColors.bg)
-                          : WebNetworkImage(url: _url!, memCacheWidth: 400),
+                      : widget.photo.isVideo
+                          ? Container(
+                              color: WebColors.text,
+                              child: const Icon(Icons.videocam_outlined, color: Colors.white70, size: 36),
+                            )
+                          : _url == null
+                              ? Container(color: WebColors.bg)
+                              : WebNetworkImage(
+                                  url: _url!,
+                                  memCacheWidth: 400,
+                                  useThumbnail: !widget.photo.isSignature,
+                                  fit: widget.photo.isSignature ? BoxFit.contain : BoxFit.cover,
+                                ),
                 ),
+                if (widget.photo.isVideo || widget.photo.isSignature)
+                  Positioned(
+                    right: 6,
+                    top: 6,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        widget.photo.isVideo ? 'video' : 'signature',
+                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
                 if (selected)
                   Positioned.fill(
                     child: IgnorePointer(

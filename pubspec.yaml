@@ -128,7 +128,8 @@ flutter:
   assets:
     - assets/carBrands.txt
     - assets/carColors.txt
-    - assets/
+    - assets/COMPASS_LOGO.jpg
+    - assets/logo2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -141,17 +142,6 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: Roboto
-      fonts:
-        - asset: assets/fonts/Roboto-Regular.ttf
-        # - asset: assets/fonts/Noto Sans Symbols.ttf
-  #         style: italic
-    - family: Noto Sans Symbols
-      fonts:
-        - asset: assets/fonts/Noto Sans Symbols.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
+  # No bundled fonts: the apps use Inter via google_fonts.
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
