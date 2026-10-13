@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../firestore_rest.dart';
 import '../models/web_job_card.dart';
 
 /// One list (new or finished cards) for the web portal.
@@ -11,6 +12,11 @@ import '../models/web_job_card.dart';
 /// Fast path: the first page is a live query of [pageSize] documents, later
 /// pages are fetched on scroll. The full list is downloaded only once a search
 /// is typed, then kept in memory so later searches are instant.
+///
+/// If the live channel has not delivered the first page after a few seconds
+/// the same page is read over plain HTTPS ([FirestoreRest]) so the list shows
+/// whatever the channel is doing; the live query keeps running and takes over
+/// as soon as it answers.
 class WebCardsController extends GetxController {
   WebCardsController({required this.open});
 
@@ -20,7 +26,7 @@ class WebCardsController extends GetxController {
   static const pageSize = 48;
   static const _searchDebounce = Duration(milliseconds: 250);
   static const _countInterval = Duration(seconds: 45);
-  static const _fallbackAfter = Duration(seconds: 6);
+  static const _fallbackAfter = Duration(seconds: 3);
 
   final cards = <WebJobCard>[].obs;
   final loading = true.obs;
@@ -28,6 +34,9 @@ class WebCardsController extends GetxController {
   final hasMore = true.obs;
   final total = RxnInt();
   final error = RxnString();
+
+  /// What happened while loading, for the "still loading" hint.
+  final diag = ''.obs;
 
   final query = ''.obs;
   final searching = false.obs;
@@ -37,6 +46,7 @@ class WebCardsController extends GetxController {
 
   String _userId = '';
   List<DocumentSnapshot<Map<String, dynamic>>> _firstPage = const [];
+  List<WebJobCard> _restPage = const [];
   final List<DocumentSnapshot<Map<String, dynamic>>> _more = [];
   List<WebJobCard>? _all;
   Future<List<WebJobCard>>? _allLoading;
@@ -45,6 +55,7 @@ class WebCardsController extends GetxController {
   Timer? _countTimer;
   Timer? _fallback;
   bool _firstSnapshot = true;
+  DateTime? _startedAt;
 
   @override
   void onInit() {
@@ -67,7 +78,17 @@ class WebCardsController extends GetxController {
       .where('status', isEqualTo: open)
       .orderBy('timestamp', descending: true);
 
+  int get _elapsedMs =>
+      _startedAt == null ? 0 : DateTime.now().difference(_startedAt!).inMilliseconds;
+
+  void _note(String what) {
+    final t = (_elapsedMs / 1000).toStringAsFixed(1);
+    diag.value = diag.value.isEmpty ? '$what at ${t}s' : '${diag.value} · $what at ${t}s';
+  }
+
   Future<void> _start() async {
+    _startedAt = DateTime.now();
+    diag.value = '';
     final prefs = await SharedPreferences.getInstance();
     _userId = prefs.getString('userId') ?? '';
     if (_userId.isEmpty) {
@@ -76,7 +97,9 @@ class WebCardsController extends GetxController {
       return;
     }
     _sub = _base.limit(pageSize).snapshots().listen((snap) {
+      if (_firstSnapshot) _note('live page (${snap.docs.length})');
       _firstPage = snap.docs;
+      _restPage = const [];
       if (!_firstSnapshot && snap.docChanges.isNotEmpty) {
         // Something changed server-side: the cached full list is stale, and
         // so is the total.
@@ -90,24 +113,27 @@ class WebCardsController extends GetxController {
       _publish();
       loading.value = false;
     }, onError: (e) {
+      _note('live error ${e is FirebaseException ? e.code : e.runtimeType}');
       loading.value = false;
       error.value = 'Could not load cards';
     });
     refreshCount();
-    // If the live channel is blocked (proxy, extension), the first snapshot
-    // never arrives: fetch the first page once so the list still shows.
+    // If the live channel is slow to answer, read the first page over plain
+    // HTTPS so the list shows anyway.
     _fallback?.cancel();
     _fallback = Timer(_fallbackAfter, () async {
       if (!loading.value || _userId.isEmpty) return;
+      _note('fallback started');
       try {
-        final snap = await _base.limit(pageSize).get(const GetOptions(source: Source.server));
+        final page = await FirestoreRest.firstPage(userId: _userId, open: open, limit: pageSize);
         if (!loading.value) return; // the live snapshot won after all
-        _firstPage = snap.docs;
-        if (snap.docs.length < pageSize) hasMore.value = false;
+        _note('fallback page (${page.length})');
+        _restPage = page;
+        if (page.length < pageSize) hasMore.value = false;
         _publish();
         loading.value = false;
-      } catch (_) {
-        // Keep waiting for the live snapshot.
+      } catch (e) {
+        _note('fallback failed ($e)');
       }
     });
     // Cards finished or reopened further down the list do not show up in the
@@ -116,12 +142,14 @@ class WebCardsController extends GetxController {
     _countTimer = Timer.periodic(_countInterval, (_) => refreshCount());
   }
 
-  /// Pull-to-refresh: restart from the first page and drop cached pages.
+  /// Pull-to-refresh / "Try again": restart from the first page and drop
+  /// cached pages.
   Future<void> reload() async {
     await _sub?.cancel();
     _sub = null;
     _fallback?.cancel();
     _firstPage = const [];
+    _restPage = const [];
     _more.clear();
     _all = null;
     _allLoading = null;
@@ -135,6 +163,9 @@ class WebCardsController extends GetxController {
     try {
       final agg = await _base.count().get();
       total.value = agg.count;
+      if (_startedAt != null && _elapsedMs < 60000 && !diag.value.contains('count')) {
+        _note('count ${agg.count}');
+      }
     } catch (_) {
       // Count is informational; the list still works without it.
     }
@@ -143,7 +174,13 @@ class WebCardsController extends GetxController {
   void _publish() {
     final seen = <String>{};
     final merged = <WebJobCard>[];
-    for (final doc in [..._firstPage, ..._more]) {
+    final first = _firstPage.isNotEmpty
+        ? _firstPage.map(WebJobCard.fromDoc)
+        : _restPage;
+    for (final card in first) {
+      if (seen.add(card.id)) merged.add(card);
+    }
+    for (final doc in _more) {
       if (seen.add(doc.id)) merged.add(WebJobCard.fromDoc(doc));
     }
     cards.assignAll(merged);
@@ -154,10 +191,18 @@ class WebCardsController extends GetxController {
     final lastDoc = _more.isNotEmpty
         ? _more.last
         : (_firstPage.isNotEmpty ? _firstPage.last : null);
-    if (lastDoc == null) return;
+    final lastRest = _restPage.isNotEmpty ? _restPage.last : null;
+    if (lastDoc == null && lastRest == null) return;
     loadingMore.value = true;
     try {
-      final snap = await _base.startAfterDocument(lastDoc).limit(pageSize).get();
+      // After the live page: continue from its last document. After the
+      // HTTPS page: continue from its last timestamp.
+      final q = lastDoc != null
+          ? _base.startAfterDocument(lastDoc)
+          : (lastRest!.timestamp == null
+              ? _base.startAfter([null])
+              : _base.startAfter([Timestamp.fromDate(lastRest.timestamp!)]));
+      final snap = await q.limit(pageSize).get();
       _more.addAll(snap.docs);
       if (snap.docs.length < pageSize) hasMore.value = false;
       _publish();

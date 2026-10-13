@@ -42,13 +42,17 @@ class WebJobCard {
     required this.timestamp,
   });
 
-  factory WebJobCard.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final d = doc.data() ?? const <String, dynamic>{};
+  factory WebJobCard.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) =>
+      WebJobCard.fromMap(doc.id, doc.data() ?? const <String, dynamic>{});
+
+  /// Same mapping from a plain field map (SDK snapshot data or decoded REST
+  /// fields).
+  factory WebJobCard.fromMap(String id, Map<String, dynamic> d) {
     String s(String key) => (d[key] ?? '').toString().trim();
     final fuel = d['fuel_amount'];
     final ts = d['timestamp'];
     return WebJobCard(
-      id: doc.id,
+      id: id,
       customerName: s('customer_name'),
       carBrand: s('car_brand'),
       carModel: s('car_model'),

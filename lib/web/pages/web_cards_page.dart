@@ -106,7 +106,7 @@ class _WebCardsPageState extends State<WebCardsPage> {
         Expanded(
           child: Obx(() {
             if (c.loading.value) {
-              return _LoadingWithHint(onRetry: c.reload);
+              return _LoadingWithHint(onRetry: c.reload, diag: c.diag);
             }
             final searchMode = c.query.value.isNotEmpty;
             final list = searchMode ? c.results : c.cards;
@@ -553,9 +553,10 @@ class _TableRow extends StatelessWidget {
 
 /// Spinner that, after a while, explains what may be wrong and offers a retry.
 class _LoadingWithHint extends StatefulWidget {
-  const _LoadingWithHint({required this.onRetry});
+  const _LoadingWithHint({required this.onRetry, required this.diag});
 
   final Future<void> Function() onRetry;
+  final RxString diag;
 
   @override
   State<_LoadingWithHint> createState() => _LoadingWithHintState();
@@ -603,6 +604,13 @@ class _LoadingWithHintState extends State<_LoadingWithHint> {
               ),
             ),
             const SizedBox(height: 14),
+            const SizedBox(height: 8),
+            Obx(() => Text(
+                  widget.diag.value.isEmpty ? '' : 'Details: ${widget.diag.value}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: WebColors.subtle, fontSize: 11),
+                )),
+            const SizedBox(height: 10),
             OutlinedButton.icon(
               onPressed: () {
                 setState(() => _slow = false);
