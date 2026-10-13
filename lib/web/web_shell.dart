@@ -12,6 +12,10 @@ import 'pages/web_orphans_page.dart';
 import 'web_theme.dart';
 import 'web_widgets.dart';
 
+/// Shown at the bottom of the side navigation so a stale browser build is
+/// easy to spot (bump it with every deploy).
+const kWebBuild = '13 Oct 2026 · 4';
+
 class WebShellController extends GetxController {
   final index = 0.obs;
   final collapsed = false.obs;
@@ -177,6 +181,12 @@ class WebSideNav extends StatelessWidget {
               if (ok) shell.logOut();
             },
           ),
+          if (expanded)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 6, 16, 4),
+              child: Text('Build $kWebBuild',
+                  style: TextStyle(color: WebColors.subtle, fontSize: 11)),
+            ),
         ],
       ),
     );

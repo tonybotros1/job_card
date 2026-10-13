@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
@@ -104,7 +106,7 @@ class _WebCardsPageState extends State<WebCardsPage> {
         Expanded(
           child: Obx(() {
             if (c.loading.value) {
-              return const Center(child: CircularProgressIndicator(color: WebColors.brand));
+              return _LoadingWithHint(onRetry: c.reload);
             }
             final searchMode = c.query.value.isNotEmpty;
             final list = searchMode ? c.results : c.cards;
@@ -544,6 +546,77 @@ class _TableRow extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Spinner that, after a while, explains what may be wrong and offers a retry.
+class _LoadingWithHint extends StatefulWidget {
+  const _LoadingWithHint({required this.onRetry});
+
+  final Future<void> Function() onRetry;
+
+  @override
+  State<_LoadingWithHint> createState() => _LoadingWithHintState();
+}
+
+class _LoadingWithHintState extends State<_LoadingWithHint> {
+  static const _hintAfter = Duration(seconds: 12);
+  Timer? _timer;
+  bool _slow = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(_hintAfter, () {
+      if (mounted) setState(() => _slow = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _Centered(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: WebColors.brand),
+          if (_slow) ...[
+            const SizedBox(height: 18),
+            const Text('Still loading…',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 6),
+            const SizedBox(
+              width: 420,
+              child: Text(
+                'The live connection to the database has not answered. A browser '
+                'extension (ad blocker, privacy or security tool) or the network can '
+                'block it. Try again, or open the portal in an incognito window to check.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: WebColors.muted, fontSize: 13, height: 1.4),
+              ),
+            ),
+            const SizedBox(height: 14),
+            OutlinedButton.icon(
+              onPressed: () {
+                setState(() => _slow = false);
+                _timer?.cancel();
+                _timer = Timer(_hintAfter, () {
+                  if (mounted) setState(() => _slow = true);
+                });
+                widget.onRetry();
+              },
+              icon: const Icon(Icons.refresh, size: 18),
+              label: const Text('Try again'),
+            ),
+          ],
+        ],
       ),
     );
   }
