@@ -123,7 +123,7 @@ class WebOrphansController extends GetxController {
     }
   }
 
-  /// Every Storage path referenced by any card (photos and signatures).
+  /// Every Storage path referenced by any card (photos, signature and video).
   Future<Set<String>> _loadReferencedPaths() async {
     final paths = <String>{};
     final snap = await FirebaseFirestore.instance.collection('car_card').get();
@@ -136,10 +136,12 @@ class WebOrphansController extends GetxController {
           if (p != null) paths.add(p);
         }
       }
-      final sig = d['customer_signature'];
-      if (sig is String && sig.isNotEmpty) {
-        final p = _pathFromUrl(sig);
-        if (p != null) paths.add(p);
+      for (final key in ['customer_signature', 'car_video']) {
+        final url = d[key];
+        if (url is String && url.isNotEmpty) {
+          final p = _pathFromUrl(url);
+          if (p != null) paths.add(p);
+        }
       }
     }
     return paths;
