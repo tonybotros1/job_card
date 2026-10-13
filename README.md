@@ -1,30 +1,29 @@
-# Job Card – Compass Automatic Gear
+# Job Card
 
 Workshop job-card app for Compass Automatic Gear. Staff open a card for every car that comes in
 (customer, plate, brand, model, colour, mileage, fuel level, comments, photos, a short video and the
 customer's signature), work on it, and mark it finished. The same Flutter code base runs as:
 
-| Target | Purpose | Where |
-| --- | --- | --- |
-| **Android app** | Creating, editing and finishing cards in the workshop | `dist/JobCard-<version>-arm64.apk` (side-loaded, 64-bit phones only) |
-| **Web portal** | Viewing cards, dashboard, photo viewer and the "Old data" Storage clean-up | https://job-card-62478.web.app (Firebase Hosting) |
+| Target | Purpose |
+| --- | --- |
+| **Android app** | Creating, editing and finishing cards in the workshop (side-loaded, 64-bit phones only) |
+| **Web portal** | Viewing cards, dashboard, photo viewer and the "Old data" Storage clean-up |
 
 The web portal is **view only** by design: cards are created and edited from the phones.
 
 ## Stack
 
 - Flutter 3.44 / Dart 3.12, GetX for state and routing.
-- Firebase project `job-card-62478`: Authentication (e-mail + password), Cloud Firestore,
-  Cloud Storage, Cloud Messaging (push), Hosting, Cloud Functions (Node 22) and the
-  *Resize Images* extension.
+- Firebase: Authentication (e-mail + password), Cloud Firestore, Cloud Storage, Cloud Messaging
+  (push), Hosting, Cloud Functions (Node 22) and the *Resize Images* extension.
 - Android: Gradle 8.14, AGP 8.11, Kotlin 2.2, Java 17.
 
 ### Firestore
 
 | Collection | Content |
 | --- | --- |
-| `car_card` | One document per job card. `status` is `true` while the card is open ("New cards") and `false` once finished. `user_id` is the signed-in account, `timestamp` the creation time, `car_images` the photo URLs, `customer_signature` and `car_video` single URLs, `creator_token` the FCM token of the phone that created the card. |
-| `users` | One document per account with `users_tokens`, the FCM tokens of that user's phones. |
+| `car_card` | One document per job card. `status` is `true` while the card is open ("New cards") and `false` once finished. `user_id` is the signed-in account, `timestamp` the creation time, `car_images` the photo URLs, `customer_signature` and `car_video` single URLs, `creator_token` the push token of the phone that created the card. |
+| `users` | One document per account with `users_tokens`, the push tokens of that user's phones. |
 
 Lists are paged (48 cards a page) and sorted newest first on the composite index
 `(user_id, status, timestamp desc)`. Counters use `count()` aggregations and refresh live.
@@ -39,19 +38,19 @@ Lists are paged (48 cards a page) and sorted newest first on the composite index
 | `car_videos/<ms>.mp4` | the app |
 
 Every client looks for the thumbnail first and only loads the original when a photo is opened.
-Images are cached for 3 days on the device / in the browser (`Cache-Control: public, max-age=259200`).
+Images are cached for 3 days on the device / in the browser.
 
 ### Cloud Functions (`functions/`)
 
 - `notifyNewCard` – Firestore trigger on `car_card/{id}`: sends a push to every registered phone of
-  every user except the one that created the card, and removes tokens FCM reports as dead.
+  every user except the one that created the card, and removes tokens reported as dead.
   Tapping the notification opens the card.
-- `backfillThumbnails` – HTTP function (4 CPU, 60-min timeout) that creates missing thumbnails for
-  photos uploaded before the extension existed. It needs the `x-backfill-token` header matching
-  `BACKFILL_TOKEN` in `functions/.env` (git-ignored) and is called repeatedly with the returned
-  `pageToken` until `done` is true. It only reads originals. Delete it once the backfill is complete.
+- `backfillThumbnails` – HTTP function that creates missing thumbnails for photos uploaded before
+  the extension existed. It is protected by a token kept in `functions/.env` (not in the
+  repository) and is called repeatedly with the returned `pageToken` until `done` is true. It only
+  reads originals. Delete it once the backfill is complete.
 
-The extension configuration lives in `extensions/storage-resize-images.env`.
+The extension configuration lives in `extensions/`.
 
 ## Getting started
 
@@ -60,8 +59,8 @@ Prerequisites: Flutter SDK, Android Studio (SDK + an emulator), Node 22 and the 
 
 Files that are **not** in the repository and must be added by hand:
 
-- `android/app/google-services.json` – download from Firebase console → Android app `com.example.job_card`.
-- `functions/.env` – `BACKFILL_TOKEN=<random secret>` (only needed to run the backfill).
+- `android/app/google-services.json` – from the Firebase console (Android app settings).
+- `functions/.env` – the backfill token (only needed to run the backfill).
 
 ```bash
 flutter pub get
@@ -75,7 +74,7 @@ flutter run -d chrome                   # web portal in Chrome
 
 ```bash
 flutter build apk --release --target-platform android-arm64
-# -> build/app/outputs/flutter-apk/app-release.apk, copy to dist/JobCard-<version>-arm64.apk
+# -> build/app/outputs/flutter-apk/app-release.apk
 ```
 
 The app is not published on the Play Store, so the default debug signing is used on purpose.
@@ -129,8 +128,7 @@ web/                        index.html (loading screen), manifest, messaging ser
 
 ## Notes
 
-- Firebase Web options in `main.dart` are public client identifiers; access is controlled by the
-  Firestore and Storage security rules, not by hiding them.
+- Access to data is controlled by the Firestore and Storage security rules.
 - App Check is intentionally off: it would block side-loaded phones.
 - Tests: `flutter test` fails on Windows when the checkout path contains an apostrophe; run it from a
   path without one.
