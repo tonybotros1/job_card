@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -12,7 +11,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signature/signature.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:http/http.dart' as http;
+
+import '../../common/image_cache.dart';
+import '../../common/image_upload.dart';
+import '../../common/thumbnail_upload.dart';
 
 class JobCardScreenController extends GetxController {
   var selectedDate = DateTime.now().obs;
@@ -40,6 +42,11 @@ class JobCardScreenController extends GetxController {
 
   RxBool uploading = RxBool(false);
 
+  // Saving-screen progress: what is happening and how many photos are done.
+  final RxString uploadStage = ''.obs;
+  final RxInt uploadDone = 0.obs;
+  final RxInt uploadTotal = 0.obs;
+
   UploadTask? videoUploadTask;
   UploadTask? addedImagesUploadTask;
 
@@ -59,6 +66,7 @@ class JobCardScreenController extends GetxController {
 
   RxBool recorded = RxBool(false);
   RxString userId = RxString('');
+  String creatorToken = '';
   RxString currentUserToken = RxString('');
   RxList tokens = RxList([]);
   @override
@@ -83,6 +91,7 @@ class JobCardScreenController extends GetxController {
   getUserId() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     userId.value = (prefs.getString('userId'))!;
+    creatorToken = prefs.getString('deviceToken') ?? '';
   }
 
   // this function is to clear the fields
@@ -98,6 +107,7 @@ class JobCardScreenController extends GetxController {
     color.text = '';
     commentBox.text = '';
     signatureAsImage = null;
+    controller.clear();
     imagesList.clear();
   }
 
@@ -163,77 +173,16 @@ class JobCardScreenController extends GetxController {
           "editing_time": '',
           "status": true,
           "user_id": userId.value,
+          "creator_token": creatorToken,
         }).then((value) async {
           uploading.value = false;
 
           Get.offAll(() => const MainCardsScreen());
-          await getUserTokens();
-          // send the notifications:
-          if (tokens.isNotEmpty) {
-            for (var element in tokens) {
-              await sendNotifications('New Card Added!',
-                  '${carBrand.text} ${carModel.text}', '$element');
-            }
-          }
+          // Other devices are notified by the notifyNewCard Cloud Function.
         });
       } catch (e) {
         errorWhileUploading.value = true;
       }
-    }
-  }
-
-// this function is to send Notifications:
-  sendNotifications(title, bodyText, token) async {
-    var headersList = {
-      'Accept': '*/*',
-      'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
-      'Content-Type': 'application/json',
-      'Authorization':
-          'key=AAAAAkEOveI:APA91bGTlKdPoq_5Epeb2aId1krrQ1_UtbqizlbtI4b2ZkP4M_1wng9L6U52Rr8-AX1ZHAyOYi5vIF5pi_BCqkub97aY0yxOdJIeVqqkoam7Bz2Lrtp0pomFtihBdeqDxIgdWdUfnsFd'
-    };
-    var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-
-    var body = {
-      "to": token,
-      "notification": {
-        "title": title,
-        "body": bodyText,
-        "mutable_content": true,
-        "sound": "Tri-tone"
-      },
-      "data": {
-        "url": "<url of media image>",
-        "dl": "<deeplink action on tap of notification>"
-      }
-    };
-
-    var req = http.Request('POST', url);
-    req.headers.addAll(headersList);
-    req.body = json.encode(body);
-
-    var res = await req.send();
-    // final resBody = await res.stream.bytesToString();
-
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      // print(resBody);
-    } else {
-      // print(res.reasonPhrase);
-    }
-  }
-
-// this function is to get users tokens to send them notifications:
-  getUserTokens() async {
-    QuerySnapshot userSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('user_id', isEqualTo: userId.value)
-        .get();
-
-    if (userSnapshot.docs.isNotEmpty) {
-      // Get the document ID of the first document (assuming there's only one match)
-      // String documentId = userSnapshot.docs.first.id;
-      // print('Document ID: $documentId');
-      var userData = userSnapshot.docs.first.data() as Map<String, dynamic>;
-      tokens.value = userData['users_tokens'];
     }
   }
 
@@ -269,16 +218,29 @@ class JobCardScreenController extends GetxController {
     if (errorWhileUploading.value != true) {
       try {
         uploading.value = true;
+        uploadTotal.value = imagesList.length;
+        uploadDone.value = 0;
+        uploadStage.value = 'Uploading photos';
         for (var element in imagesList) {
           final Reference ref = FirebaseStorage.instance
               .ref()
               .child('car_pictures')
               .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-          addedImagesUploadTask = ref.putFile(element);
+          final bytes = await ImageUpload.compressForUpload(element);
+          addedImagesUploadTask = ref.putData(
+            bytes,
+            SettableMetadata(
+              contentType: 'image/jpeg',
+              cacheControl: JobCardImageCache.cacheControlHeader,
+            ),
+          );
           await addedImagesUploadTask!.then((p0) async {
             final url = await ref.getDownloadURL();
             carImagesDownloadURL.add(url);
           });
+          // Small copy for the lists and the web portal; the original stays as is.
+          await ThumbnailUpload.forPhoto(ref, element);
+          uploadDone.value += 1;
         }
       } catch (e) {
         errorWhileUploading.value = true;

@@ -1,5 +1,13 @@
 {
   "projects": {
     "default": "job-card-62478"
+  },
+  "targets": {},
+  "etags": {
+    "job-card-62478": {
+      "extensionInstances": {
+        "storage-resize-images": "9a94e2dc13862d0719d3143145bc811d622ba1f4db13086d8995cda13028fbe8"
+      }
+    }
   }
 }

@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/app/google-services.json
+
+# AGP 8 writes module output here regardless of the buildDir override
+android/build/
+
+# Built APKs
+dist/

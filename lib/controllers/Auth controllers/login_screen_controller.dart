@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -114,7 +115,9 @@ class LoginScreenController extends GetxController {
       await saveToken(userId);
       await saveTokenInSharedPref();
       sigingInProcess.value = false;
-      showSnackBar('Login Success', 'Welcome');
+      // On the web the route change below unmounts the overlay the snackbar
+      // needs, so the welcome toast is mobile-only.
+      if (!kIsWeb) showSnackBar('Login Success', 'Welcome');
       Get.offAllNamed('/mainCardsScreen');
     } on FirebaseAuthException catch (e) {
       sigingInProcess.value = false;
@@ -160,19 +163,20 @@ class LoginScreenController extends GetxController {
       // الإذن مُعطى
       isPermissionGranted.value = true;
     } else {
-      // في حالة عدم اتخاذ أي إجراء، يمكنك طلب الإذن
-      requestPermission();
+      // Not determined (prompt dismissed) or provisional: do not ask again in a
+      // loop - the user can retry from the dialog or the browser settings.
+      isPermissionGranted.value = false;
     }
   }
 
 // this function to show dialog if the user denided the permission
   void _showPermissionDeniedDialog() {
     Get.defaultDialog(
-      title: "إذن الإشعارات مطلوب",
+      title: "Notifications are off",
       middleText:
-          "للاستخدام الكامل للتطبيق، يرجى السماح بالإشعارات في إعدادات المتصفح.",
-      textConfirm: "إعادة المحاولة",
-      textCancel: "إغلاق",
+          "Allow notifications so you hear about new job cards. You can change this in the system settings.",
+      textConfirm: "Try again",
+      textCancel: "Close",
       onConfirm: () {
         requestPermission(); // إعادة محاولة طلب الإذن
         Get.back(); // إغلاق مربع الحوار

@@ -8,6 +8,11 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signature/signature.dart';
 
+import '../../common/image_cache.dart';
+import '../../common/image_upload.dart';
+import '../../common/storage_cleanup.dart';
+import '../../common/thumbnail_upload.dart';
+
 class EditCardScreenController extends GetxController {
   TextEditingController customerName = TextEditingController();
   TextEditingController carBrand = TextEditingController();
@@ -39,6 +44,11 @@ class EditCardScreenController extends GetxController {
 
   // this is to show loading mark while saving data
   RxBool uploading = RxBool(false);
+
+  // Saving-screen progress: what is happening and how many photos are done.
+  final RxString uploadStage = ''.obs;
+  final RxInt uploadDone = 0.obs;
+  final RxInt uploadTotal = 0.obs;
 
   // this is to follow the loading process
   UploadTask? addedImagesUploadTask;
@@ -119,7 +129,11 @@ class EditCardScreenController extends GetxController {
       "fuel_amount": fuelAmount.value,
       "editing_time": FieldValue.serverTimestamp(),
       "car_images": carImages
-    }).then((value) {
+    }).then((value) async {
+      for (final url in _removedImages) {
+        await StorageCleanup.deleteByUrl(url);
+      }
+      _removedImages.clear();
       uploading.value = false;
     });
   }
@@ -142,16 +156,23 @@ class EditCardScreenController extends GetxController {
   }
 
 // this function is to delete cards
-  void deleteCard() {
-    FirebaseFirestore.instance
-        .collection('car_card')
-        .doc(arguments.docID)
-        .delete();
+  Future<void> deleteCard() async {
+    final ref = FirebaseFirestore.instance.collection('car_card').doc(arguments.docID);
+    final snap = await ref.get();
+    final data = snap.data();
+    await ref.delete();
+    // Photos, signature and video of the card go with it: no "old data" left.
+    if (data != null) await StorageCleanup.deleteCardFiles(data);
   }
 
   // this functios is to remove images from the imagesList
+  // Photos removed in the editor are deleted from Storage only when the
+  // card is saved, so backing out of the editor loses nothing.
+  final List<String> _removedImages = [];
+
   void removeImage(i) {
     carImages.remove(i);
+    if (i is String) _removedImages.add(i);
     update();
   }
 
@@ -187,16 +208,29 @@ class EditCardScreenController extends GetxController {
     if (errorWhileUploading.value != true) {
       try {
         uploading.value = true;
+        uploadTotal.value = imagesList.length;
+        uploadDone.value = 0;
+        uploadStage.value = 'Uploading photos';
         for (var element in imagesList) {
           final Reference ref = FirebaseStorage.instance
               .ref()
               .child('car_pictures')
               .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-          addedImagesUploadTask = ref.putFile(element);
+          final bytes = await ImageUpload.compressForUpload(element);
+          addedImagesUploadTask = ref.putData(
+            bytes,
+            SettableMetadata(
+              contentType: 'image/jpeg',
+              cacheControl: JobCardImageCache.cacheControlHeader,
+            ),
+          );
           await addedImagesUploadTask!.then((p0) async {
             final url = await ref.getDownloadURL();
             carImages.add(url);
           });
+          // Small copy for the lists and the web portal; the original stays as is.
+          await ThumbnailUpload.forPhoto(ref, element);
+          uploadDone.value += 1;
         }
       } catch (e) {
         errorWhileUploading.value = true;

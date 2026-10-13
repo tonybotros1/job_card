@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import '../../mobile/form_section.dart';
+import '../../mobile/upload_progress.dart';
+import '../../web/web_theme.dart';
 import 'package:get/get.dart';
 import 'package:job_card/controllers/Cards%20Screens%20Controllers/job_card_screen_controller.dart';
-import 'package:signature/signature.dart';
-import '../../const.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 class JobCardScreen extends StatelessWidget {
   JobCardScreen({super.key});
@@ -18,30 +17,20 @@ class JobCardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: WebColors.bg,
       appBar: AppBar(
         leading: FittedBox(
           child: TextButton(
               onPressed: () {
                 jobCardScreenController.clearFields();
               },
-              child: const Text(
-                'Clear',
-                style: TextStyle(color: Colors.white),
-              )),
+              child: const Text('Clear')),
         ),
         centerTitle: true,
-        title: const Text(
-          'Work Order',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: mainColor,
+        title: const Text('Work Order'),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.done,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.done),
             onPressed: () async {
               if (jobCardScreenController.formKey.currentState!.validate()) {
                 // jobCardScreenController.uploading.value = true;
@@ -51,42 +40,18 @@ class JobCardScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Obx(() {
+      body: GestureDetector(
+        // Tapping empty space closes the keyboard.
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Obx(() {
         if (jobCardScreenController.uploading.isTrue) {
-          return StreamBuilder<TaskSnapshot>(
-              stream:
-                  jobCardScreenController.addedImagesUploadTask?.snapshotEvents,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final data = snapshot.data;
-                  double progress = data!.bytesTransferred / data.totalBytes;
-                  return SizedBox(
-                    width: Get.width,
-                    height: Get.height,
-                    child: CircularPercentIndicator(
-                      animation: true,
-                      animationDuration: 1000,
-                      radius: 150,
-                      lineWidth: 30,
-                      percent: progress,
-                      progressColor: mainColor,
-                      backgroundColor: Colors.red.shade100,
-                      circularStrokeCap: CircularStrokeCap.round,
-                      center: Text(
-                        '${(100 * progress).roundToDouble()} %',
-                        style: TextStyle(color: mainColor, fontSize: 30),
-                      ),
-                    ),
-                  );
-                } else {
-                  return SizedBox(
-                    child: Center(
-                        child: CircularProgressIndicator(
-                      color: mainColor,
-                    )),
-                  );
-                }
-              });
+          return UploadProgressView(
+            stage: jobCardScreenController.uploadStage.value,
+            done: jobCardScreenController.uploadDone.value,
+            total: jobCardScreenController.uploadTotal.value,
+            task: jobCardScreenController.addedImagesUploadTask,
+          );
         } else if (jobCardScreenController.errorWhileUploading.isTrue) {
           return Center(
               child: AlertDialog(
@@ -107,287 +72,180 @@ class JobCardScreen extends StatelessWidget {
             ],
           ));
         } else {
-          return SingleChildScrollView(
-            child: Form(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              key: jobCardScreenController.formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  myTextFormField(
-                      labelText: 'Customer Name:',
-                      hintText: 'Enter Customer Name here',
-                      controller: jobCardScreenController.customerName,
-                      validate: false),
-                  dropDownValues(
-                      labelText: 'Car Brand',
-                      hintText: 'Enter or Search for Car Brand here',
-                      list: jobCardScreenController.carBrandList,
-                      selectedValue:
-                          jobCardScreenController.selectedBrandValue.value,
-                      controller: jobCardScreenController.carBrand,
-                      validate: true),
-                  dropDownValues(
-                      labelText: 'Color',
-                      hintText: 'Enter or Search for Car Color here',
-                      list: jobCardScreenController.carColorsList,
-                      selectedValue:
-                          jobCardScreenController.selectedColorValue.value,
-                      controller: jobCardScreenController.color,
-                      validate: true),
-                  myTextFormField(
-                      labelText: 'Car Model:',
-                      hintText: 'Enter Car Model here',
-                      controller: jobCardScreenController.carModel,
-                      validate: true),
-                  myTextFormField(
-                      labelText: 'Plate Number:',
-                      hintText: 'Enter Plate Number here',
-                      controller: jobCardScreenController.plateNumber,
-                      validate: true),
-                  myTextFormField(
-                      labelText: 'Car Mileage:',
-                      hintText: 'Enter Car Mileage here',
-                      controller: jobCardScreenController.carMileage,
-                      validate: true),
-                  myTextFormField(
-                      labelText: 'Chassis Number:',
-                      hintText: 'Enter Chassis Number here',
-                      controller: jobCardScreenController.chassisNumber,
-                      validate: false),
-                  myTextFormField(
-                      labelText: 'Phone Number:',
-                      hintText: 'Enter Phone Number here',
-                      controller: jobCardScreenController.phoneNumber,
-                      validate: false,
-                      keyboardType: TextInputType.number),
-                  myTextFormField(
-                      labelText: 'Email Address:',
-                      hintText: 'Enter Email Address here',
-                      controller: jobCardScreenController.emailAddress,
-                      validate: false,
-                      keyboardType: TextInputType.emailAddress),
-                  commentBox(controller: jobCardScreenController.commentBox),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
-                    child: ListTile(
-                      title: Text(
-                        "Date: ",
-                        style: fontStyle,
-                      ),
-                      subtitle: Text(jobCardScreenController.formatDate(
-                          jobCardScreenController.selectedDate.value)),
-                      trailing: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: secColor,
-                        ),
-                        onPressed: () =>
-                            jobCardScreenController.selectDateContext(context),
-                        child: const FittedBox(
-                            child: Text(
-                          'Select Date',
-                          style: TextStyle(color: Colors.white),
-                        )),
+          final c = jobCardScreenController;
+          return Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            key: c.formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                FormSection(
+                  title: 'Customer',
+                  icon: Icons.person_outline,
+                  children: [
+                    myTextFormField(
+                        labelText: 'Customer name',
+                        hintText: 'Enter customer name',
+                        controller: c.customerName,
+                        validate: false),
+                    myTextFormField(
+                        labelText: 'Phone number',
+                        hintText: 'Enter phone number',
+                        controller: c.phoneNumber,
+                        validate: false,
+                        keyboardType: TextInputType.phone),
+                    myTextFormField(
+                        labelText: 'E-mail address',
+                        hintText: 'Enter e-mail address',
+                        controller: c.emailAddress,
+                        validate: false,
+                        keyboardType: TextInputType.emailAddress),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Vehicle',
+                  icon: Icons.directions_car_outlined,
+                  children: [
+                    dropDownValues(
+                        labelText: 'Car brand',
+                        hintText: 'Enter or search for the brand',
+                        list: c.carBrandList,
+                        selectedValue: c.selectedBrandValue.value,
+                        controller: c.carBrand,
+                        validate: true),
+                    myTextFormField(
+                        labelText: 'Car model',
+                        hintText: 'Enter car model',
+                        controller: c.carModel,
+                        validate: true),
+                    dropDownValues(
+                        labelText: 'Colour',
+                        hintText: 'Enter or search for the colour',
+                        list: c.carColorsList,
+                        selectedValue: c.selectedColorValue.value,
+                        controller: c.color,
+                        validate: true),
+                    myTextFormField(
+                        labelText: 'Plate number',
+                        hintText: 'Enter plate number',
+                        controller: c.plateNumber,
+                        validate: true),
+                    myTextFormField(
+                        labelText: 'Mileage (km)',
+                        hintText: 'Enter mileage',
+                        controller: c.carMileage,
+                        validate: true,
+                        keyboardType: TextInputType.number),
+                    myTextFormField(
+                        labelText: 'Chassis number',
+                        hintText: 'Enter chassis number',
+                        controller: c.chassisNumber,
+                        validate: false),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Received on',
+                  icon: Icons.event_outlined,
+                  trailing: OutlinedButton.icon(
+                    onPressed: () => c.selectDateContext(context),
+                    icon: const Icon(Icons.calendar_today_outlined, size: 16),
+                    label: const Text('Change'),
+                  ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Text(
+                        c.formatDate(c.selectedDate.value),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Fuel:',
-                          style: TextStyle(
-                              color: secColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('E'),
-                              Text('H'),
-                              Text('F'),
-                            ],
-                          ),
-                        ),
-                        Slider(
-                          activeColor: Colors.blue,
-                          value: jobCardScreenController.fuelAmount.value,
-                          onChanged: (newValue) {
-                            jobCardScreenController.fuelAmount.value = newValue;
-                          },
-                          min: 0,
-                          max: 100,
-                          divisions: 100,
-                          label: jobCardScreenController.fuelAmount.value
-                              .round()
-                              .toString(),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Text(
-                          'Customer Signature:',
-                          style: TextStyle(
-                              color: secColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey)),
-                            width: Get.width * 0.9,
-                            height: Get.height * 0.4,
-                            child: Signature(
-                              controller: jobCardScreenController.controller,
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: secColor,
-                            ),
-                            onPressed: () {
-                              jobCardScreenController.controller.clear();
-                            },
-                            child: const Text(
-                              'Clear',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        Text(
-                          'Add Images',
-                          style: TextStyle(
-                              color: secColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: secColor),
-                                onPressed: () {
-                                  jobCardScreenController.takePhoto();
-                                },
-                                child: const Icon(Icons.camera_alt_outlined,
-                                    color: Colors.white)),
-                            // ElevatedButton(
-                            //     style: ElevatedButton.styleFrom(
-                            //         backgroundColor: secColor),
-                            //     onPressed: () {
-                            //       jobCardScreenController.recordVideo();
-                            //     },
-                            //     child: jobCardScreenController.recorded.isFalse
-                            //         ? const Icon(
-                            //             Icons.video_camera_back,
-                            //             color: Colors.white,
-                            //           )
-                            //         : const Icon(Icons.done,
-                            //             color: Colors.white))
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: Container(
-                            width: Get.width / 1.1,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GridView.builder(
-                                    itemCount: jobCardScreenController
-                                        .imagesList.length,
-                                    shrinkWrap: true,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3),
-                                    itemBuilder: (context, i) {
-                                      if (jobCardScreenController
-                                          .imagesList.isEmpty) {
-                                        return const Center(
-                                          child: Text('Add Photo'),
-                                        );
-                                      } else {
-                                        return Container(
-                                          margin: const EdgeInsets.all(3),
-                                          child: Stack(
-                                            fit: StackFit.expand,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: FittedBox(
-                                                  fit: BoxFit.cover,
-                                                  clipBehavior: Clip.hardEdge,
-                                                  child: Image.file(
-                                                    File(jobCardScreenController
-                                                        .imagesList[i].path),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 0,
-                                                right: 0,
-                                                child: IconButton(
-                                                    onPressed: () {
-                                                      jobCardScreenController
-                                                          .imagesList
-                                                          .removeAt(i);
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons.remove_circle,
-                                                      color: Colors.red,
-                                                    )),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    })),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                      ],
+                    commentBox(controller: c.commentBox),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Fuel level',
+                  icon: Icons.local_gas_station_outlined,
+                  children: [
+                    FuelSlider(
+                      value: c.fuelAmount.value,
+                      onChanged: (v) => c.fuelAmount.value = v,
                     ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Customer signature',
+                  icon: Icons.draw_outlined,
+                  trailing: TextButton.icon(
+                    onPressed: () => c.controller.clear(),
+                    icon: const Icon(Icons.refresh, size: 16),
+                    label: const Text('Clear'),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  )
-                ],
-              ),
+                  children: [
+                    SignaturePadField(controller: c.controller),
+                    const SizedBox(height: 6),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Photos',
+                  icon: Icons.photo_camera_outlined,
+                  trailing: FilledButton.icon(
+                    onPressed: () => c.takePhoto(),
+                    icon: const Icon(Icons.camera_alt_outlined, size: 18),
+                    label: const Text('Take photo'),
+                  ),
+                  children: [
+                    if (c.imagesList.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 18),
+                        child: Center(
+                          child: Text('No photos yet',
+                              style: TextStyle(color: WebColors.muted, fontSize: 13)),
+                        ),
+                      )
+                    else
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 6, bottom: 6),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, crossAxisSpacing: 6, mainAxisSpacing: 6),
+                        itemCount: c.imagesList.length,
+                        itemBuilder: (context, i) => LocalPhotoTile(
+                          image: FileImage(File(c.imagesList[i].path)),
+                          onRemove: () => c.imagesList.removeAt(i),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      if (c.formKey.currentState!.validate()) {
+                        await c.addCard();
+                      }
+                    },
+                    icon: const Icon(Icons.check, size: 20),
+                    label: const Text('Save card'),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
           );
         }
       }),
+      ),
     );
   }
 }
+
 
 Padding myTextFormField(
     {required String labelText,
@@ -396,7 +254,7 @@ Padding myTextFormField(
     required validate,
     keyboardType}) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
+    padding: const EdgeInsets.symmetric(vertical: 6),
     child: TextFormField(
       onTap: () {
         controller.selection = TextSelection(
@@ -407,12 +265,8 @@ Padding myTextFormField(
       keyboardType: keyboardType,
       controller: controller,
       decoration: InputDecoration(
-        hintStyle: const TextStyle(color: Colors.grey),
         labelText: labelText,
         hintText: hintText,
-        labelStyle: TextStyle(color: Colors.grey.shade700),
-        focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey, width: 2.0)),
       ),
       validator: validate != false
           ? (value) {
@@ -430,43 +284,35 @@ Padding commentBox({
   required TextEditingController controller,
 }) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 15, 30, 5),
+    padding: const EdgeInsets.symmetric(vertical: 6),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Add Comments:',
-          style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
-        ),
+        const Text('Comments', style: TextStyle(fontSize: 12, color: WebColors.muted, fontWeight: FontWeight.w500)),
         const SizedBox(
           height: 10,
         ),
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade700),
+            color: Colors.white,
+            border: Border.all(color: WebColors.border),
+            borderRadius: BorderRadius.circular(10),
           ),
           height: 200,
           width: Get.width,
           child: TextFormField(
+            controller: controller,
+            expands: true,
+            maxLines: null,
+            minLines: null,
+            textAlignVertical: TextAlignVertical.top,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
             decoration: const InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.all(10),
+              contentPadding: EdgeInsets.all(12),
               hintText: 'Type your comment here...',
             ),
-            onTap: () {
-              controller.selection = TextSelection(
-                baseOffset: 0,
-                extentOffset: controller.text.length,
-              );
-            },
-            onChanged: (value) {
-              controller.text = value;
-              controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: controller.text.length),
-              );
-            },
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
           ),
         ),
       ],
@@ -483,7 +329,7 @@ Padding dropDownValues({
   required bool validate,
 }) {
   return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: TypeAheadField(
         controller: controller,
         // Instead of textFieldConfiguration, we use the builder to return a TextField
@@ -498,8 +344,6 @@ Padding dropDownValues({
             ),
             hintText: hintText,
             labelText: labelText,
-            hintStyle: const TextStyle(color: Colors.grey),
-            labelStyle: TextStyle(color: Colors.grey.shade700),
           ),
         ),
         suggestionsCallback: (pattern) async {

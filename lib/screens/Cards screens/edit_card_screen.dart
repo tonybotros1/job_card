@@ -1,15 +1,17 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../web/web_widgets.dart';
+import '../../web/web_images.dart';
+import '../../mobile/form_section.dart';
+import '../../mobile/upload_progress.dart';
+import '../../web/web_theme.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
-import 'package:signature/signature.dart';
 import 'package:video_player/video_player.dart';
 import '../../const.dart';
 import '../../controllers/Cards Screens Controllers/edit_card_screen_controller.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 class EditCardScreen extends StatelessWidget {
   EditCardScreen({super.key});
@@ -20,22 +22,15 @@ class EditCardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: WebColors.bg,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
               Get.back();
             },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
+            icon: const Icon(Icons.arrow_back)),
         centerTitle: true,
-        title: const Text(
-          'Work Order',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: mainColor,
+        title: const Text('Work Order'),
         actions: [
           IconButton(
               onPressed: () {
@@ -68,15 +63,9 @@ class EditCardScreen extends StatelessWidget {
                           ],
                         ));
               },
-              icon: const Icon(
-                Icons.delete,
-                color: Colors.white,
-              )),
+              icon: const Icon(Icons.delete)),
           IconButton(
-            icon: const Icon(
-              Icons.done,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.done),
             onPressed: () async {
               // Get.offAll(() => AllWorksScreen(),
               //     transition: Transition.leftToRight);
@@ -87,45 +76,18 @@ class EditCardScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Obx(() {
+      body: GestureDetector(
+        // Tapping empty space closes the keyboard.
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Obx(() {
         if (editCardScreenController.uploading.isTrue) {
-          return StreamBuilder<TaskSnapshot>(
-              stream: editCardScreenController
-                  .addedImagesUploadTask?.snapshotEvents,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final data = snapshot.data;
-                  double progress = data!.bytesTransferred / data.totalBytes;
-                  return SizedBox(
-                    width: Get.width,
-                    height: Get.height,
-                    child: CircularPercentIndicator(
-                      animation: true,
-                      animationDuration: 1000,
-                      radius: 150,
-                      lineWidth: 30,
-                      percent: progress,
-                      progressColor: mainColor,
-                      backgroundColor: Colors.red.shade100,
-                      circularStrokeCap: CircularStrokeCap.round,
-                      center: Text(
-                        '${(100 * progress).roundToDouble()} %',
-                        style: TextStyle(color: mainColor, fontSize: 30),
-                      ),
-                    ),
-                  );
-                } else {
-                  return SizedBox(
-                    child: Center(
-                        child: CircularProgressIndicator(
-                      color: mainColor,
-                    )),
-                  );
-                }
-              });
-          // return Center(
-          //   child: CircularProgressIndicator(),
-          // );
+          return UploadProgressView(
+            stage: editCardScreenController.uploadStage.value,
+            done: editCardScreenController.uploadDone.value,
+            total: editCardScreenController.uploadTotal.value,
+            task: editCardScreenController.addedImagesUploadTask,
+          );
         } else if (editCardScreenController.errorWhileUploading.isTrue) {
           return Center(
               child: AlertDialog(
@@ -146,348 +108,225 @@ class EditCardScreen extends StatelessWidget {
             ],
           ));
         } else {
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
+          final c = editCardScreenController;
+          return Obx(
+            () => ListView(
+              padding: const EdgeInsets.all(16),
               children: [
-                myTextFormField(
-                  labelText: 'Customer Name:',
-                  hintText: 'Enter Customer Name here',
-                  controller: editCardScreenController.customerName,
+                FormSection(
+                  title: 'Customer',
+                  icon: Icons.person_outline,
+                  children: [
+                    myTextFormField(
+                      labelText: 'Customer name',
+                      hintText: 'Enter customer name',
+                      controller: c.customerName,
+                    ),
+                    myTextFormField(
+                      labelText: 'Phone number',
+                      hintText: 'Enter phone number',
+                      controller: c.phoneNumber,
+                    ),
+                    myTextFormField(
+                      labelText: 'E-mail address',
+                      hintText: 'Enter e-mail address',
+                      controller: c.emailAddress,
+                    ),
+                  ],
                 ),
-                dropDownValues(
-                    labelText: 'Car Brand',
-                    hintText: 'Enter Car Brand here',
-                    controller: editCardScreenController.carBrand,
-                    list: editCardScreenController.carBrandList,
-                    selectedValue:
-                        editCardScreenController.selectedBrandValue.value),
-                dropDownValues(
-                    labelText: 'Color',
-                    hintText: 'Enter Color here',
-                    controller: editCardScreenController.color,
-                    list: editCardScreenController.carColorsList,
-                    selectedValue:
-                        editCardScreenController.selectedColorValue.value),
-                myTextFormField(
-                  labelText: 'Car Model:',
-                  hintText: 'Enter Car Model here',
-                  controller: editCardScreenController.carModel,
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Vehicle',
+                  icon: Icons.directions_car_outlined,
+                  children: [
+                    dropDownValues(
+                        labelText: 'Car brand',
+                        hintText: 'Enter or search for the brand',
+                        controller: c.carBrand,
+                        list: c.carBrandList,
+                        selectedValue: c.selectedBrandValue.value),
+                    myTextFormField(
+                      labelText: 'Car model',
+                      hintText: 'Enter car model',
+                      controller: c.carModel,
+                    ),
+                    dropDownValues(
+                        labelText: 'Colour',
+                        hintText: 'Enter or search for the colour',
+                        controller: c.color,
+                        list: c.carColorsList,
+                        selectedValue: c.selectedColorValue.value),
+                    myTextFormField(
+                      labelText: 'Plate number',
+                      hintText: 'Enter plate number',
+                      controller: c.plateNumber,
+                    ),
+                    myTextFormField(
+                      labelText: 'Mileage (km)',
+                      hintText: 'Enter mileage',
+                      controller: c.carMileage,
+                    ),
+                    myTextFormField(
+                      labelText: 'Chassis number',
+                      hintText: 'Enter chassis number',
+                      controller: c.chassisNumber,
+                    ),
+                  ],
                 ),
-                myTextFormField(
-                  labelText: 'Plate Number:',
-                  hintText: 'Enter Plate Number here',
-                  controller: editCardScreenController.plateNumber,
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Notes',
+                  icon: Icons.notes_outlined,
+                  children: [commentBox(controller: c.commentBox)],
                 ),
-                myTextFormField(
-                  labelText: 'Car Mileage:',
-                  hintText: 'Enter Car Mileage here',
-                  controller: editCardScreenController.carMileage,
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Fuel level',
+                  icon: Icons.local_gas_station_outlined,
+                  children: [
+                    FuelSlider(
+                      value: c.fuelAmount.value,
+                      onChanged: (v) => c.fuelAmount.value = v,
+                    ),
+                  ],
                 ),
-                myTextFormField(
-                  labelText: 'Chassis Number:',
-                  hintText: 'Enter Chassis Number here',
-                  controller: editCardScreenController.chassisNumber,
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Customer signature',
+                  icon: Icons.draw_outlined,
+                  trailing: TextButton.icon(
+                    onPressed: () => c.controller.clear(),
+                    icon: const Icon(Icons.refresh, size: 16),
+                    label: const Text('Clear'),
+                  ),
+                  children: [
+                    SignaturePadField(controller: c.controller),
+                    const SizedBox(height: 6),
+                  ],
                 ),
-                myTextFormField(
-                  labelText: 'Phone Number:',
-                  hintText: 'Enter Phone Number here',
-                  controller: editCardScreenController.phoneNumber,
-                ),
-                myTextFormField(
-                  labelText: 'Email Address:',
-                  hintText: 'Enter Email Address here',
-                  controller: editCardScreenController.emailAddress,
-                ),
-                commentBox(controller: editCardScreenController.commentBox),
-                const SizedBox(
-                  height: 20,
-                ),
-                Obx(() => Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Fuel:',
-                            style: TextStyle(
-                                color: secColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 25),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('E'),
-                                Text('H'),
-                                Text('F'),
-                              ],
-                            ),
-                          ),
-                          Slider(
-                            activeColor: Colors.blue,
-                            value: editCardScreenController.fuelAmount.value,
-                            onChanged: (newValue) {
-                              editCardScreenController.fuelAmount.value =
-                                  newValue;
-                            },
-                            min: 0,
-                            max: 100,
-                            divisions: 100,
-                            label: editCardScreenController.fuelAmount.value
-                                .round()
-                                .toString(),
-                          ),
-                          const SizedBox(
-                            height: 50,
-                          ),
-                          Text(
-                            'Customer Signature:',
-                            style: TextStyle(
-                                color: secColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Center(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey)),
-                              width: Get.width * 0.9,
-                              height: Get.height * 0.4,
-                              child: Signature(
-                                controller: editCardScreenController.controller,
-                                backgroundColor: Colors.white,
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: secColor,
-                              ),
-                              onPressed: () {
-                                editCardScreenController.controller.clear();
-                              },
-                              child: const Text(
-                                'Clear',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              editCardScreenController.carImages.isNotEmpty
-                                  ? Text(
-                                      'Images of the car',
-                                      style: TextStyle(
-                                          color: secColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  : const SizedBox(
-                                      height: 30,
-                                    ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    editCardScreenController.takePhoto();
-                                  },
-                                  child: Text(
-                                    'New Image',
-                                    style: TextStyle(color: secColor),
-                                  )),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                        ],
+                const SizedBox(height: 12),
+                FormSection(
+                  title: 'Photos',
+                  icon: Icons.photo_camera_outlined,
+                  trailing: FilledButton.icon(
+                    onPressed: () => c.takePhoto(),
+                    icon: const Icon(Icons.camera_alt_outlined, size: 18),
+                    label: const Text('Take photo'),
+                  ),
+                  children: [
+                    if (c.imagesList.isNotEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.only(top: 6),
+                        child: Text('New photos',
+                            style: TextStyle(color: WebColors.muted, fontSize: 12, fontWeight: FontWeight.w600)),
                       ),
-                    )),
-                Container(
-                  width: Get.width / 1.1,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(15)),
-                  child: GridView.builder(
-                      itemCount: editCardScreenController.imagesList.length,
-                      shrinkWrap: true,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3),
-                      itemBuilder: (context, i) {
-                        if (editCardScreenController.imagesList.isEmpty) {
-                          return const Center(
-                            child: Text('Add Photo'),
-                          );
-                        } else {
-                          return Container(
-                            margin: const EdgeInsets.all(3),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: FittedBox(
-                                    fit: BoxFit.cover,
-                                    clipBehavior: Clip.hardEdge,
-                                    child: Image.file(
-                                      File(editCardScreenController
-                                          .imagesList[i].path),
-                                    ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 6, bottom: 6),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, crossAxisSpacing: 6, mainAxisSpacing: 6),
+                        itemCount: c.imagesList.length,
+                        itemBuilder: (context, i) => LocalPhotoTile(
+                          image: FileImage(File(c.imagesList[i].path)),
+                          onRemove: () async {
+                            final ok = await webConfirm(context,
+                                title: 'Remove this photo?',
+                                message: 'It has not been uploaded yet.',
+                                confirmLabel: 'Remove',
+                                danger: true);
+                            if (ok) {
+                              c.imagesList.removeAt(i);
+                              c.updateMethod();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                    if (c.carImages.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text('Saved photos (${c.carImages.length})',
+                            style: const TextStyle(color: WebColors.muted, fontSize: 12, fontWeight: FontWeight.w600)),
+                      ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 6, bottom: 6),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, crossAxisSpacing: 6, mainAxisSpacing: 6),
+                        itemCount: c.carImages.length,
+                        itemBuilder: (context, i) => Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Get.toNamed('/imagesScreen'),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: WebNetworkImage(url: c.carImages[i], memCacheWidth: 400),
+                              ),
+                            ),
+                            Positioned(
+                              top: 4,
+                              right: 4,
+                              child: Material(
+                                color: Colors.black54,
+                                shape: const CircleBorder(),
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  onTap: () async {
+                                    final ok = await webConfirm(context,
+                                        title: 'Delete this photo?',
+                                        message: 'The photo will be removed from the card.',
+                                        confirmLabel: 'Delete',
+                                        danger: true);
+                                    if (ok) c.removeImage(c.carImages[i]);
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(4),
+                                    child: Icon(Icons.delete_outline, size: 16, color: Colors.white),
                                   ),
                                 ),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        // controller.imagesList.removeAt(i);
-                                        // controller.updateMethod();
-                                        showCupertinoDialog(
-                                            context: context,
-                                            builder: (context) =>
-                                                CupertinoAlertDialog(
-                                                  title: const Text('Alert'),
-                                                  content: const Text(
-                                                      'Are you sure you want to delete this picture?'),
-                                                  actions: [
-                                                    CupertinoDialogAction(
-                                                      isDefaultAction: true,
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      child: Text(
-                                                        'No',
-                                                        style: TextStyle(
-                                                            color: mainColor),
-                                                      ),
-                                                    ),
-                                                    CupertinoDialogAction(
-                                                      child: const Text('Yes'),
-                                                      onPressed: () {
-                                                        editCardScreenController
-                                                            .imagesList
-                                                            .removeAt(i);
-                                                        editCardScreenController
-                                                            .updateMethod();
-                                                        Get.back();
-                                                      },
-                                                    )
-                                                  ],
-                                                ));
-                                      },
-                                      icon: const Icon(
-                                        Icons.remove_circle,
-                                        color: Colors.red,
-                                      )),
-                                )
-                              ],
+                              ),
                             ),
-                          );
-                        }
-                      }),
+                          ],
+                        ),
+                      ),
+                    ],
+                    if (c.imagesList.isEmpty && c.carImages.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 18),
+                        child: Center(
+                          child: Text('No photos yet',
+                              style: TextStyle(color: WebColors.muted, fontSize: 13)),
+                        ),
+                      ),
+                  ],
                 ),
+                const SizedBox(height: 20),
                 SizedBox(
-                  width: Get.width / 1.1,
-                  // height: 200,
-                  child: GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: editCardScreenController.carImages.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3),
-                      itemBuilder: (context, i) {
-                        if (editCardScreenController.carImages.isEmpty) {
-                          return const SizedBox(
-                            height: 100,
-                          );
-                        } else {
-                          return Container(
-                            margin: const EdgeInsets.all(3),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: FittedBox(
-                                      fit: BoxFit.cover,
-                                      clipBehavior: Clip.hardEdge,
-                                      child: InkWell(
-                                        onTap: () =>
-                                            Get.toNamed('/imagesScreen'),
-                                        child: Image.network(
-                                            editCardScreenController
-                                                .carImages[i]),
-                                      )),
-                                ),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        showCupertinoDialog(
-                                            context: context,
-                                            builder: (context) =>
-                                                CupertinoAlertDialog(
-                                                  title: const Text('Alert'),
-                                                  content: const Text(
-                                                      'Are you sure you want to delete this picture?'),
-                                                  actions: [
-                                                    CupertinoDialogAction(
-                                                      isDefaultAction: true,
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      child: Text(
-                                                        'No',
-                                                        style: TextStyle(
-                                                            color: mainColor),
-                                                      ),
-                                                    ),
-                                                    CupertinoDialogAction(
-                                                      child: const Text('Yes'),
-                                                      onPressed: () {
-                                                        editCardScreenController
-                                                            .removeImage(
-                                                                editCardScreenController
-                                                                    .carImages[i]);
-                                                        Get.back();
-                                                      },
-                                                    )
-                                                  ],
-                                                ));
-                                      },
-                                      icon: const Icon(
-                                        Icons.remove_circle,
-                                        color: Colors.red,
-                                      )),
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                      }),
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      await c.editValues();
+                      Get.back();
+                      Get.back();
+                    },
+                    icon: const Icon(Icons.check, size: 20),
+                    label: const Text('Save changes'),
+                  ),
                 ),
+                const SizedBox(height: 24),
               ],
             ),
           );
         }
       }),
+      ),
     );
   }
 }
+
 
 class ControlsOverlay extends StatelessWidget {
   final VideoPlayerController controller;
@@ -528,17 +367,13 @@ class ControlsOverlay extends StatelessWidget {
 Padding myTextFormField(
     {required labelText, required hintText, required controller}) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 5, 30, 5), // Adjust padding
+    padding: const EdgeInsets.symmetric(vertical: 6),
     child: TextFormField(
       // initialValue: '',
       controller: controller,
       decoration: InputDecoration(
-        hintStyle: const TextStyle(color: Colors.grey),
         labelText: labelText,
         hintText: hintText,
-        labelStyle: TextStyle(color: Colors.grey.shade700),
-        focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey, width: 2.0)),
       ),
       validator: (value) {
         if (value!.isEmpty) {
@@ -554,44 +389,35 @@ Padding commentBox({
   required TextEditingController controller,
 }) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 15, 30, 5),
+    padding: const EdgeInsets.symmetric(vertical: 6),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Add Comments:',
-          style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
-        ),
+        const Text('Comments', style: TextStyle(fontSize: 12, color: WebColors.muted, fontWeight: FontWeight.w500)),
         const SizedBox(
           height: 10,
         ),
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade700),
+            color: Colors.white,
+            border: Border.all(color: WebColors.border),
+            borderRadius: BorderRadius.circular(10),
           ),
           height: 200,
           width: Get.width,
           child: TextFormField(
             controller: controller,
+            expands: true,
+            maxLines: null,
+            minLines: null,
+            textAlignVertical: TextAlignVertical.top,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
             decoration: const InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.all(10),
+              contentPadding: EdgeInsets.all(12),
               hintText: 'Type your comment here...',
             ),
-            onTap: () {
-              controller.selection = TextSelection(
-                baseOffset: 0,
-                extentOffset: controller.text.length,
-              );
-            },
-            onChanged: (value) {
-              controller.text = value;
-              controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: controller.text.length),
-              );
-            },
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
           ),
         ),
       ],
@@ -607,7 +433,7 @@ Padding dropDownValues({
   required String selectedValue,
 }) {
   return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 5, 30, 5),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: TypeAheadField(
         controller: controller,
         builder: (context, textEditingController, focusNode) {
@@ -622,8 +448,6 @@ Padding dropDownValues({
               ),
               hintText: hintText,
               labelText: labelText,
-              hintStyle: const TextStyle(color: Colors.grey),
-              labelStyle: TextStyle(color: Colors.grey.shade700),
             ),
           );
         },

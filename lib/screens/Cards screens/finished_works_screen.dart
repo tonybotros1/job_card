@@ -1,188 +1,69 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:job_card/const.dart';
-import 'package:job_card/controllers/Cards%20Screens%20Controllers/finished_works_screen_controller.dart';
-import 'package:job_card/widgets/Main%20screen%20widgets/search_engine.dart';
-import 'package:job_card/widgets/card%20style%20widgets/car_card_style_for_web.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
-import '../../widgets/Side menu widgets/side_menu_widgets.dart';
+import '../../web/controllers/web_cards_controller.dart';
+import '../../web/web_theme.dart';
+import '../../web/web_widgets.dart';
 import '../../widgets/card style widgets/car_card_style_for_mobile.dart';
-import '../../widgets/screen_size_widget.dart';
 
+/// Done tab of the phone app: finished cards, paged.
 class FinishedWorksScreen extends StatelessWidget {
   FinishedWorksScreen({super.key});
-  final FinishedWorksController finishedWorksController =
-      Get.put(FinishedWorksController());
+
+  final WebCardsController cards = Get.put(WebCardsController(open: false), tag: 'finished');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: kIsWeb
-            ? ScreenSize.isNotWeb(context)
-                ? SizedBox(
-                    width: ScreenSize.isMobile(context) ? 100 : 180,
-                    child: SideMenuWidget(),
-                  )
-                : null
-            : null,
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: kIsWeb
-              ? ScreenSize.isNotWeb(context)
-                  ? Builder(builder: (context) {
-                      return IconButton(
-                        icon: const Icon(Icons.menu),
-                        color: iconColor,
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      );
-                    })
-                  : null
-              : null,
-          automaticallyImplyLeading: false,
-          toolbarHeight: kIsWeb ? 75 : null,
-          flexibleSpace: kIsWeb
-              ? Center(
-                  child: GetX<FinishedWorksController>(
-                      init: FinishedWorksController(),
-                      builder: (controller) {
-                        return searchEngine(
-                            controller: controller.search.value);
-                      }),
-                )
-              : null,
-          title: kIsWeb
-              ? null
-              : const Text(
-                  'Finished Cards',
-                  style: TextStyle(color: Colors.white),
+      backgroundColor: WebColors.bg,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Obx(() {
+          final total = cards.total.value;
+          return Row(
+            children: [
+              const Text('Finished cards'),
+              if (total != null) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: WebColors.greenTint,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    fmtInt(total),
+                    style: const TextStyle(
+                        color: WebColors.green, fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
                 ),
-          centerTitle: kIsWeb ? false : true,
-          backgroundColor: kIsWeb ? mainColorForWeb : mainColor,
-          actions: [
-            ScreenSize.isWeb(context)
-                ? Obx(() => AutoSizeText(
-                      'Number of Cards: ${finishedWorksController.numberOfCars.value}',
-                      style: const TextStyle(color: iconColor),
-                    ))
-                : const SizedBox(),
-            const SizedBox(
-              width: 10,
-            ),
-            !kIsWeb
-                ? IconButton(
-                    onPressed: () {
-                      showSearch(context: context, delegate: DataSearch());
-                    },
-                    icon: const Icon(
-                      Icons.search,
-                      color: kIsWeb ? iconColor : Colors.white,
-                    ))
-                : const SizedBox(),
-            kIsWeb
-                ? const SizedBox(
-                    width: 20,
-                  )
-                : const SizedBox(),
-          ],
-        ),
-        body: GetX<FinishedWorksController>(builder: (controller) {
-          if (controller.loading.value == true) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: mainColor,
-              ),
-            );
-          } else if (controller.carCards.isEmpty) {
-            return Center(
-                child: Text(
-              'No Cards',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: mainColor, fontSize: 25),
-            ));
-          } else {
-            return kIsWeb
-                ? carCardStyleForMWeb(
-                    controller: controller,
-                    listName: controller.query.value.isEmpty
-                        ? controller.carCards
-                        : controller.filteredCarCards,
-                    color: Colors.grey.shade800,
-                    status: 'Added')
-                : LiquidPullToRefresh(
-                    onRefresh: () => controller.getFinishedWorks(),
-                    color: mainColor,
-                    // backgroundColor: secColor,
-                    animSpeedFactor: 2,
-                    height: 300,
-                    child: carCardStyleForMobile(
-                        controller: controller,
-                        color: Colors.grey,
-                        status: 'Added',
-                        listName: controller.carCards));
-          }
-        }));
-  }
-}
-
-class DataSearch extends SearchDelegate {
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-          onPressed: () {
-            query = "";
-          },
-          icon: const Icon(Icons.close))
-    ];
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          close(context, null);
-        },
-        icon: const Icon(Icons.arrow_back));
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Container();
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return GetX<FinishedWorksController>(builder: (controller) {
-      final FinishedWorksController finishedWorksController =
-          Get.put(FinishedWorksController());
-
-      finishedWorksController.filterResults(query);
-
-      if (controller.filteredCarCards.isEmpty) {
-        return Center(
-            child: Text(
-          'No Cards Yet',
-          style: TextStyle(
-              fontWeight: FontWeight.bold, color: mainColor, fontSize: 25),
-        ));
-      } else {
-        return kIsWeb
-            ? carCardStyleForMWeb(
-                controller: controller,
-                listName: controller.filteredCarCards,
-                color: Colors.grey.shade800,
-                status: 'Added')
-            : carCardStyleForMobile(
-                controller: controller,
-                color: Colors.grey,
-                status: 'Added',
-                listName: controller.filteredCarCards);
-      }
-    });
+              ],
+            ],
+          );
+        }),
+        actions: [
+          IconButton(
+            tooltip: 'Search',
+            onPressed: () => showSearch(context: context, delegate: MobileCardSearch(cards)),
+            icon: const Icon(Icons.search),
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
+      body: Obx(() {
+        if (cards.loading.value) {
+          return const Center(child: CircularProgressIndicator(color: WebColors.brand));
+        }
+        return RefreshIndicator(
+          color: WebColors.brand,
+          onRefresh: cards.reload,
+          child: MobileCardList(
+            controller: cards,
+            emptyTitle: 'No finished cards',
+            emptyMessage: 'Cards marked as finished appear here.',
+          ),
+        );
+      }),
+    );
   }
 }

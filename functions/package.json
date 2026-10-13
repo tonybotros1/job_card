@@ -1,0 +1,14 @@
+{
+  "name": "job-card-functions",
+  "description": "Cloud Functions for the Job Card project (thumbnail backfill)",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.0.0",
+    "sharp": "^0.33.5"
+  }
+}

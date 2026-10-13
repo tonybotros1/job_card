@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:flutter/foundation.dart'; // Add this import
 
 import 'screens/Cards screens/card_details_screen.dart';
-import 'screens/Cards screens/card_details_screen_for_web.dart';
 import 'screens/Cards screens/card_images_screen.dart';
 import 'screens/Cards screens/edit_card_screen.dart';
 import 'screens/Cards screens/main_cards_screen.dart';
@@ -13,6 +12,11 @@ import 'screens/auth/loading_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/images and videos screens/images_screen.dart';
 import 'screens/images and videos screens/single_image_viewer.dart';
+import 'common/messenger.dart';
+import 'web/pages/web_card_details_page.dart';
+import 'mobile/mobile_theme.dart';
+import 'mobile/photo_gallery_screen.dart';
+import 'web/web_theme.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -57,6 +61,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: rootMessengerKey,
+      theme: kIsWeb ? buildWebTheme() : buildMobileTheme(),
       home: const LoadingScreen(),
       initialRoute: '/',
       getPages: [
@@ -66,9 +72,11 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/editCardScreen', page: ()=> EditCardScreen()),
         GetPage(name: '/cardImagesScreen', page: ()=>CardImagesScreen()),
         GetPage(name: '/singleImageViewer', page:()=> SingleImageViewer()),
+        GetPage(name: '/photoGallery', page: () => const PhotoGalleryScreen()),
         GetPage(name: '/imagesScreen', page: ()=> ImagesScreen()),
         GetPage(name: '/carDetailsScreen', page: ()=> CarDetailsScreen()),
-        GetPage(name: '/cardDetailsScreenForWeb', page: ()=> CardDetailsScreenForWeb())
+        GetPage(name: '/cardDetailsScreenForWeb', page: () => const WebCardDetailsPage()),
+        GetPage(name: '/card/:id', page: () => const WebCardDetailsPage()),
       ],
     );
   }

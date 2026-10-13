@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 import '../../controllers/Cards Screens Controllers/main_card_screen_controller.dart';
+import '../../web/web_theme.dart';
 
 class MainScreenForMobile extends StatelessWidget {
    MainScreenForMobile({super.key});
@@ -23,14 +24,14 @@ class MainScreenForMobile extends StatelessWidget {
       controller: _controller,
       screens: mainCardScreenController.buildScreens(),
       items: mainCardScreenController.navBarsItems(),
-      backgroundColor: Colors.white, // Default is Colors.white.
+      backgroundColor: WebColors.surface,
       handleAndroidBackButtonPress: true, // Default is true.
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
       stateManagement: true, // Default is true.
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        colorBehindNavBar: Colors.white,
+      decoration: const NavBarDecoration(
+        border: Border(top: BorderSide(color: WebColors.border)),
+        colorBehindNavBar: WebColors.bg,
       ),
 
       animationSettings: const NavBarAnimationSettings(

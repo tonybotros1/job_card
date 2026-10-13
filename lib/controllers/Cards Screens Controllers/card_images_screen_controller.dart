@@ -42,7 +42,7 @@ class CardImagesScreenController extends GetxController {
         child: GestureDetector(
           onTap: () => removeOverlay(),
           child: Container(
-            color: Colors.black.withOpacity(0.8),
+            color: Colors.black.withValues(alpha: 0.8),
             child: Center(
               child: Image.network(
                 imageUrl,

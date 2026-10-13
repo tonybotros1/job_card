@@ -1,153 +1,102 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:job_card/controllers/Cards%20Screens%20Controllers/card_images_screen_controller.dart';
-import '../../const.dart';
-import '../../models/image_model.dart';
 
+import '../../mobile/photo_gallery_screen.dart';
+import '../../web/web_images.dart';
+import '../../web/web_theme.dart';
+import '../../web/web_widgets.dart';
+
+/// All photos of a card, grouped by the day they were taken. Thumbnails load
+/// here; the full-size photo opens on tap.
 class CardImagesScreen extends StatelessWidget {
   CardImagesScreen({super.key});
+
   final CardImagesScreenController cardImagesScreenController =
       Get.put(CardImagesScreenController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: mainColor,
-        title: const Text(
-          'Card Images',
-          style: TextStyle(color: Colors.white),
-        ),
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Container(
-                width: Get.width,
-                color: containerColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    'Images',
-                    style: GoogleFonts.mooli(
-                        fontSize: 14, color: Colors.grey[900]),
-                  ),
-                ),
-              ),
-            ),
-            GetBuilder<CardImagesScreenController>(
-              init: CardImagesScreenController(),
-              builder: (controller) {
-                return controller.groupedImages.isNotEmpty
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.groupedImages.keys.length,
-                        itemBuilder: (context, index) {
-                          final dateKey =
-                              controller.groupedImages.keys.elementAt(index);
-                          final images =
-                              controller.groupedImages[dateKey] ?? [];
-
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Date: $dateKey',
-                                    style: GoogleFonts.mooli(
-                                        fontSize: 14,
-                                        color: Colors.grey[900],
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                GridView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                  ),
-                                  itemCount: images.length,
-                                  itemBuilder: (context, i) {
-                                    final image = images[i];
-                                    return Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: ClipRRect(
-                                        child: FittedBox(
-                                            fit: BoxFit.cover,
-                                            clipBehavior: Clip.hardEdge,
-                                            child: InkWell(
-                                              onTap: () {
-                                                Get.toNamed(
-                                                    '/singleImageViewer',
-                                                    arguments: ImageModel(
-                                                        url: image.imageUrl));
-                                              },
-                                              child: CachedNetworkImage(
-                                                cacheManager: controller
-                                                    .customCachedManeger,
-                                                progressIndicatorBuilder:
-                                                    (context, url, progress) =>
-                                                        Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      30.0),
-                                                  child: Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      value: progress.progress,
-                                                      color: mainColor,
-                                                      strokeWidth: 3,
-                                                    ),
-                                                  ),
-                                                ),
-                                                imageUrl: image.imageUrl,
-                                                key: UniqueKey(),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Icon(Icons.error),
-                                              ),
-                                            )),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      )
-                    : Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(25.0),
-                          child: CircularProgressIndicator(
-                            color: mainColor,
-                          ),
+      backgroundColor: WebColors.bg,
+      appBar: AppBar(title: const Text('Photos')),
+      body: GetBuilder<CardImagesScreenController>(
+        init: cardImagesScreenController,
+        builder: (controller) {
+          if (controller.carImages.isEmpty) {
+            return const WebEmptyState(icon: Icons.photo_library_outlined, title: 'No photos');
+          }
+          if (controller.groupedImages.isEmpty) {
+            return const Center(child: CircularProgressIndicator(color: WebColors.brand));
+          }
+          final keys = controller.groupedImages.keys.toList()..sort((a, b) => b.compareTo(a));
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: keys.length,
+            itemBuilder: (context, index) {
+              final dateKey = keys[index];
+              final images = controller.groupedImages[dateKey] ?? [];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.event_outlined, size: 16, color: WebColors.subtle),
+                        const SizedBox(width: 6),
+                        Text(
+                          fmtDate(DateTime.tryParse(dateKey)).isEmpty
+                              ? dateKey
+                              : fmtDate(DateTime.tryParse(dateKey)),
+                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
                         ),
-                      );
-              },
-            )
-          ],
-        ),
+                        const SizedBox(width: 8),
+                        Text('${images.length}',
+                            style: const TextStyle(color: WebColors.subtle, fontSize: 12)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 6,
+                        mainAxisSpacing: 6,
+                      ),
+                      itemCount: images.length,
+                      itemBuilder: (context, i) {
+                        final image = images[i];
+                        return GestureDetector(
+                          onTap: () {
+                            // All photos in the order shown, so swiping moves through them.
+                            final urls = <String>[];
+                            final captions = <String>[];
+                            for (final k in keys) {
+                              final label = fmtDate(DateTime.tryParse(k)).isEmpty ? k : fmtDate(DateTime.tryParse(k));
+                              for (final img in controller.groupedImages[k] ?? []) {
+                                urls.add(img.imageUrl);
+                                captions.add(label);
+                              }
+                            }
+                            Get.toNamed('/photoGallery',
+                                arguments: PhotoGalleryArgs(
+                                    urls: urls, initialIndex: urls.indexOf(image.imageUrl), captions: captions));
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: WebNetworkImage(url: image.imageUrl, memCacheWidth: 400),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
