@@ -13,10 +13,9 @@ import '../models/web_job_card.dart';
 /// pages are fetched on scroll. The full list is downloaded only once a search
 /// is typed, then kept in memory so later searches are instant.
 ///
-/// If the live channel has not delivered the first page after a few seconds
-/// the same page is read over plain HTTPS ([FirestoreRest]) so the list shows
-/// whatever the channel is doing; the live query keeps running and takes over
-/// as soon as it answers.
+/// The first page is also read over plain HTTPS ([FirestoreRest]) at the same
+/// time, so the list shows whatever the live channel is doing; the live query
+/// keeps running and takes over (with real-time updates) once it answers.
 class WebCardsController extends GetxController {
   WebCardsController({required this.open});
 
@@ -26,7 +25,6 @@ class WebCardsController extends GetxController {
   static const pageSize = 48;
   static const _searchDebounce = Duration(milliseconds: 250);
   static const _countInterval = Duration(seconds: 45);
-  static const _fallbackAfter = Duration(seconds: 3);
 
   final cards = <WebJobCard>[].obs;
   final loading = true.obs;
@@ -53,7 +51,7 @@ class WebCardsController extends GetxController {
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _sub;
   Timer? _debounce;
   Timer? _countTimer;
-  Timer? _fallback;
+  int _run = 0;
   bool _firstSnapshot = true;
   DateTime? _startedAt;
 
@@ -68,7 +66,6 @@ class WebCardsController extends GetxController {
     _sub?.cancel();
     _debounce?.cancel();
     _countTimer?.cancel();
-    _fallback?.cancel();
     super.onClose();
   }
 
@@ -87,6 +84,7 @@ class WebCardsController extends GetxController {
   }
 
   Future<void> _start() async {
+    final run = ++_run;
     _startedAt = DateTime.now();
     diag.value = '';
     final prefs = await SharedPreferences.getInstance();
@@ -96,50 +94,65 @@ class WebCardsController extends GetxController {
       error.value = 'Not signed in';
       return;
     }
-    _sub = _base.limit(pageSize).snapshots().listen((snap) {
-      if (_firstSnapshot) _note('live page (${snap.docs.length})');
-      _firstPage = snap.docs;
-      _restPage = const [];
-      if (!_firstSnapshot && snap.docChanges.isNotEmpty) {
-        // Something changed server-side: the cached full list is stale, and
-        // so is the total.
-        _all = null;
-        _allLoading = null;
-        if (query.value.isNotEmpty) _runSearch(query.value);
-        refreshCount();
-      }
-      _firstSnapshot = false;
-      if (snap.docs.length < pageSize) hasMore.value = false;
-      _publish();
-      loading.value = false;
-    }, onError: (e) {
-      _note('live error ${e is FirebaseException ? e.code : e.runtimeType}');
-      loading.value = false;
-      error.value = 'Could not load cards';
-    });
-    refreshCount();
-    // If the live channel is slow to answer, read the first page over plain
-    // HTTPS so the list shows anyway.
-    _fallback?.cancel();
-    _fallback = Timer(_fallbackAfter, () async {
-      if (!loading.value || _userId.isEmpty) return;
-      _note('fallback started');
-      try {
-        final page = await FirestoreRest.firstPage(userId: _userId, open: open, limit: pageSize);
-        if (!loading.value) return; // the live snapshot won after all
-        _note('fallback page (${page.length})');
-        _restPage = page;
-        if (page.length < pageSize) hasMore.value = false;
+    // Plain HTTPS read of the first page, started together with the live
+    // query: whichever answers first fills the list. In some browsers the
+    // live channel's first answer takes very long, the HTTPS read does not.
+    _readFirstPageOverHttps(run);
+
+    // `?stall=1` in the address skips the live query, to test the HTTPS path.
+    final stall = Uri.base.queryParameters['stall'] == '1';
+    if (!stall) {
+      _sub = _base.limit(pageSize).snapshots().listen((snap) {
+        if (run != _run) return;
+        if (_firstSnapshot) _note('live page (${snap.docs.length})');
+        _firstPage = snap.docs;
+        _restPage = const [];
+        if (!_firstSnapshot && snap.docChanges.isNotEmpty) {
+          // Something changed server-side: the cached full list is stale, and
+          // so is the total.
+          _all = null;
+          _allLoading = null;
+          if (query.value.isNotEmpty) _runSearch(query.value);
+          refreshCount();
+        }
+        _firstSnapshot = false;
+        if (snap.docs.length < pageSize) hasMore.value = false;
         _publish();
         loading.value = false;
-      } catch (e) {
-        _note('fallback failed ($e)');
-      }
-    });
+      }, onError: (e) {
+        if (run != _run) return;
+        _note('live error ${e is FirebaseException ? e.code : e.runtimeType}');
+        if (_restPage.isEmpty) {
+          loading.value = false;
+          error.value = 'Could not load cards';
+        }
+      });
+      _note('live started');
+    } else {
+      _note('live skipped (stall=1)');
+    }
+    refreshCount();
     // Cards finished or reopened further down the list do not show up in the
     // first page, so the total is also re-read periodically.
     _countTimer?.cancel();
     _countTimer = Timer.periodic(_countInterval, (_) => refreshCount());
+  }
+
+  Future<void> _readFirstPageOverHttps(int run) async {
+    _note('https started');
+    try {
+      final page = await FirestoreRest.firstPage(userId: _userId, open: open, limit: pageSize);
+      if (run != _run) return;
+      _note('https page (${page.length})');
+      if (_firstPage.isNotEmpty) return; // the live page is already shown
+      _restPage = page;
+      if (page.length < pageSize) hasMore.value = false;
+      _publish();
+      loading.value = false;
+    } catch (e) {
+      if (run != _run) return;
+      _note('https failed ($e)');
+    }
   }
 
   /// Pull-to-refresh / "Try again": restart from the first page and drop
@@ -147,7 +160,6 @@ class WebCardsController extends GetxController {
   Future<void> reload() async {
     await _sub?.cancel();
     _sub = null;
-    _fallback?.cancel();
     _firstPage = const [];
     _restPage = const [];
     _more.clear();
