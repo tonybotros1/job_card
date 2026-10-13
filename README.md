@@ -45,10 +45,9 @@ Images are cached for 3 days on the device / in the browser.
 - `notifyNewCard` – Firestore trigger on `car_card/{id}`: sends a push to every registered phone of
   every user except the one that created the card, and removes tokens reported as dead.
   Tapping the notification opens the card.
-- `backfillThumbnails` – HTTP function that creates missing thumbnails for photos uploaded before
-  the extension existed. It is protected by a token kept in `functions/.env` (not in the
-  repository) and is called repeatedly with the returned `pageToken` until `done` is true. It only
-  reads originals. Delete it once the backfill is complete.
+Thumbnails for the photos taken before the extension existed were created once with a backfill
+function (finished 2026-10-14, then removed). New photos get their thumbnail from the app and the
+extension.
 
 The extension configuration lives in `extensions/`.
 
@@ -60,7 +59,6 @@ Prerequisites: Flutter SDK, Android Studio (SDK + an emulator), Node 22 and the 
 Files that are **not** in the repository and must be added by hand:
 
 - `android/app/google-services.json` – from the Firebase console (Android app settings).
-- `functions/.env` – the backfill token (only needed to run the backfill).
 
 ```bash
 flutter pub get
