@@ -124,6 +124,50 @@ exports.backfillThumbnails = onRequest(
       thumbToken = resp && resp.nextPageToken;
     } while (thumbToken);
 
+    const isPhoto = (f) =>
+      f.name.startsWith(PREFIX) && !f.name.startsWith(THUMB_DIR) && /\.(jpe?g|png|webp)$/i.test(f.name);
+
+    // Newest first: photos are named by their timestamp, so Storage lists them
+    // oldest first. This mode lists every original once, sorts them newest
+    // first and works down from `cursor` (the last name handled, exclusive),
+    // so the photos people actually open get their thumbnails first.
+    if (req.body && req.body.newestFirst) {
+      const cursor = typeof req.body.cursor === 'string' ? req.body.cursor : '';
+      const all = [];
+      let listToken;
+      do {
+        const [files, , resp] = await bucket.getFiles({ prefix: PREFIX, pageToken: listToken, maxResults: 5000, autoPaginate: false });
+        files.forEach((f) => {
+          if (isPhoto(f)) all.push(f);
+        });
+        listToken = resp && resp.nextPageToken;
+      } while (listToken);
+      stats.scanned = all.length;
+      all.sort((a, b) => (a.name < b.name ? 1 : a.name > b.name ? -1 : 0));
+      const todo = all.filter((f) => (!cursor || f.name < cursor) && !existing.has(thumbPathFor(f.name)));
+      stats.skipped = all.length - todo.length;
+      let last = cursor;
+      let i = 0;
+      for (; i < todo.length && Date.now() - started < TIME_BUDGET_MS; i += PARALLEL) {
+        const batch = todo.slice(i, i + PARALLEL);
+        await Promise.all(
+          batch.map(async (f) => {
+            try {
+              await makeThumb(bucket, f);
+              stats.created += 1;
+            } catch (e) {
+              stats.failed += 1;
+              if (failures.length < 20) failures.push(`${f.name}: ${e.message}`);
+            }
+          }),
+        );
+        last = batch[batch.length - 1].name;
+      }
+      const remaining = Math.max(0, todo.length - i);
+      res.json({ done: remaining === 0, cursor: last || null, remaining, elapsedSec: Math.round((Date.now() - started) / 1000), ...stats, failures });
+      return;
+    }
+
     while (Date.now() - started < TIME_BUDGET_MS) {
       const [files, , resp] = await bucket.getFiles({ prefix: PREFIX, pageToken, maxResults: PAGE_SIZE, autoPaginate: false });
       stats.pages += 1;
