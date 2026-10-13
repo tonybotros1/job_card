@@ -20,6 +20,7 @@ class WebCardsController extends GetxController {
   static const pageSize = 48;
   static const _searchDebounce = Duration(milliseconds: 250);
   static const _countInterval = Duration(seconds: 45);
+  static const _fallbackAfter = Duration(seconds: 6);
 
   final cards = <WebJobCard>[].obs;
   final loading = true.obs;
@@ -42,6 +43,7 @@ class WebCardsController extends GetxController {
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _sub;
   Timer? _debounce;
   Timer? _countTimer;
+  Timer? _fallback;
   bool _firstSnapshot = true;
 
   @override
@@ -55,6 +57,7 @@ class WebCardsController extends GetxController {
     _sub?.cancel();
     _debounce?.cancel();
     _countTimer?.cancel();
+    _fallback?.cancel();
     super.onClose();
   }
 
@@ -91,6 +94,22 @@ class WebCardsController extends GetxController {
       error.value = 'Could not load cards';
     });
     refreshCount();
+    // If the live channel is blocked (proxy, extension), the first snapshot
+    // never arrives: fetch the first page once so the list still shows.
+    _fallback?.cancel();
+    _fallback = Timer(_fallbackAfter, () async {
+      if (!loading.value || _userId.isEmpty) return;
+      try {
+        final snap = await _base.limit(pageSize).get(const GetOptions(source: Source.server));
+        if (!loading.value) return; // the live snapshot won after all
+        _firstPage = snap.docs;
+        if (snap.docs.length < pageSize) hasMore.value = false;
+        _publish();
+        loading.value = false;
+      } catch (_) {
+        // Keep waiting for the live snapshot.
+      }
+    });
     // Cards finished or reopened further down the list do not show up in the
     // first page, so the total is also re-read periodically.
     _countTimer?.cancel();
@@ -101,6 +120,7 @@ class WebCardsController extends GetxController {
   Future<void> reload() async {
     await _sub?.cancel();
     _sub = null;
+    _fallback?.cancel();
     _firstPage = const [];
     _more.clear();
     _all = null;

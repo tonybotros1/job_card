@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,11 @@ void main() async {
             messagingSenderId: "9681419746",
             appId: "1:9681419746:web:4f6f116df48e511f47cdbb",
             measurementId: "G-LDQZ5NLESB"));
+    // Some networks, proxies and browser extensions block Firestore's
+    // streaming channel; one-shot reads then work but live lists never
+    // arrive. Long polling goes through everywhere.
+    FirebaseFirestore.instance.settings =
+        const Settings(webExperimentalForceLongPolling: true);
   } else {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
