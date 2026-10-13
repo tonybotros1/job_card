@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/card_navigation.dart';
 import '../../common/messenger.dart';
+import '../../common/push_token.dart';
 
 class LoadingScreenController extends GetxController {
   @override
@@ -47,6 +48,8 @@ class LoadingScreenController extends GetxController {
       Get.offAllNamed('/loginScreen');
     } else {
       Get.offAllNamed('/mainCardsScreen');
+      // Re-register this phone's push token (it may have rotated since login).
+      PushToken.sync();
       // App launched from a notification while it was closed: open its card
       // on top of the main screen.
       final initial = await FirebaseMessaging.instance.getInitialMessage();
