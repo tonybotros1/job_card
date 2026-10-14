@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../firestore_rest.dart';
+
 /// Read-only view of a `car_card` document for the web portal.
 class WebJobCard {
   final String id;
@@ -21,6 +23,10 @@ class WebJobCard {
   final bool open;
   final DateTime? timestamp;
 
+  /// Only the search fields were loaded (no photos, phone, comments…); the
+  /// full card has to be read before it is shown in detail or shared.
+  final bool partial;
+
   const WebJobCard({
     required this.id,
     required this.customerName,
@@ -40,6 +46,7 @@ class WebJobCard {
     required this.carImages,
     required this.open,
     required this.timestamp,
+    this.partial = false,
   });
 
   factory WebJobCard.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) =>
@@ -47,7 +54,7 @@ class WebJobCard {
 
   /// Same mapping from a plain field map (SDK snapshot data or decoded REST
   /// fields).
-  factory WebJobCard.fromMap(String id, Map<String, dynamic> d) {
+  factory WebJobCard.fromMap(String id, Map<String, dynamic> d, {bool partial = false}) {
     String s(String key) => (d[key] ?? '').toString().trim();
     final fuel = d['fuel_amount'];
     final ts = d['timestamp'];
@@ -75,6 +82,47 @@ class WebJobCard {
           : const [],
       open: d['status'] == true,
       timestamp: ts is Timestamp ? ts.toDate() : null,
+      partial: partial,
+    );
+  }
+
+  /// Compact form kept in the browser between visits (search data only).
+  List<Object?> toSearchRow() => [
+        id,
+        customerName,
+        carBrand,
+        carModel,
+        plateNumber,
+        date,
+        color,
+        timestamp?.millisecondsSinceEpoch,
+      ];
+
+  /// Inverse of [toSearchRow]; [open] is the list the row belongs to.
+  static WebJobCard? fromSearchRow(Object? row, {required bool open}) {
+    if (row is! List || row.length < 8) return null;
+    String s(int i) => (row[i] ?? '').toString();
+    final ms = row[7];
+    return WebJobCard(
+      id: s(0),
+      customerName: s(1),
+      carBrand: s(2),
+      carModel: s(3),
+      plateNumber: s(4),
+      carMileage: '',
+      chassisNumber: '',
+      phoneNumber: '',
+      emailAddress: '',
+      color: s(6),
+      date: s(5),
+      comments: '',
+      fuelAmount: 0,
+      customerSignature: '',
+      carVideo: '',
+      carImages: const [],
+      open: open,
+      timestamp: ms is num ? DateTime.fromMillisecondsSinceEpoch(ms.toInt()) : null,
+      partial: true,
     );
   }
 
@@ -93,6 +141,14 @@ class WebJobCard {
         carModel.toLowerCase().contains(q) ||
         plateNumber.toLowerCase().contains(q) ||
         date.toLowerCase().contains(q);
+  }
+
+  /// This card with every field: itself when it is complete, otherwise read
+  /// from the database (search results carry only the search fields).
+  Future<WebJobCard> complete() async {
+    if (!partial) return this;
+    final got = await FirestoreRest.getCards([id]);
+    return got[id] ?? this;
   }
 
   /// The customer message the share button has always sent.

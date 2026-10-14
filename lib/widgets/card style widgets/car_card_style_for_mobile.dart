@@ -191,7 +191,7 @@ class MobileCardTile extends StatelessWidget {
 
   final WebJobCard card;
 
-  void _open() => openCardDetails(card);
+  void _open() => card.partial ? openCardById(card.id) : openCardDetails(card);
 
   @override
   Widget build(BuildContext context) {
@@ -293,7 +293,7 @@ class MobileCardTile extends StatelessWidget {
                           constraints: const BoxConstraints.tightFor(width: 32, height: 32),
                           iconSize: 18,
                           icon: const Icon(Icons.share_outlined),
-                          onPressed: () => Share.share(card.shareText),
+                          onPressed: () async => Share.share((await card.complete()).shareText),
                         ),
                       ],
                     ),

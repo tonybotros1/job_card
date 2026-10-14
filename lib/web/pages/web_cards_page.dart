@@ -31,7 +31,7 @@ class _WebCardsPageState extends State<WebCardsPage> {
   void initState() {
     super.initState();
     _scroll.addListener(() {
-      if (c.query.value.isNotEmpty) return;
+      // Lists load their next page; search results load their next full cards.
       final pos = _scroll.position;
       if (pos.pixels > pos.maxScrollExtent - 600) c.loadMore();
     });
@@ -221,11 +221,13 @@ class _Centered extends StatelessWidget {
 
 void _openCard(WebJobCard card) => Get.toNamed('/card/${card.id}');
 
-void _share(BuildContext context, WebJobCard card) {
-  Share.share(card.shareText).catchError((_) {
+Future<void> _share(BuildContext context, WebJobCard card) async {
+  final full = await card.complete();
+  try {
+    await Share.share(full.shareText);
+  } catch (_) {
     if (context.mounted) webToast(context, 'Sharing is not available in this browser');
-    return ShareResult.unavailable;
-  });
+  }
 }
 
 const _coverHeight = 190.0;

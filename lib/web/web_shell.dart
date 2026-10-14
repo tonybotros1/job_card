@@ -14,7 +14,7 @@ import 'web_widgets.dart';
 
 /// Shown at the bottom of the side navigation so a stale browser build is
 /// easy to spot (bump it with every deploy).
-const kWebBuild = '14 Oct 2026 · 7';
+const kWebBuild = '14 Oct 2026 · 8';
 
 class WebShellController extends GetxController {
   final index = 0.obs;
