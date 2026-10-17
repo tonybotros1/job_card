@@ -14,8 +14,8 @@ class WebPhoto {
 
 /// Full-screen viewer with keyboard and on-screen arrows.
 ///
-/// Left / Right (and A / D) move between photos, Escape closes, the mouse wheel
-/// and pinch zoom the picture.
+/// Left / Right (and A / D) move between photos, R / L rotate the picture a
+/// quarter turn, Escape closes, the mouse wheel and pinch zoom the picture.
 Future<void> showWebPhotoViewer(
   BuildContext context, {
   required List<WebPhoto> photos,
@@ -45,6 +45,9 @@ class _PhotoViewerState extends State<_PhotoViewer> {
   final _focus = FocusNode();
   final _zoom = TransformationController();
 
+  /// Quarter turns clockwise applied to the current photo (0..3).
+  int _turns = 0;
+
   bool get _hasPrev => _index > 0;
   bool get _hasNext => _index < widget.photos.length - 1;
 
@@ -53,6 +56,15 @@ class _PhotoViewerState extends State<_PhotoViewer> {
     if (next < 0 || next >= widget.photos.length) return;
     setState(() {
       _index = next;
+      _turns = 0;
+      _zoom.value = Matrix4.identity();
+    });
+  }
+
+  /// Rotates the picture by [delta] quarter turns (positive = clockwise).
+  void _rotate(int delta) {
+    setState(() {
+      _turns = (_turns + delta) % 4;
       _zoom.value = Matrix4.identity();
     });
   }
@@ -66,6 +78,14 @@ class _PhotoViewerState extends State<_PhotoViewer> {
     }
     if (key == LogicalKeyboardKey.arrowLeft || key == LogicalKeyboardKey.keyA) {
       _go(-1);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyR) {
+      _rotate(1);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyL) {
+      _rotate(-1);
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.escape) {
@@ -110,16 +130,19 @@ class _PhotoViewerState extends State<_PhotoViewer> {
                     transformationController: _zoom,
                     minScale: 1,
                     maxScale: 5,
-                    child: WebNetworkImage(
-                      key: ValueKey(photo.url),
-                      url: photo.url,
-                      useThumbnail: false,
-                      fit: BoxFit.contain,
-                      placeholder: const Center(
-                        child: SizedBox(
-                          width: 36,
-                          height: 36,
-                          child: CircularProgressIndicator(strokeWidth: 3, color: Colors.white),
+                    child: RotatedBox(
+                      quarterTurns: _turns,
+                      child: WebNetworkImage(
+                        key: ValueKey(photo.url),
+                        url: photo.url,
+                        useThumbnail: false,
+                        fit: BoxFit.contain,
+                        placeholder: const Center(
+                          child: SizedBox(
+                            width: 36,
+                            height: 36,
+                            child: CircularProgressIndicator(strokeWidth: 3, color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
@@ -145,9 +168,22 @@ class _PhotoViewerState extends State<_PhotoViewer> {
                       Text(photo.caption!, style: const TextStyle(color: Colors.white70, fontSize: 14)),
                     ],
                     const Spacer(),
-                    const Text('← →  to browse   Esc to close',
+                    const Text('← →  to browse   R / L to rotate   Esc to close',
                         style: TextStyle(color: Colors.white38, fontSize: 12)),
                     const SizedBox(width: 12),
+                    IconButton(
+                      tooltip: 'Rotate left (L)',
+                      color: Colors.white,
+                      icon: const Icon(Icons.rotate_left),
+                      onPressed: () => _rotate(-1),
+                    ),
+                    IconButton(
+                      tooltip: 'Rotate right (R)',
+                      color: Colors.white,
+                      icon: const Icon(Icons.rotate_right),
+                      onPressed: () => _rotate(1),
+                    ),
+                    const SizedBox(width: 4),
                     IconButton(
                       tooltip: 'Close (Esc)',
                       color: Colors.white,
